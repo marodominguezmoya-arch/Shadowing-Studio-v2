@@ -91,7 +91,6 @@ export function renderStudio(el) {
     <div id="s-action"></div>
     <div id="s-player"></div>
 
-    <p class="footer-links"><a href="#/confidentialite">${t('privacy.title')}</a></p>
   </div>`;
 
   bind();

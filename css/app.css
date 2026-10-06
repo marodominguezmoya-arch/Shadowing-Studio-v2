@@ -185,7 +185,7 @@ main {
   width: 100%;
   max-width: var(--maxw);
   margin: 0 auto;
-  padding: 28px var(--gutter) calc(env(safe-area-inset-bottom) + 48px);
+  padding: 28px var(--gutter) 36px;
 }
 main:focus { outline: none; }
 
@@ -232,7 +232,7 @@ h3 {
 .onb {
   display: flex;
   flex-direction: column;
-  min-height: calc(100dvh - 150px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+  min-height: calc(100dvh - 260px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
   text-align: center;
 }
 
@@ -594,11 +594,33 @@ input[type="range"] { width: 100%; accent-color: var(--accent); min-height: 32px
 }
 .round-main { width: 68px; height: 68px; background: var(--text); color: var(--on-primary); border: 0; font-size: 22px; }
 
-.footer-links {
-  margin: 40px 0 0;
-  font-size: 13.5px;
-  color: var(--text-faint);
+/* ---------- Pied de page ---------- */
+.site-footer {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 22px var(--gutter) calc(env(safe-area-inset-bottom) + 22px);
+  border-block-start: 1px solid var(--border);
+  text-align: center;
 }
+.social {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px 22px;
+}
+.social a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-decoration: none;
+}
+.social a:hover { color: var(--accent); }
+.footer-meta { margin: 4px 0 0; font-size: 13px; color: var(--text-faint); }
+.footer-meta a { color: inherit; }
 
 .noscript { padding: var(--gutter); }
 

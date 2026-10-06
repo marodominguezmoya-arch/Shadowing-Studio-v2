@@ -1,6 +1,6 @@
 // Point d'entrée : langue, routage par hash, garde d'onboarding.
 
-import { initLocale, setLocale, getLocale, onLocaleChange } from './i18n.js';
+import { initLocale, setLocale, getLocale, onLocaleChange, t } from './i18n.js';
 import { load, remove } from './storage.js';
 import { IS_LOCAL } from './config.js';
 import { renderOnboarding } from './views/onboarding.js';
@@ -38,6 +38,10 @@ function route() {
   }
 }
 
+function syncFooter() {
+  document.getElementById('footer-privacy').textContent = t('privacy.title');
+}
+
 function syncLocaleButtons() {
   document.querySelectorAll('[data-locale]').forEach((btn) => {
     btn.setAttribute('aria-pressed', String(btn.dataset.locale === getLocale()));
@@ -51,6 +55,7 @@ document.querySelector('.locale-switch').addEventListener('click', (e) => {
 
 onLocaleChange(() => {
   syncLocaleButtons();
+  syncFooter();
   route();
 });
 
@@ -61,4 +66,5 @@ window.addEventListener('hashchange', () => {
 
 initLocale();
 syncLocaleButtons();
+syncFooter();
 route();
