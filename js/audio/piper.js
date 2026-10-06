@@ -10,15 +10,16 @@ function getWorker() {
   if (worker) return worker;
   worker = new Worker(new URL('./tts-worker.js', import.meta.url));
   worker.onmessage = (e) => {
-    const { id, ok, result, error, progress } = e.data;
+    const { id, ok, result, error, stage, progress } = e.data;
     const p = pending.get(id);
     if (!p) return;
     if (progress) return p.onProgress?.(progress);
     pending.delete(id);
-    ok ? p.resolve(result) : p.reject(new Error(error));
+    ok ? p.resolve(result) : p.reject(Object.assign(new Error(error), { stage }));
   };
   worker.onerror = (e) => {
-    const err = new Error(e.message || 'Erreur du moteur vocal');
+    // Arrêt brutal du worker : souvent un manque de mémoire sur téléphone.
+    const err = Object.assign(new Error(e.message || 'arrêt inattendu du moteur vocal'), { stage: 'crash' });
     pending.forEach((p) => p.reject(err));
     pending.clear();
     worker = null;

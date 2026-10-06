@@ -132,6 +132,8 @@ export default {
       tooMany: 'Maximum {max} phrases par séance.',
       tooLong: 'La phrase {n} est trop longue (maximum {max} caractères).',
       download: 'Le téléchargement de la voix a échoué. Vérifiez votre connexion et réessayez.',
+      engine: 'La voix n’a pas pu démarrer sur cet appareil.',
+      detail: 'Détail technique',
       synth: 'La voix n’a pas pu lire vos phrases. Vérifiez-les et réessayez.',
       browserVoice: 'La lecture avec la voix de l’appareil a échoué.',
     },

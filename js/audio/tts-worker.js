@@ -14,11 +14,18 @@ const CACHE_NAME = 'ss2-voices-v1';
 
 let PIPER_BASE = '';
 
-importScripts(ORT_BASE + 'ort.wasm.min.js', PHONEMIZE_BASE + 'piper_phonemize.js');
+try {
+  importScripts(ORT_BASE + 'ort.wasm.min.js', PHONEMIZE_BASE + 'piper_phonemize.js');
+} catch (err) {
+  // Signalé à la première requête (voir onmessage).
+  self.bootError = `chargement du moteur impossible : ${err.message}`;
+}
 
-ort.env.wasm.wasmPaths = ORT_BASE;
-// Multi-thread uniquement si la page est « cross-origin isolated » ; sinon ORT reste sur 1 thread.
-ort.env.wasm.numThreads = self.crossOriginIsolated ? Math.min(4, navigator.hardwareConcurrency || 1) : 1;
+if (self.ort) {
+  ort.env.wasm.wasmPaths = ORT_BASE;
+  // Multi-thread uniquement si la page est « cross-origin isolated » ; sinon ORT reste sur 1 thread.
+  ort.env.wasm.numThreads = self.crossOriginIsolated ? Math.min(4, navigator.hardwareConcurrency || 1) : 1;
+}
 
 let current = null; // { key, session, config }
 let phonemizeUrls = null; // { wasm, data } en blob: URLs
@@ -26,6 +33,7 @@ let phonemizeUrls = null; // { wasm, data } en blob: URLs
 self.onmessage = async (e) => {
   const { id, type } = e.data;
   try {
+    if (self.bootError) throw staged('init', new Error(self.bootError));
     let result;
     if (type === 'init') {
       PIPER_BASE = e.data.piperBase;
@@ -39,41 +47,89 @@ self.onmessage = async (e) => {
     const transfer = result && result.pcms ? result.pcms.map((p) => p.buffer) : [];
     self.postMessage({ id, ok: true, result }, transfer);
   } catch (err) {
-    self.postMessage({ id, ok: false, error: String(err && err.message ? err.message : err) });
+    self.postMessage({
+      id,
+      ok: false,
+      stage: (err && err.stage) || 'unknown',
+      error: String(err && err.message ? err.message : err),
+    });
   }
 };
+
+// Erreur annotée de l'étape où elle s'est produite (download | init | phonemize | synth).
+function staged(stage, err) {
+  const e = err instanceof Error ? err : new Error(String(err));
+  e.stage ||= stage;
+  return e;
+}
 
 // ---------------------------------------------------------------------------
 // Téléchargement avec cache + progression
 // ---------------------------------------------------------------------------
 
+// Renvoie un Uint8Array. Un seul tampon en mémoire (important sur iPhone, où la page est
+// coupée au-delà d'un certain volume).
 async function cachedFetch(url, { id, label, weight = 1, offset = 0, totalWeight = 1 } = {}) {
-  const cache = await caches.open(CACHE_NAME);
-  const hit = await cache.match(url);
-  if (hit) return hit.blob();
+  let cache = null;
+  try {
+    cache = await caches.open(CACHE_NAME);
+    const hit = await cache.match(url);
+    if (hit) return new Uint8Array(await hit.arrayBuffer());
+  } catch (err) {
+    console.warn('[cache]', err); // cache indisponible : on télécharge quand même
+    cache = null;
+  }
 
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`Téléchargement impossible (${res.status}) : ${label}`);
+  let res;
+  try {
+    res = await fetch(url);
+  } catch (err) {
+    throw staged('download', new Error(`réseau (${label}) : ${err.message}`));
+  }
+  if (!res.ok) throw staged('download', new Error(`HTTP ${res.status} (${label})`));
 
   const total = Number(res.headers.get('Content-Length')) || 0;
   const reader = res.body.getReader();
-  const chunks = [];
+  let bytes = total ? new Uint8Array(total) : null;
+  const chunks = total ? null : [];
   let loaded = 0;
   let lastPost = 0;
-  for (;;) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    chunks.push(value);
-    loaded += value.length;
-    const now = Date.now();
-    if (id != null && total && now - lastPost > 150) {
-      lastPost = now;
-      self.postMessage({ id, progress: { loaded: offset + (loaded / total) * weight, total: totalWeight, label } });
+  try {
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      if (bytes) {
+        if (loaded + value.length > bytes.length) throw new Error('taille inattendue');
+        bytes.set(value, loaded);
+      } else chunks.push(value);
+      loaded += value.length;
+      const now = Date.now();
+      if (id != null && total && now - lastPost > 150) {
+        lastPost = now;
+        self.postMessage({ id, progress: { loaded: offset + (loaded / total) * weight, total: totalWeight, label } });
+      }
+    }
+  } catch (err) {
+    throw staged('download', new Error(`interrompu (${label}, ${loaded} octets) : ${err.message}`));
+  }
+  if (bytes && loaded !== bytes.length) bytes = bytes.subarray(0, loaded);
+  if (!bytes) {
+    bytes = new Uint8Array(loaded);
+    let pos = 0;
+    for (const c of chunks) {
+      bytes.set(c, pos);
+      pos += c.length;
     }
   }
-  const blob = new Blob(chunks);
-  await cache.put(url, new Response(blob, { headers: { 'Content-Type': res.headers.get('Content-Type') || 'application/octet-stream' } }));
-  return blob;
+
+  if (cache) {
+    try {
+      await cache.put(url, new Response(bytes, { headers: { 'Content-Type': 'application/octet-stream' } }));
+    } catch (err) {
+      console.warn('[cache.put]', err); // ex. quota dépassé : la voix marche, mais sera re-téléchargée
+    }
+  }
+  return bytes;
 }
 
 function voiceUrls(voice) {
@@ -103,7 +159,10 @@ async function ensurePhonemizer(id) {
     cachedFetch(PHONEMIZE_BASE + 'piper_phonemize.wasm', { id, label: 'phonemizer', weight: 0.03, offset: 0, totalWeight: 1 }),
     cachedFetch(PHONEMIZE_BASE + 'piper_phonemize.data', { id, label: 'phonemizer', weight: 0.22, offset: 0.03, totalWeight: 1 }),
   ]);
-  phonemizeUrls = { wasm: URL.createObjectURL(wasm), data: URL.createObjectURL(data) };
+  phonemizeUrls = {
+    wasm: URL.createObjectURL(new Blob([wasm], { type: 'application/wasm' })),
+    data: URL.createObjectURL(new Blob([data])),
+  };
 }
 
 async function loadVoice(voice, id) {
@@ -111,11 +170,28 @@ async function loadVoice(voice, id) {
 
   await ensurePhonemizer(id);
   const { model, config } = voiceUrls(voice);
-  const configBlob = await cachedFetch(config, { id, label: 'config', weight: 0.01, offset: 0.25, totalWeight: 1 });
-  const modelBlob = await cachedFetch(model, { id, label: 'voice', weight: 0.74, offset: 0.26, totalWeight: 1 });
+  const configBytes = await cachedFetch(config, { id, label: 'config', weight: 0.01, offset: 0.25, totalWeight: 1 });
+  let modelBytes = await cachedFetch(model, { id, label: 'voice', weight: 0.74, offset: 0.26, totalWeight: 1 });
 
-  const cfg = JSON.parse(await configBlob.text());
-  const session = await ort.InferenceSession.create(await modelBlob.arrayBuffer(), { executionProviders: ['wasm'] });
+  const cfg = JSON.parse(new TextDecoder().decode(configBytes));
+  // Libère l'éventuelle voix précédente avant d'en charger une autre.
+  if (current) {
+    await current.session.release?.().catch(() => {});
+    current = null;
+  }
+  let session;
+  try {
+    session = await ort.InferenceSession.create(modelBytes, {
+      executionProviders: ['wasm'],
+      // Réduit la mémoire réservée par ONNX Runtime (utile sur téléphone).
+      enableCpuMemArena: false,
+      enableMemPattern: false,
+    });
+  } catch (err) {
+    throw staged('init', err);
+  } finally {
+    modelBytes = null;
+  }
   current = { key: voice.key, session, config: cfg };
   return { key: voice.key, sampleRate: cfg.audio.sample_rate };
 }
@@ -154,7 +230,12 @@ async function synth(texts, speed = 1) {
   if (!current) throw new Error('Aucune voix chargée');
   const { session, config } = current;
   const inf = config.inference || {};
-  const ids = await phonemize(texts, config.espeak.voice);
+  let ids;
+  try {
+    ids = await phonemize(texts, config.espeak.voice);
+  } catch (err) {
+    throw staged('phonemize', err);
+  }
   const multiSpeaker = Object.keys(config.speaker_id_map || {}).length > 0;
   // length_scale > 1 = plus lent : on divise par la vitesse voulue.
   const lengthScale = (inf.length_scale ?? 1) / Math.max(0.3, speed);
@@ -167,7 +248,12 @@ async function synth(texts, speed = 1) {
       scales: new ort.Tensor('float32', Float32Array.from([inf.noise_scale ?? 0.667, lengthScale, inf.noise_w ?? 0.8]), [3]),
     };
     if (multiSpeaker) feeds.sid = new ort.Tensor('int64', BigInt64Array.from([0n]), [1]);
-    const out = await session.run(feeds);
+    let out;
+    try {
+      out = await session.run(feeds);
+    } catch (err) {
+      throw staged('synth', err);
+    }
     pcms.push(Float32Array.from(out.output.data));
   }
   return { pcms, sampleRate: config.audio.sample_rate };

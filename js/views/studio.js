@@ -266,7 +266,7 @@ async function ensureVoiceLoaded() {
     rt.voice = 'cached';
   } catch (err) {
     rt.voice = 'missing';
-    throw Object.assign(err, { kind: 'download' });
+    throw Object.assign(err, { kind: err.stage === 'download' ? 'download' : 'engine' });
   } finally {
     if (currentLang() === lang) renderVoice();
   }
@@ -279,8 +279,8 @@ async function downloadVoiceOnly() {
   renderAction();
   try {
     await ensureVoiceLoaded();
-  } catch {
-    rt.error = t('studio.errors.download');
+  } catch (err) {
+    rt.error = errorMessage(err);
   }
   rt.busy = false;
   renderAction();
@@ -364,10 +364,20 @@ async function createSession() {
   } catch (err) {
     console.error('[studio]', err);
     rt.busy = false;
-    rt.error = err.kind === 'download' ? t('studio.errors.download') : t('studio.errors.synth');
+    rt.error = errorMessage(err);
     setStatus('');
     renderAction();
   }
+}
+
+// Message lisible + détail technique (à transmettre en cas de problème).
+function errorMessage(err) {
+  const main =
+    err.kind === 'download' ? t('studio.errors.download')
+    : err.kind === 'engine' || err.stage === 'crash' || err.stage === 'init' ? t('studio.errors.engine')
+    : t('studio.errors.synth');
+  const detail = `${err.stage || err.kind || '?'} — ${err.message || err}`.slice(0, 240);
+  return `${main}<br><small class="err-detail">${t('studio.errors.detail')} : ${esc(detail)}</small>`;
 }
 
 // ---------------------------------------------------------------------------

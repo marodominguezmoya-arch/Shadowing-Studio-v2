@@ -132,6 +132,8 @@ export default {
       tooMany: 'Maximum {max} phrases per session.',
       tooLong: 'Phrase {n} is too long (maximum {max} characters).',
       download: 'The voice download failed. Check your connection and try again.',
+      engine: 'The voice could not start on this device.',
+      detail: 'Technical detail',
       synth: 'The voice could not read your phrases. Check them and try again.',
       browserVoice: 'Playback with the device voice failed.',
     },
