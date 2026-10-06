@@ -140,6 +140,47 @@ export default {
     },
   },
 
+  library: {
+    eyebrow: 'Library',
+    myLists: 'My lists',
+    firstName: 'My first list',
+    defaultName: 'List {n}',
+    backToStudio: 'Back to the studio',
+    new: 'New list',
+    newPrompt: 'Name of the new list:',
+    current: 'Current',
+    rename: 'Rename',
+    renamePrompt: 'New name:',
+    duplicate: 'Duplicate',
+    copySuffix: '(copy)',
+    delete: 'Delete',
+    deleteConfirm: 'Delete the list “{name}”? This cannot be undone.',
+    backupTitle: 'Backup',
+    backupHint: 'Your lists stay on this device. Export them to a file to keep them or move them to another phone.',
+    export: 'Export my lists',
+    import: 'Import a file',
+    exported: 'File saved.',
+    imported: 'Import done: {added} added, {updated} updated, {skipped} already up to date.',
+    importError: 'This file is not a Shadowing Studio backup.',
+  },
+
+  paste: {
+    open: '+ Paste a long text',
+    label: 'Text to split',
+    placeholder: 'Paste a text here: it will be split into phrases.',
+    split: 'Split into phrases',
+    add: 'Add to the list',
+    replace: 'Replace the list',
+  },
+
+  install: {
+    title: 'Install the app',
+    text: 'Add Shadowing Studio to your home screen: it opens like an app and works offline.',
+    ios: 'Add Shadowing Studio to your home screen: in Safari, tap Share ⬆︎ then “Add to Home Screen”. The app will also work offline.',
+    button: 'Install',
+    dismiss: 'Later',
+  },
+
   privacy: {
     eyebrow: 'Privacy',
     title: 'Privacy policy',

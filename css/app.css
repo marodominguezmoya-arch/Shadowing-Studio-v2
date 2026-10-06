@@ -568,6 +568,40 @@ input[type="range"] { width: 100%; accent-color: var(--accent); min-height: 32px
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
+/* En-tête de liste */
+.list-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin: 0 0 18px; }
+.list-head .studio-title { margin: 0; overflow-wrap: anywhere; }
+.list-head .btn { flex: none; margin-top: 4px; }
+
+/* Coller un texte */
+.paste { display: grid; gap: 10px; margin: 6px 0 0; }
+.paste .btn { justify-self: start; }
+.paste-preview { margin: 0; padding-inline-start: 22px; max-height: 240px; overflow: auto; font-size: 14.5px; color: var(--text-muted); }
+.paste-preview li { margin: 0 0 4px; }
+.paste-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* Bibliothèque */
+.lists { display: grid; gap: 10px; margin: 18px 0; padding: 0; list-style: none; }
+.list-card { margin: 0; padding: 0; overflow: hidden; }
+.list-card.is-current { border-color: var(--accent); }
+.list-open {
+  display: grid; gap: 4px; width: 100%;
+  padding: 16px 18px 10px;
+  border: 0; background: none; text-align: start; cursor: pointer;
+}
+.list-name { font-size: 17px; font-weight: 700; overflow-wrap: anywhere; }
+.list-meta { font-size: 13.5px; color: var(--text-faint); }
+.badge {
+  justify-self: start;
+  padding: 2px 8px; border-radius: var(--radius-pill);
+  background: var(--accent-soft); color: var(--accent);
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+}
+.list-actions { display: flex; gap: 14px; padding: 0 18px 12px; }
+.list-actions .btn-link-sm { margin: 0; min-height: 36px; }
+.btn-link.danger { color: var(--danger); }
+.file-btn { position: relative; }
+
 /* Lecteur */
 .player { padding-block: 22px; }
 .player.is-outdated .now-phrase, .player.is-outdated .transport { opacity: 0.5; }

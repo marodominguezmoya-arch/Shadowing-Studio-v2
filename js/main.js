@@ -6,6 +6,8 @@ import { IS_LOCAL } from './config.js';
 import { renderOnboarding } from './views/onboarding.js';
 import { renderPrivacy } from './views/privacy.js';
 import { renderStudio } from './views/studio.js';
+import { renderLibrary } from './views/library.js';
+import { registerServiceWorker } from './install.js';
 
 const view = document.getElementById('view');
 
@@ -33,6 +35,8 @@ function route() {
         view.focus();
       },
     });
+  } else if (hash === 'listes') {
+    renderLibrary(view);
   } else {
     renderStudio(view);
   }
@@ -65,6 +69,7 @@ window.addEventListener('hashchange', () => {
   window.scrollTo(0, 0);
 });
 
+registerServiceWorker();
 initLocale();
 syncLocaleButtons();
 syncFooter();

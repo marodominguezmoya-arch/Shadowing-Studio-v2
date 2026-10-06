@@ -46,7 +46,8 @@ Accessible à **https://maromoya.com/shadowingstudio**, dans l'univers visuel de
 ### 4.2 Nouvelles
 - **Onboarding obligatoire + CRM Notion** (§6).
 - **Bibliothèque de listes** : créer, nommer, renommer, dupliquer, supprimer des listes de phrases,
-  stockées sur l'appareil (IndexedDB).
+  stockées sur l'appareil (localStorage : du texte, quelques Ko par liste). Chaque liste garde sa langue
+  et ses réglages ; la liste en cours est enregistrée automatiquement.
   - **Export / import** de la bibliothèque en fichier JSON (pour changer d'appareil, sans compte).
   - **Coller un texte long** → découpage automatique en phrases (modifiable avant validation).
 - **PWA installable** (ajout à l'écran d'accueil) et **fonctionnement hors-ligne** après la première visite
@@ -191,8 +192,8 @@ Cohérent avec **maromoya.com** (lui-même inspiré de danieldalen.com) :
 
 | Phase | Contenu | Statut |
 |---|---|---|
-| **v2.0 (lancement)** | Interface FR + EN ; onboarding + Worker + CRM Notion + RGPD ; lecture directe + **export audio fiable** (voix locales + repli) + lecture écran verrouillé ; réglages de séance | **Obligatoire** |
-| v2.1 | Bibliothèque de listes, export/import JSON, découpage de texte collé ; PWA hors-ligne | Ensuite |
+| **v2.0 (lancement)** — **en ligne** (2026-10-06) | Interface FR + EN ; onboarding + Worker + CRM Notion + RGPD ; lecture directe + **export audio fiable** (voix locales + repli) + lecture écran verrouillé ; réglages de séance | **Obligatoire** |
+| v2.1 | Bibliothèque de listes, export/import JSON, découpage de texte collé ; PWA hors-ligne | **Fait** (2026-10-07) |
 | v2.2 | Interface complète FR/EN/ES/PT/RU/AR (RTL) ; transcription phonétique | Ensuite |
 
 ## 10. Questions ouvertes
@@ -208,3 +209,14 @@ Cohérent avec **maromoya.com** (lui-même inspiré de danieldalen.com) :
 5. ~~Email de contact RGPD~~ → **Décidé** : `maromoya.pro@gmail.com`.
 
 _Toutes les questions ouvertes sont tranchées._
+
+## 11. Notes techniques v2.1
+
+- **Hors-ligne** : `sw.js` (réseau d'abord avec repli sur la copie locale, délai 4 s) pour les fichiers de
+  l'app ; le moteur vocal (ONNX Runtime, phonémiseur) et les voix sont mis en cache par le Web Worker
+  lui-même (Cache API `ss2-voices-v1`), ce qui ne dépend pas du service worker.
+- **Ajouter un fichier à l'app** = l'ajouter à `APP_FILES` dans `sw.js` et augmenter `VERSION` ;
+  `node scripts/check-sw.mjs` vérifie la liste.
+- **Découpage** : `Intl.Segmenter` (règles de la langue de la liste), abréviations courtes recollées
+  (« M. Dupont »), phrases > 400 caractères recoupées aux virgules.
+- **Icônes** : `python3 scripts/make-icons.py`.

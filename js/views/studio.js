@@ -2,7 +2,10 @@
 // ou lecture en direct (voix du navigateur) quand aucune voix locale n'existe.
 
 import { t, getLocale } from '../i18n.js';
-import { load, save } from '../storage.js';
+import { load } from '../storage.js';
+import { initLibrary, currentList, updateList, allLists } from '../library.js';
+import { splitSentences } from '../split.js';
+import { installMode, promptInstall, dismissInstall, onInstallChange } from '../install.js';
 import { esc } from '../dom.js';
 import { practiceLanguages, findLanguage, defaultTag } from '../audio/catalog.js';
 import { isVoiceCached, loadVoice, deleteVoice, synthesize } from '../audio/piper.js';
@@ -15,14 +18,8 @@ const PAUSES = ['auto', '2', '3', '5', '8'];
 const SYNTH_BATCH = 4;
 
 const profile = load('profile', {});
-const prefs = {
-  tag: defaultTag(profile),
-  text: '',
-  reps: 3,
-  pause: 'auto',
-  speed: 100,
-  ...load('studio', {}),
-};
+// « prefs » = la liste courante de la bibliothèque (objet modifié en place puis sauvegardé).
+let prefs = null;
 
 // État d'exécution (survit aux re-rendus : changement de langue d'interface, etc.).
 const rt = {
@@ -31,7 +28,9 @@ const rt = {
   busy: false,
   status: '',
   error: '',
-  session: null, // { url, timeline, phrases, duration, mb, sig, tag }
+  session: null, // { url, timeline, phrases, duration, mb, sig, tag, listId }
+  pasteOpen: false,
+  pastePreview: null, // phrases découpées en attente de validation
   live: null, // { stop, step }
 };
 const pcmCache = new Map();
@@ -44,13 +43,18 @@ let root = null;
 
 export function renderStudio(el) {
   root = el;
+  initLibrary({ defaultTag: defaultTag(profile), defaultName: t('library.firstName') });
+  prefs = currentList();
   if (!findLanguage(prefs.tag)) prefs.tag = defaultTag(profile);
   const langs = practiceLanguages(getLocale());
+  const count = allLists().length;
 
   root.innerHTML = `<div class="studio">
-    <p class="eyebrow">${t('studio.eyebrow')}</p>
-    <h1 class="studio-title">${t('studio.title')}</h1>
-    ${profile.firstName ? `<p class="faint" style="margin:-6px 0 22px">${t('studio.greeting', { name: esc(profile.firstName) })}</p>` : ''}
+    <p class="eyebrow">${t('studio.eyebrow')}${profile.firstName ? ` · ${t('studio.greeting', { name: esc(profile.firstName) })}` : ''}</p>
+    <div class="list-head">
+      <h1 class="studio-title">${esc(prefs.name)}</h1>
+      <a class="btn btn-ghost btn-sm" href="#/listes">${t('library.myLists')} (${count})</a>
+    </div>
 
     <section class="card">
       <label class="label" for="s-lang">${t('studio.language')}</label>
@@ -64,6 +68,8 @@ export function renderStudio(el) {
       <label class="label" for="s-text">${t('studio.phrases')}</label>
       <textarea class="input textarea" id="s-text" rows="6" placeholder="${esc(t('studio.phrasesPlaceholder'))}" spellcheck="true">${esc(prefs.text)}</textarea>
       <p class="hint"><span id="s-count"></span> · ${t('studio.phrasesHint')}</p>
+      <button type="button" class="btn-link" data-action="paste-toggle">${t('paste.open')}</button>
+      <div id="s-paste"></div>
     </section>
 
     <section class="card">
@@ -90,22 +96,42 @@ export function renderStudio(el) {
 
     <div id="s-action"></div>
     <div id="s-player"></div>
+    <div id="s-install"></div>
 
   </div>`;
 
   bind();
   updateCount();
+  renderPaste();
   refreshVoice();
   renderAction();
   renderPlayer();
+  renderInstall();
 }
+
+function renderInstall() {
+  const box = root?.querySelector('#s-install');
+  if (!box) return;
+  const mode = installMode();
+  box.innerHTML = mode
+    ? `<section class="card install">
+         <p class="label">${t('install.title')}</p>
+         <p class="hint" style="margin:0 0 12px">${mode === 'ios' ? t('install.ios') : t('install.text')}</p>
+         <div class="paste-actions">
+           ${mode === 'prompt' ? `<button type="button" class="btn btn-primary btn-sm" data-action="install">${t('install.button')}</button>` : ''}
+           <button type="button" class="btn-link btn-link-sm" data-action="install-dismiss">${t('install.dismiss')}</button>
+         </div>
+       </section>`
+    : '';
+}
+onInstallChange(() => renderInstall());
 
 // ---------------------------------------------------------------------------
 // Données
 // ---------------------------------------------------------------------------
 
 function persist() {
-  save('studio', prefs);
+  updateList(prefs.id, {});
 }
 
 function phrases() {
@@ -187,6 +213,16 @@ function bind() {
       toggle: togglePlay,
       prev: () => jump(-1),
       next: () => jump(1),
+      'paste-toggle': () => {
+        rt.pasteOpen = !rt.pasteOpen;
+        rt.pastePreview = null;
+        renderPaste();
+      },
+      'paste-split': splitPasted,
+      install: promptInstall,
+      'install-dismiss': dismissInstall,
+      'paste-add': () => applyPaste(false),
+      'paste-replace': () => applyPaste(true),
     })[action]?.();
   });
 }
@@ -202,6 +238,56 @@ function onSettingsChanged() {
 function updateCount() {
   const n = phrases().length;
   root.querySelector('#s-count').textContent = n === 1 ? t('studio.countOne') : t('studio.countMany', { n });
+}
+
+// ---------------------------------------------------------------------------
+// Coller un texte long → phrases
+// ---------------------------------------------------------------------------
+
+function renderPaste() {
+  const box = root?.querySelector('#s-paste');
+  if (!box) return;
+  if (!rt.pasteOpen) {
+    box.innerHTML = '';
+    return;
+  }
+  const preview = rt.pastePreview;
+  box.innerHTML = `
+    <div class="paste">
+      <label class="visually-hidden" for="s-paste-text">${t('paste.label')}</label>
+      <textarea class="input textarea" id="s-paste-text" rows="5" placeholder="${esc(t('paste.placeholder'))}"></textarea>
+      <button type="button" class="btn btn-ghost btn-sm" data-action="paste-split">${t('paste.split')}</button>
+      ${preview ? `
+        <p class="hint">${preview.length === 1 ? t('studio.countOne') : t('studio.countMany', { n: preview.length })}</p>
+        <ol class="paste-preview" lang="${prefs.tag}">${preview.map((p) => `<li>${esc(p)}</li>`).join('')}</ol>
+        <div class="paste-actions">
+          <button type="button" class="btn btn-primary btn-sm" data-action="paste-add">${t('paste.add')}</button>
+          <button type="button" class="btn btn-ghost btn-sm" data-action="paste-replace">${t('paste.replace')}</button>
+        </div>` : ''}
+    </div>
+  `;
+  if (!preview) box.querySelector('#s-paste-text').focus();
+}
+
+function splitPasted() {
+  const text = root.querySelector('#s-paste-text').value;
+  const list = splitSentences(text, prefs.tag);
+  rt.pastePreview = list.length ? list : null;
+  renderPaste();
+  if (rt.pastePreview) root.querySelector('#s-paste-text').value = text;
+}
+
+function applyPaste(replace) {
+  const added = rt.pastePreview || [];
+  const lines = replace ? added : [...phrases(), ...added];
+  prefs.text = lines.join('\n');
+  persist();
+  root.querySelector('#s-text').value = prefs.text;
+  rt.pasteOpen = false;
+  rt.pastePreview = null;
+  renderPaste();
+  updateCount();
+  onSettingsChanged();
 }
 
 // ---------------------------------------------------------------------------
@@ -352,6 +438,7 @@ async function createSession() {
       mb: (wav.size / 1e6).toFixed(1),
       sig,
       tag: lang.tag,
+      listId: prefs.id,
       label: practiceLanguages(getLocale()).find((l) => l.tag === lang.tag)?.label || lang.tag,
     };
     audio.src = rt.session.url;
@@ -470,7 +557,7 @@ function renderPlayer() {
   }
 
   const s = rt.session;
-  if (!s || s.tag !== prefs.tag) {
+  if (!s || s.tag !== prefs.tag || s.listId !== prefs.id) {
     box.innerHTML = '';
     return;
   }

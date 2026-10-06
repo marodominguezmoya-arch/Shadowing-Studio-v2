@@ -17,18 +17,32 @@ const CACHE_NAME = 'ss2-voices-v1';
 
 let PIPER_BASE = '';
 
-try {
-  importScripts(ORT_BASE + 'ort.wasm.min.js', PHONEMIZE_BASE + 'piper_phonemize.js');
-} catch (err) {
-  // Signalé à la première requête (voir onmessage).
-  self.bootError = `chargement du moteur impossible : ${err.message}`;
-}
+// Moteur (ONNX Runtime + script du phonémiseur) chargé à la demande, depuis le cache de l'app
+// s'il y est déjà : la voix fonctionne ainsi hors connexion, sans dépendre du service worker.
+let engineReady = null;
 
-if (self.ort) {
-  ort.env.wasm.wasmPaths = ORT_BASE;
-  // Toujours mono-thread : charge ort-wasm-simd.wasm, sans mémoire partagée (compatible iPhone).
-  ort.env.wasm.numThreads = 1;
-  ort.env.wasm.proxy = false;
+function ensureEngine(id) {
+  engineReady ||= (async () => {
+    const [ortJs, phonemizeJs, ortWasm] = await Promise.all([
+      cachedFetch(ORT_BASE + 'ort.wasm.min.js', { id, label: 'engine', weight: 0.02, offset: 0, totalWeight: 1 }),
+      cachedFetch(PHONEMIZE_BASE + 'piper_phonemize.js', { id, label: 'engine', weight: 0.01, offset: 0.02, totalWeight: 1 }),
+      cachedFetch(ORT_BASE + 'ort-wasm-simd.wasm', { id, label: 'engine', weight: 0.09, offset: 0.03, totalWeight: 1 }),
+    ]);
+    const blobUrl = (bytes, type) => URL.createObjectURL(new Blob([bytes], { type }));
+    try {
+      importScripts(blobUrl(ortJs, 'text/javascript'), blobUrl(phonemizeJs, 'text/javascript'));
+    } catch (err) {
+      throw staged('init', new Error(`chargement du moteur impossible : ${err.message}`));
+    }
+    // Toujours mono-thread : ort-wasm-simd.wasm, sans mémoire partagée (compatible iPhone).
+    ort.env.wasm.numThreads = 1;
+    ort.env.wasm.proxy = false;
+    ort.env.wasm.wasmPaths = { 'ort-wasm-simd.wasm': blobUrl(ortWasm, 'application/wasm') };
+  })().catch((err) => {
+    engineReady = null; // nouvel essai possible
+    throw err;
+  });
+  return engineReady;
 }
 
 let current = null; // { key, session, config }
@@ -37,7 +51,6 @@ let phonemizeUrls = null; // { wasm, data } en blob: URLs
 self.onmessage = async (e) => {
   const { id, type } = e.data;
   try {
-    if (self.bootError) throw staged('init', new Error(self.bootError));
     let result;
     if (type === 'init') {
       PIPER_BASE = e.data.piperBase;
@@ -167,8 +180,8 @@ async function deleteVoice(voice) {
 async function ensurePhonemizer(id) {
   if (phonemizeUrls) return;
   const [wasm, data] = await Promise.all([
-    cachedFetch(PHONEMIZE_BASE + 'piper_phonemize.wasm', { id, label: 'phonemizer', weight: 0.03, offset: 0, totalWeight: 1 }),
-    cachedFetch(PHONEMIZE_BASE + 'piper_phonemize.data', { id, label: 'phonemizer', weight: 0.22, offset: 0.03, totalWeight: 1 }),
+    cachedFetch(PHONEMIZE_BASE + 'piper_phonemize.wasm', { id, label: 'phonemizer', weight: 0.02, offset: 0.12, totalWeight: 1 }),
+    cachedFetch(PHONEMIZE_BASE + 'piper_phonemize.data', { id, label: 'phonemizer', weight: 0.18, offset: 0.14, totalWeight: 1 }),
   ]);
   phonemizeUrls = {
     wasm: URL.createObjectURL(new Blob([wasm], { type: 'application/wasm' })),
@@ -179,10 +192,11 @@ async function ensurePhonemizer(id) {
 async function loadVoice(voice, id) {
   if (current && current.key === voice.key) return { key: voice.key, sampleRate: current.config.audio.sample_rate };
 
+  await ensureEngine(id);
   await ensurePhonemizer(id);
   const { model, config } = voiceUrls(voice);
-  const configBytes = await cachedFetch(config, { id, label: 'config', weight: 0.01, offset: 0.25, totalWeight: 1 });
-  let modelBytes = await cachedFetch(model, { id, label: 'voice', weight: 0.74, offset: 0.26, totalWeight: 1 });
+  const configBytes = await cachedFetch(config, { id, label: 'config', weight: 0.01, offset: 0.32, totalWeight: 1 });
+  let modelBytes = await cachedFetch(model, { id, label: 'voice', weight: 0.67, offset: 0.33, totalWeight: 1 });
 
   const cfg = JSON.parse(new TextDecoder().decode(configBytes));
   // Libère l'éventuelle voix précédente avant d'en charger une autre.

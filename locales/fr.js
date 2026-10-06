@@ -140,6 +140,47 @@ export default {
     },
   },
 
+  library: {
+    eyebrow: 'Bibliothèque',
+    myLists: 'Mes listes',
+    firstName: 'Ma première liste',
+    defaultName: 'Liste {n}',
+    backToStudio: 'Retour au studio',
+    new: 'Nouvelle liste',
+    newPrompt: 'Nom de la nouvelle liste :',
+    current: 'En cours',
+    rename: 'Renommer',
+    renamePrompt: 'Nouveau nom :',
+    duplicate: 'Dupliquer',
+    copySuffix: '(copie)',
+    delete: 'Supprimer',
+    deleteConfirm: 'Supprimer la liste « {name} » ? Cette action est définitive.',
+    backupTitle: 'Sauvegarde',
+    backupHint: 'Vos listes restent sur cet appareil. Exportez-les dans un fichier pour les garder ou les retrouver sur un autre téléphone.',
+    export: 'Exporter mes listes',
+    import: 'Importer un fichier',
+    exported: 'Fichier enregistré.',
+    imported: 'Import terminé : {added} ajoutée(s), {updated} mise(s) à jour, {skipped} déjà à jour.',
+    importError: 'Ce fichier n’est pas une sauvegarde Shadowing Studio.',
+  },
+
+  paste: {
+    open: '+ Coller un texte long',
+    label: 'Texte à découper',
+    placeholder: 'Collez ici un texte : il sera découpé en phrases.',
+    split: 'Découper en phrases',
+    add: 'Ajouter à la liste',
+    replace: 'Remplacer la liste',
+  },
+
+  install: {
+    title: 'Installer l’app',
+    text: 'Ajoutez Shadowing Studio à votre écran d’accueil : il s’ouvre comme une app et fonctionne hors connexion.',
+    ios: 'Ajoutez Shadowing Studio à votre écran d’accueil : dans Safari, touchez Partager ⬆︎ puis « Sur l’écran d’accueil ». L’app fonctionnera aussi hors connexion.',
+    button: 'Installer',
+    dismiss: 'Plus tard',
+  },
+
   privacy: {
     eyebrow: 'Confidentialité',
     title: 'Politique de confidentialité',
