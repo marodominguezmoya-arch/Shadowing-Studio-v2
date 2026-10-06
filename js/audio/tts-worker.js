@@ -7,7 +7,10 @@
 //   { id, type: 'delete', voice }                        → supprime la voix du cache
 // Messages envoyés : { id, ok, result } | { id, ok: false, error } | { id, progress: { loaded, total, label } }
 
-const ORT_VERSION = '1.22.0';
+// 1.18 : dernière version avec une édition WebAssembly mono-thread (ort-wasm-simd.wasm).
+// Les versions ≥ 1.19 n'ont plus que l'édition multi-thread, qui réserve une mémoire
+// partagée trop grande pour Safari iOS (« RangeError: Out of memory » au démarrage).
+const ORT_VERSION = '1.18.0';
 const ORT_BASE = `https://cdn.jsdelivr.net/npm/onnxruntime-web@${ORT_VERSION}/dist/`;
 const PHONEMIZE_BASE = 'https://cdn.jsdelivr.net/npm/@diffusionstudio/piper-wasm@1.0.0/build/';
 const CACHE_NAME = 'ss2-voices-v1';
@@ -23,8 +26,9 @@ try {
 
 if (self.ort) {
   ort.env.wasm.wasmPaths = ORT_BASE;
-  // Multi-thread uniquement si la page est « cross-origin isolated » ; sinon ORT reste sur 1 thread.
-  ort.env.wasm.numThreads = self.crossOriginIsolated ? Math.min(4, navigator.hardwareConcurrency || 1) : 1;
+  // Toujours mono-thread : charge ort-wasm-simd.wasm, sans mémoire partagée (compatible iPhone).
+  ort.env.wasm.numThreads = 1;
+  ort.env.wasm.proxy = false;
 }
 
 let current = null; // { key, session, config }
@@ -207,30 +211,44 @@ async function loadVoice(voice, id) {
 // Synthèse
 // ---------------------------------------------------------------------------
 
-// Phonémise plusieurs textes en un seul passage (une ligne de sortie JSON par texte).
-function phonemize(texts, espeakVoice) {
-  return new Promise((resolve, reject) => {
-    const results = [];
-    createPiperPhonemize({
-      print: (line) => {
-        try {
-          results.push(JSON.parse(line).phoneme_ids);
-        } catch {
-          /* ligne non JSON : ignorée */
-        }
-      },
+// Le module espeak-ng est instancié une seule fois puis réutilisé (callMain est ré-appelable) :
+// le recréer à chaque séance rechargerait ~18 Mo en mémoire, ce que l'iPhone supporte mal.
+let phonemizer = null;
+let phonemizeOutput = null;
+
+async function getPhonemizer() {
+  if (!phonemizer) {
+    phonemizer = createPiperPhonemize({
+      print: (line) => phonemizeOutput?.push(line),
       printErr: (msg) => console.warn('[phonemize]', msg),
       locateFile: (file) => (file.endsWith('.wasm') ? phonemizeUrls.wasm : file.endsWith('.data') ? phonemizeUrls.data : file),
-    })
-      .then((module) => {
-        const input = JSON.stringify(texts.map((text) => ({ text })));
-        module.callMain(['-l', espeakVoice, '--input', input, '--espeak_data', '/espeak-ng-data']);
-        if (results.length !== texts.length) {
-          reject(new Error(`phonémisation incomplète (${results.length}/${texts.length})`));
-        } else resolve(results);
-      })
-      .catch(reject);
-  });
+    }).catch((err) => {
+      phonemizer = null;
+      throw err;
+    });
+  }
+  return phonemizer;
+}
+
+// Phonémise plusieurs textes en un seul passage (une ligne de sortie JSON par texte).
+async function phonemize(texts, espeakVoice) {
+  const module = await getPhonemizer();
+  phonemizeOutput = [];
+  try {
+    module.callMain(['-l', espeakVoice, '--input', JSON.stringify(texts.map((text) => ({ text }))), '--espeak_data', '/espeak-ng-data']);
+    const results = [];
+    for (const line of phonemizeOutput) {
+      try {
+        results.push(JSON.parse(line).phoneme_ids);
+      } catch {
+        /* ligne non JSON : ignorée */
+      }
+    }
+    if (results.length !== texts.length) throw new Error(`phonémisation incomplète (${results.length}/${texts.length})`);
+    return results;
+  } finally {
+    phonemizeOutput = null;
+  }
 }
 
 async function synth(texts, speed = 1) {
