@@ -123,6 +123,13 @@ test('sert l’app depuis GitHub Pages', async () => {
   assert.equal(calls[0].url, 'https://example.github.io/shadowing-studio-v2/css/app.css?v=2');
 });
 
+test('cache navigateur : code revalidé, polices en cache long', async () => {
+  const js = await worker.fetch(new Request('https://maromoya.com/shadowingstudio/js/main.js'), env);
+  assert.equal(js.headers.get('Cache-Control'), 'no-cache');
+  const font = await worker.fetch(new Request('https://maromoya.com/shadowingstudio/assets/fonts/a.woff2'), env);
+  assert.equal(font.headers.get('Cache-Control'), 'public, max-age=604800');
+});
+
 test('réécrit les redirections GitHub vers maromoya.com', async () => {
   const res = await worker.fetch(new Request('https://maromoya.com/shadowingstudio/sub'), env);
   assert.equal(res.status, 301);

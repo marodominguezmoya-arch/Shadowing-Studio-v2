@@ -249,6 +249,10 @@ async function proxyToPages(request, env, url) {
     }
   }
 
+  // Le domaine impose sinon 4 h de cache navigateur : une mise à jour mettrait des heures à arriver.
+  // Code et pages : revalidés à chaque visite (ETag → 304 si inchangé). Polices : cache long.
+  headers.set('Cache-Control', /\.(woff2|txt)$/.test(rest) ? 'public, max-age=604800' : 'no-cache');
+
   headers.set('X-Content-Type-Options', 'nosniff');
   headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
   headers.set('Permissions-Policy', 'camera=(), geolocation=(), microphone=(self)');
