@@ -1,5 +1,6 @@
 export default {
   common: {
+    copyright: '© {year} Maro Moya. Tous droits réservés.',
     back: 'Retour',
     next: 'Continuer',
     optional: 'facultatif',

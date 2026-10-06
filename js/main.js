@@ -40,6 +40,7 @@ function route() {
 
 function syncFooter() {
   document.getElementById('footer-privacy').textContent = t('privacy.title');
+  document.getElementById('footer-copyright').textContent = t('common.copyright', { year: new Date().getFullYear() });
 }
 
 function syncLocaleButtons() {
