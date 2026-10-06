@@ -163,7 +163,8 @@ export function langName(code) {
 
 export function toProperties(d, { isNew }) {
   const text = (content) => ({ rich_text: [{ text: { content } }] });
-  const today = new Date().toISOString().slice(0, 10);
+  // Date du jour à Paris (et non en UTC) ; le format sv-SE donne AAAA-MM-JJ.
+  const today = new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Paris' });
 
   const props = {
     [P.fullName]: { title: [{ text: { content: `${d.firstName} ${d.lastName}` } }] },
