@@ -82,7 +82,7 @@ Deux moteurs, choisis automatiquement par langue :
 
 ### 5.3 Implémentation (v2.0)
 - **Piper** (voix libres, licence MIT) exécuté dans un Web Worker : phonémiseur espeak-ng en WebAssembly
-  (`@diffusionstudio/piper-wasm`, ~18 Mo, commun à toutes les langues) + `onnxruntime-web` (jsDelivr).
+  (`@diffusionstudio/piper-wasm`, ~18 Mo, commun à toutes les langues) + `onnxruntime-web` **1.18 mono-thread** (jsDelivr) — les versions ≥ 1.19 plantent au démarrage sur Safari iOS (mémoire).
 - Voix téléchargées depuis `rhasspy/piper-voices` (HuggingFace, révision figée), mises en cache (Cache API).
 - **39 langues/variantes sur 54** ont une voix locale (catalogue : `js/audio/voices-data.js`) ; les autres
   utilisent la voix du navigateur en lecture directe.
