@@ -41,6 +41,13 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
 
+    // Toujours en HTTPS : en http://, l'origine est refusée par l'API et le navigateur
+    // bloque le cache des voix (contexte non sécurisé). 308 conserve la méthode (POST).
+    if (url.protocol === 'http:') {
+      url.protocol = 'https:';
+      return Response.redirect(url.toString(), 308);
+    }
+
     // /shadowingstudio → /shadowingstudio/ (les chemins de l'app sont relatifs)
     if (url.pathname === PREFIX) {
       url.pathname = PREFIX + '/';

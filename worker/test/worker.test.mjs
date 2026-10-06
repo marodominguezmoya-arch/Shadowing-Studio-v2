@@ -104,6 +104,13 @@ test('GET sur l’API → 405', async () => {
   assert.equal(res.status, 405);
 });
 
+test('http:// redirige vers https:// (méthode conservée)', async () => {
+  const res = await worker.fetch(new Request('http://maromoya.com/shadowingstudio/?x=1'), env);
+  assert.equal(res.status, 308);
+  assert.equal(res.headers.get('Location'), 'https://maromoya.com/shadowingstudio/?x=1');
+  assert.equal(calls.length, 0);
+});
+
 test('/shadowingstudio redirige vers /shadowingstudio/', async () => {
   const res = await worker.fetch(new Request('https://maromoya.com/shadowingstudio'), env);
   assert.equal(res.status, 301);
