@@ -88,25 +88,32 @@ async function cachedFetch(url, { id, label, weight = 1, offset = 0, totalWeight
   }
   if (!res.ok) throw staged('download', new Error(`HTTP ${res.status} (${label})`));
 
+  // Content-Length peut être la taille *compressée* (Safari, réponse gzip/br) alors que le flux
+  // est décompressé : on pré-alloue seulement sans compression, et on bascule sur des morceaux
+  // si la taille réelle dépasse quand même l'annonce.
   const total = Number(res.headers.get('Content-Length')) || 0;
+  const encoded = (res.headers.get('Content-Encoding') || 'identity') !== 'identity';
   const reader = res.body.getReader();
-  let bytes = total ? new Uint8Array(total) : null;
-  const chunks = total ? null : [];
+  let bytes = total && !encoded ? new Uint8Array(total) : null;
+  let chunks = bytes ? null : [];
   let loaded = 0;
   let lastPost = 0;
   try {
     for (;;) {
       const { done, value } = await reader.read();
       if (done) break;
-      if (bytes) {
-        if (loaded + value.length > bytes.length) throw new Error('taille inattendue');
-        bytes.set(value, loaded);
-      } else chunks.push(value);
+      if (bytes && loaded + value.length > bytes.length) {
+        chunks = [bytes.subarray(0, loaded)];
+        bytes = null;
+      }
+      if (bytes) bytes.set(value, loaded);
+      else chunks.push(value);
       loaded += value.length;
       const now = Date.now();
       if (id != null && total && now - lastPost > 150) {
         lastPost = now;
-        self.postMessage({ id, progress: { loaded: offset + (loaded / total) * weight, total: totalWeight, label } });
+        const fraction = Math.min(1, loaded / total);
+        self.postMessage({ id, progress: { loaded: offset + fraction * weight, total: totalWeight, label } });
       }
     }
   } catch (err) {
