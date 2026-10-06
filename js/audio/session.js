@@ -1,10 +1,8 @@
 // Assemblage d'une séance de shadowing et encodage WAV.
 //
-// Pour chaque phrase, répétée N fois :  bip → court blanc → phrase → silence pour répéter.
+// Pour chaque phrase, répétée N fois :  phrase → silence pour répéter.
 
 const LEAD_IN = 0.6; // s de silence au tout début
-const BEEP = { freq: 880, duration: 0.12, gain: 0.25 };
-const AFTER_BEEP = 0.25; // s entre le bip et la phrase
 
 // Durée du silence pour répéter : « auto » = durée de la phrase × 1,2 + 0,4 s (min 1 s).
 export function pauseFor(pause, phraseSeconds) {
@@ -12,21 +10,9 @@ export function pauseFor(pause, phraseSeconds) {
   return Number(pause);
 }
 
-function beep(sampleRate) {
-  const n = Math.round(BEEP.duration * sampleRate);
-  const out = new Float32Array(n);
-  const fade = Math.round(0.01 * sampleRate);
-  for (let i = 0; i < n; i++) {
-    const env = Math.min(1, i / fade, (n - i) / fade); // fondu pour éviter les clics
-    out[i] = Math.sin((2 * Math.PI * BEEP.freq * i) / sampleRate) * BEEP.gain * env;
-  }
-  return out;
-}
-
 // pcms : Float32Array par phrase. Renvoie { samples, sampleRate, timeline, duration }.
 // timeline : [{ phrase, rep, start, speechStart, end }] en secondes.
 export function buildSession({ pcms, sampleRate, reps, pause }) {
-  const tone = beep(sampleRate);
   const sec = (s) => Math.round(s * sampleRate);
 
   const parts = [];
@@ -39,8 +25,6 @@ export function buildSession({ pcms, sampleRate, reps, pause }) {
     const silence = sec(pauseFor(pause, speech));
     for (let rep = 0; rep < reps; rep++) {
       const start = cursor;
-      parts.push({ at: cursor, data: tone });
-      cursor += tone.length + sec(AFTER_BEEP);
       const speechStart = cursor;
       parts.push({ at: cursor, data: pcm });
       cursor += pcm.length + silence;

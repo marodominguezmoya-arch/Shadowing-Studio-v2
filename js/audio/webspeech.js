@@ -30,20 +30,6 @@ export async function findVoice(tag) {
   );
 }
 
-let audioCtx = null;
-function playBeep() {
-  audioCtx ||= new AudioContext();
-  const osc = audioCtx.createOscillator();
-  const gain = audioCtx.createGain();
-  osc.frequency.value = 880;
-  gain.gain.setValueAtTime(0.0001, audioCtx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.25, audioCtx.currentTime + 0.01);
-  gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.12);
-  osc.connect(gain).connect(audioCtx.destination);
-  osc.start();
-  osc.stop(audioCtx.currentTime + 0.13);
-}
-
 const wait = (ms, signal) =>
   new Promise((resolve) => {
     const timer = setTimeout(resolve, ms);
@@ -78,9 +64,6 @@ export function playLive({ phrases, tag, reps, pause, speed, onStep }) {
     for (let phrase = 0; phrase < phrases.length && !signal.aborted; phrase++) {
       for (let rep = 0; rep < reps && !signal.aborted; rep++) {
         onStep?.({ phrase, rep });
-        playBeep();
-        await wait(370, signal);
-        if (signal.aborted) break;
         const spoken = await speak(phrases[phrase], { tag, voice, speed }, signal);
         await wait(pauseFor(pause, spoken) * 1000, signal);
       }

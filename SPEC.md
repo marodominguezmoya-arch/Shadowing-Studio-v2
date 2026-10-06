@@ -37,7 +37,7 @@ Accessible à **https://maromoya.com/shadowingstudio**, dans l'univers visuel de
 ### 4.1 Conservées de la v1
 - Saisie d'une liste de phrases.
 - Réglages de séance : **répétitions**, **pause (s)**, **vitesse (%)**.
-- **Lecture directe** (« Play session ») et **export audio** (bip avant chaque répétition + silence pour répéter).
+- **Lecture directe** (« Play session ») et **export audio** (phrase + silence pour répéter ; le bip de la v1 a été retiré à la demande de Maro, jugé gênant).
 - **~50 langues et variantes régionales** (es-ES, es-MX, fr-CA, en-IN, ar-EG…).
 - **Transcription phonétique** : comment un locuteur natif d'une autre langue lirait la phrase.
   Peu utilisée par Maro : conservée, non prioritaire.
@@ -73,11 +73,11 @@ Deux moteurs, choisis automatiquement par langue :
   progression et taille annoncée avant téléchargement ; mis en cache pour le hors-ligne.
 - Gestion des voix téléchargées (voir l'espace occupé, supprimer).
 - Génération de la séance complète en mémoire : pour chaque phrase × répétitions →
-  bip → phrase (à la vitesse choisie) → silence (= durée de la phrase × facteur ou pause fixe).
+  phrase (à la vitesse choisie) → silence (= durée de la phrase × facteur ou pause fixe). **Pas de bip.**
 - La séance générée est **jouée comme un fichier** (lecture continue écran verrouillé, contrôles
   sur l'écran de verrouillage via Media Session) et **téléchargeable** (WAV ; MP3/M4A si faisable
   sans dépendance lourde, pour réduire la taille).
-- **Aucun bip de substitution** : si une phrase échoue, l'erreur est affichée clairement et la phrase
+- **Aucun son de substitution** : si une phrase échoue, l'erreur est affichée clairement et la phrase
   signalée — jamais de remplacement silencieux.
 
 ### 5.3 Implémentation (v2.0)
