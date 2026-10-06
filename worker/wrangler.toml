@@ -9,7 +9,7 @@ routes = [
 
 [vars]
 # Adresse GitHub Pages du dépôt de l'app (sans « / » final).
-ORIGIN_BASE = "https://marodominguezmoya-arch.github.io/shadowing-studio-v2"
+ORIGIN_BASE = "https://marodominguezmoya-arch.github.io/Shadowing-Studio-v2"
 # Identifiant de la base Notion « Shadowing Studio — CRM » (affiché par scripts/notion-setup.mjs).
 NOTION_DATABASE_ID = "7690ebbdcdf74679bf04166448fe5975"
 ALLOWED_ORIGINS = "https://maromoya.com"
