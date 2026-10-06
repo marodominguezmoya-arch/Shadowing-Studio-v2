@@ -1,0 +1,257 @@
+// Cloudflare Worker — maromoya.com/shadowingstudio*
+//
+//  /shadowingstudio/api/onboard  (POST) → valide le formulaire → crée/met à jour la fiche Notion
+//  /shadowingstudio/…                  → sert l'app statique hébergée sur GitHub Pages
+//
+// Variables (wrangler.toml) : ORIGIN_BASE, NOTION_DATABASE_ID, ALLOWED_ORIGINS
+// Secret (wrangler secret put) : NOTION_TOKEN
+
+const PREFIX = '/shadowingstudio';
+const NOTION_VERSION = '2022-06-28';
+
+// Noms des colonnes de la base Notion (doivent correspondre exactement).
+export const P = {
+  fullName: 'Nom complet',
+  firstName: 'Prénom',
+  lastName: 'Nom',
+  email: 'Email',
+  native: 'Langue maternelle',
+  targets: 'Langues visées',
+  levels: 'Niveaux',
+  occupation: 'Profession',
+  newsletter: 'Newsletter',
+  uiLocale: "Langue d'interface",
+  createdAt: 'Première inscription',
+  updatedAt: 'Dernière mise à jour',
+};
+
+// Doit rester aligné avec js/languages.js côté app.
+const LANGUAGE_CODES = new Set([
+  'af', 'ar', 'bn', 'ca', 'cs', 'da', 'de', 'el', 'en', 'es', 'eu', 'fa', 'fi', 'fr',
+  'gl', 'he', 'hi', 'hr', 'hu', 'id', 'it', 'ja', 'ko', 'ms', 'nb', 'nl', 'pl', 'pt',
+  'ro', 'ru', 'sk', 'sv', 'sw', 'th', 'tr', 'uk', 'ur', 'vi', 'yo', 'zh',
+]);
+const CEFR = new Set(['A1', 'A2', 'B1', 'B2', 'C1', 'C2']);
+const UI_LOCALES = new Set(['fr', 'en', 'es', 'pt', 'ru', 'ar']);
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const MAX_TARGETS = 5;
+const MAX_BODY = 4096;
+
+export default {
+  async fetch(request, env) {
+    const url = new URL(request.url);
+
+    // /shadowingstudio → /shadowingstudio/ (les chemins de l'app sont relatifs)
+    if (url.pathname === PREFIX) {
+      url.pathname = PREFIX + '/';
+      return Response.redirect(url.toString(), 301);
+    }
+
+    if (url.pathname === `${PREFIX}/api/onboard`) {
+      return handleOnboard(request, env);
+    }
+
+    return proxyToPages(request, env, url);
+  },
+};
+
+// ---------------------------------------------------------------------------
+// Onboarding → Notion
+// ---------------------------------------------------------------------------
+
+async function handleOnboard(request, env) {
+  if (request.method !== 'POST') return json({ error: 'method_not_allowed' }, 405, { Allow: 'POST' });
+
+  const allowed = (env.ALLOWED_ORIGINS || '').split(',').map((s) => s.trim()).filter(Boolean);
+  const origin = request.headers.get('Origin');
+  if (allowed.length && !allowed.includes(origin)) return json({ error: 'forbidden_origin' }, 403);
+
+  if (env.RATE_LIMITER) {
+    const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
+    const { success } = await env.RATE_LIMITER.limit({ key: ip });
+    if (!success) return json({ error: 'rate_limited' }, 429);
+  }
+
+  const raw = await request.text();
+  if (raw.length > MAX_BODY) return json({ error: 'too_large' }, 413);
+
+  let body;
+  try {
+    body = JSON.parse(raw);
+  } catch {
+    return json({ error: 'invalid_json' }, 400);
+  }
+
+  // Champ piège rempli = robot : on répond « OK » sans rien enregistrer.
+  if (body && typeof body.hp === 'string' && body.hp.trim() !== '') return json({ ok: true });
+
+  const result = validate(body);
+  if (result.errors.length) return json({ error: 'invalid', fields: result.errors }, 400);
+
+  if (!env.NOTION_TOKEN || !env.NOTION_DATABASE_ID) {
+    console.error('NOTION_TOKEN ou NOTION_DATABASE_ID manquant');
+    return json({ error: 'not_configured' }, 500);
+  }
+
+  try {
+    const action = await upsertContact(env, result.data);
+    return json({ ok: true, action });
+  } catch (err) {
+    console.error('Notion error:', err.message);
+    return json({ error: 'notion_failed' }, 502);
+  }
+}
+
+export function validate(body) {
+  const errors = [];
+  if (!body || typeof body !== 'object') return { errors: ['body'] };
+
+  const str = (k, max = 120) => {
+    const v = typeof body[k] === 'string' ? body[k].trim() : '';
+    if (!v || v.length > max) errors.push(k);
+    return v;
+  };
+
+  const data = {
+    firstName: str('firstName'),
+    lastName: str('lastName'),
+    email: str('email', 254).toLowerCase(),
+    occupation: str('occupation'),
+    nativeLanguage: body.nativeLanguage,
+    targets: [],
+    newsletter: body.newsletter === true,
+    uiLocale: UI_LOCALES.has(body.uiLocale) ? body.uiLocale : 'fr',
+  };
+
+  if (data.email && !EMAIL_RE.test(data.email)) errors.push('email');
+  if (!LANGUAGE_CODES.has(data.nativeLanguage)) errors.push('nativeLanguage');
+  if (body.privacyAccepted !== true) errors.push('privacyAccepted');
+
+  const targets = Array.isArray(body.targets) ? body.targets : [];
+  const seen = new Set();
+  if (targets.length < 1 || targets.length > MAX_TARGETS) errors.push('targets');
+  for (const target of targets.slice(0, MAX_TARGETS)) {
+    const lang = target?.lang;
+    const level = target?.level;
+    if (!LANGUAGE_CODES.has(lang) || !CEFR.has(level) || seen.has(lang)) {
+      errors.push('targets');
+      break;
+    }
+    seen.add(lang);
+    data.targets.push({ lang, level });
+  }
+
+  return { errors: [...new Set(errors)], data };
+}
+
+// Nom de langue lisible en français (« Anglais »), pour les colonnes Notion.
+export function langName(code) {
+  try {
+    const name = new Intl.DisplayNames(['fr'], { type: 'language' }).of(code) || code;
+    return name.charAt(0).toLocaleUpperCase('fr') + name.slice(1);
+  } catch {
+    return code;
+  }
+}
+
+export function toProperties(d, { isNew }) {
+  const text = (content) => ({ rich_text: [{ text: { content } }] });
+  const today = new Date().toISOString().slice(0, 10);
+
+  const props = {
+    [P.fullName]: { title: [{ text: { content: `${d.firstName} ${d.lastName}` } }] },
+    [P.firstName]: text(d.firstName),
+    [P.lastName]: text(d.lastName),
+    [P.email]: { email: d.email },
+    [P.native]: { select: { name: langName(d.nativeLanguage) } },
+    [P.targets]: { multi_select: d.targets.map((t) => ({ name: langName(t.lang) })) },
+    [P.levels]: text(d.targets.map((t) => `${langName(t.lang)} : ${t.level}`).join(', ')),
+    [P.occupation]: text(d.occupation),
+    [P.newsletter]: { checkbox: d.newsletter },
+    [P.uiLocale]: { select: { name: d.uiLocale } },
+    [P.updatedAt]: { date: { start: today } },
+  };
+  if (isNew) props[P.createdAt] = { date: { start: today } };
+  return props;
+}
+
+async function upsertContact(env, data) {
+  const found = await notion(env, `databases/${env.NOTION_DATABASE_ID}/query`, 'POST', {
+    filter: { property: P.email, email: { equals: data.email } },
+    page_size: 1,
+  });
+
+  const existing = found.results?.[0];
+  if (existing) {
+    await notion(env, `pages/${existing.id}`, 'PATCH', { properties: toProperties(data, { isNew: false }) });
+    return 'updated';
+  }
+
+  await notion(env, 'pages', 'POST', {
+    parent: { database_id: env.NOTION_DATABASE_ID },
+    properties: toProperties(data, { isNew: true }),
+  });
+  return 'created';
+}
+
+async function notion(env, path, method, body) {
+  const res = await fetch(`https://api.notion.com/v1/${path}`, {
+    method,
+    headers: {
+      Authorization: `Bearer ${env.NOTION_TOKEN}`,
+      'Notion-Version': NOTION_VERSION,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) {
+    const detail = await res.text();
+    throw new Error(`${method} ${path} → ${res.status} ${detail.slice(0, 300)}`);
+  }
+  return res.json();
+}
+
+// ---------------------------------------------------------------------------
+// Proxy vers GitHub Pages
+// ---------------------------------------------------------------------------
+
+async function proxyToPages(request, env, url) {
+  if (request.method !== 'GET' && request.method !== 'HEAD') {
+    return new Response('Method Not Allowed', { status: 405, headers: { Allow: 'GET, HEAD' } });
+  }
+
+  const base = env.ORIGIN_BASE.replace(/\/$/, '');
+  const rest = url.pathname.slice(PREFIX.length); // commence par « / »
+  const upstream = await fetch(base + rest + url.search, {
+    method: request.method,
+    headers: { 'Accept-Encoding': request.headers.get('Accept-Encoding') || '' },
+    redirect: 'manual',
+    cf: { cacheTtl: 300, cacheEverything: true },
+  });
+
+  const headers = new Headers(upstream.headers);
+
+  // GitHub redirige parfois (dossier sans « / ») : on réécrit vers notre domaine.
+  const location = headers.get('Location');
+  if (location) {
+    const target = new URL(location, base + rest);
+    const basePath = new URL(base).pathname.replace(/\/$/, '');
+    if (target.pathname.startsWith(basePath)) {
+      headers.set('Location', PREFIX + target.pathname.slice(basePath.length) + target.search);
+    }
+  }
+
+  headers.set('X-Content-Type-Options', 'nosniff');
+  headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  headers.set('Permissions-Policy', 'camera=(), geolocation=(), microphone=(self)');
+  headers.delete('Access-Control-Allow-Origin');
+
+  return new Response(upstream.body, { status: upstream.status, headers });
+}
+
+function json(data, status = 200, extra = {}) {
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', ...extra },
+  });
+}

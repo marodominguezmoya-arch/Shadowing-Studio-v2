@@ -1,0 +1,178 @@
+export default {
+  common: {
+    back: 'Retour',
+    next: 'Continuer',
+    optional: 'facultatif',
+    remove: 'Retirer',
+  },
+
+  onboarding: {
+    eyebrow: 'Bienvenue',
+    title: 'Avant de commencer',
+    lead: 'Quelques questions pour adapter Shadowing Studio à votre apprentissage. Une seule fois.',
+    start: 'Commencer',
+    duration: 'Environ 1 minute',
+    progress: 'Progression',
+
+    q: {
+      firstName: 'Quel est votre prénom ?',
+      lastName: 'Et votre nom, {name} ?',
+      email: 'Votre adresse email ?',
+      occupation: 'Quelle est votre profession ou occupation ?',
+      native: 'Quelle est votre langue maternelle ?',
+      target: 'Quelle langue apprenez-vous ?',
+      targetMore: 'Quelle autre langue apprenez-vous ?',
+      level: 'Votre niveau en {lang} ?',
+      more: 'Apprenez-vous une autre langue ?',
+      moreMax: 'Vos langues',
+      newsletter: 'Recevoir les nouveautés par email ?',
+      privacy: 'Dernière étape',
+    },
+    h: {
+      firstName: '',
+      lastName: '',
+      email: 'Elle ne sera jamais partagée.',
+      occupation: '',
+      level: 'Votre propre estimation, sur l’échelle européenne (CECRL).',
+      newsletter: 'Nouveautés de l’app et conseils d’apprentissage. Facultatif, désinscription à tout moment.',
+    },
+    p: {
+      firstName: 'Prénom',
+      lastName: 'Nom',
+      email: 'vous@exemple.com',
+      occupation: 'Ex. étudiante, entrepreneur, infirmier…',
+    },
+    moreYes: 'Oui, en ajouter une',
+    moreNo: 'Non, continuer',
+    newsletterYes: 'Oui, volontiers',
+    newsletterNo: 'Non merci',
+
+    firstName: 'Prénom',
+    lastName: 'Nom',
+    email: 'Email',
+    occupation: 'Profession ou occupation',
+    nativeLanguage: 'Langue maternelle',
+    choose: 'Choisir…',
+    targetLanguage: 'Langue {n}',
+
+    privacy: 'J’ai lu la <a href="#/confidentialite">politique de confidentialité</a>.',
+    notice: 'Vos réponses servent à établir des statistiques d’usage et, si vous l’acceptez, à vous envoyer des nouveautés. Vos phrases et listes restent sur votre appareil.',
+    submit: 'Accéder au studio',
+    sending: 'Envoi…',
+
+    errors: {
+      required: 'Merci de répondre pour continuer.',
+      email: 'Adresse email invalide.',
+      level: 'Choisissez un niveau.',
+      choose: 'Choisissez une réponse.',
+      duplicate: 'Cette langue est déjà dans la liste.',
+      privacy: 'Merci de confirmer avoir lu la politique de confidentialité.',
+      offline: 'Vous semblez hors connexion. Reconnectez-vous puis réessayez.',
+      server: 'L’envoi a échoué. Réessayez dans un instant.',
+    },
+  },
+
+  cefr: {
+    A1: 'Débutant — je comprends et utilise des expressions très simples.',
+    A2: 'Élémentaire — je me débrouille dans des situations courantes.',
+    B1: 'Intermédiaire — je gère la plupart des situations de voyage et de travail simple.',
+    B2: 'Intermédiaire avancé — je discute avec aisance avec des natifs.',
+    C1: 'Avancé — je m’exprime couramment, y compris au travail.',
+    C2: 'Maîtrise — je comprends et m’exprime presque comme un natif.',
+  },
+
+  studio: {
+    eyebrow: 'Studio',
+    title: 'Votre séance',
+    greeting: 'Bonjour {name}',
+
+    language: 'Langue à pratiquer',
+    voiceReady: 'Voix haute qualité prête — fonctionne hors connexion.',
+    voiceToDownload: 'Voix haute qualité, à télécharger une seule fois ({mb} Mo).',
+    download: 'Télécharger la voix',
+    downloading: 'Téléchargement… {pct} %',
+    deleteVoice: 'Supprimer',
+    voiceBrowser: 'Pas encore de voix haute qualité pour cette langue : lecture avec la voix de votre appareil. Le téléchargement audio et la lecture écran verrouillé ne sont pas disponibles.',
+    noBrowserVoice: 'Aucune voix disponible pour cette langue sur cet appareil.',
+
+    phrases: 'Vos phrases',
+    phrasesHint: 'Une phrase par ligne.',
+    phrasesPlaceholder: 'Où est la gare, s’il vous plaît ?\nJe voudrais un café.',
+    countOne: '1 phrase',
+    countMany: '{n} phrases',
+
+    settings: 'Réglages',
+    reps: 'Répétitions',
+    pause: 'Silence pour répéter',
+    pauseAuto: 'Auto (selon la phrase)',
+    seconds: '{n} s',
+    speed: 'Vitesse',
+    less: 'Moins',
+    more: 'Plus',
+
+    create: 'Créer la séance',
+    creating: 'Préparation… {n}/{total}',
+    loadingVoice: 'Chargement de la voix… {pct} %',
+    listen: 'Écouter',
+    stop: 'Arrêter',
+
+    playerTitle: 'Séance prête',
+    phraseOf: 'Phrase {n}/{total}',
+    repOf: 'répétition {n}/{total}',
+    play: 'Lecture',
+    pauseBtn: 'Pause',
+    prev: 'Phrase précédente',
+    next: 'Phrase suivante',
+    downloadWav: 'Télécharger l’audio ({mb} Mo)',
+    outdated: 'Vous avez modifié la séance : recréez-la pour l’entendre.',
+    sessionTitle: 'Séance de shadowing',
+
+    errors: {
+      noPhrases: 'Ajoutez au moins une phrase.',
+      tooMany: 'Maximum {max} phrases par séance.',
+      tooLong: 'La phrase {n} est trop longue (maximum {max} caractères).',
+      download: 'Le téléchargement de la voix a échoué. Vérifiez votre connexion et réessayez.',
+      synth: 'La voix n’a pas pu lire vos phrases. Vérifiez-les et réessayez.',
+      browserVoice: 'La lecture avec la voix de l’appareil a échoué.',
+    },
+  },
+
+  privacy: {
+    eyebrow: 'Confidentialité',
+    title: 'Politique de confidentialité',
+    updated: 'Dernière mise à jour : octobre 2026',
+    sections: [
+      {
+        h: 'Responsable',
+        p: 'Maro Moya — Shadowing Studio (maromoya.com). Contact : <a href="mailto:{contact}">{contact}</a>.',
+      },
+      {
+        h: 'Données collectées',
+        p: 'Au premier accès : prénom, nom, email, langue maternelle, langues apprises et niveau estimé, profession, choix concernant la newsletter, langue de l’interface et date d’inscription.',
+      },
+      {
+        h: 'Pourquoi',
+        list: [
+          'Statistiques d’usage (qui utilise l’app, pour quelles langues et quels niveaux) — intérêt légitime à améliorer l’outil.',
+          'Envoi de nouveautés et de conseils par email — uniquement avec votre consentement, retirable à tout moment.',
+        ],
+      },
+      {
+        h: 'Ce qui ne quitte pas votre appareil',
+        p: 'Vos phrases, listes, réglages et voix téléchargées sont stockés uniquement dans votre navigateur. La voix est générée sur votre appareil : vos phrases ne sont envoyées à aucun service. Les fichiers de voix sont téléchargés depuis HuggingFace et jsDelivr, qui voient alors votre adresse IP.',
+      },
+      {
+        h: 'Où sont stockées vos données',
+        p: 'Dans une base Notion (Notion Labs, Inc.), via un service Cloudflare qui transmet le formulaire. Ces prestataires peuvent traiter des données hors de l’Union européenne, dans le cadre de garanties reconnues (Data Privacy Framework / clauses contractuelles types). Aucune donnée n’est vendue ni cédée.',
+      },
+      {
+        h: 'Durée de conservation',
+        p: 'Jusqu’à votre demande de suppression, et au plus 3 ans après votre dernière activité.',
+      },
+      {
+        h: 'Vos droits',
+        p: 'Accès, rectification, suppression, opposition, retrait du consentement : écrivez à <a href="mailto:{contact}">{contact}</a>. Vous pouvez aussi saisir la CNIL (cnil.fr).',
+      },
+    ],
+  },
+};

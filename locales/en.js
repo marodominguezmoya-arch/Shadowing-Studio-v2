@@ -1,0 +1,178 @@
+export default {
+  common: {
+    back: 'Back',
+    next: 'Continue',
+    optional: 'optional',
+    remove: 'Remove',
+  },
+
+  onboarding: {
+    eyebrow: 'Welcome',
+    title: 'Before you start',
+    lead: 'A few questions to tailor Shadowing Studio to your learning. Just once.',
+    start: 'Start',
+    duration: 'About 1 minute',
+    progress: 'Progress',
+
+    q: {
+      firstName: 'What is your first name?',
+      lastName: 'And your last name, {name}?',
+      email: 'Your email address?',
+      occupation: 'What is your profession or occupation?',
+      native: 'What is your native language?',
+      target: 'Which language are you learning?',
+      targetMore: 'Which other language are you learning?',
+      level: 'Your level in {lang}?',
+      more: 'Are you learning another language?',
+      moreMax: 'Your languages',
+      newsletter: 'Get news by email?',
+      privacy: 'Last step',
+    },
+    h: {
+      firstName: '',
+      lastName: '',
+      email: 'It will never be shared.',
+      occupation: '',
+      level: 'Your own estimate, on the European scale (CEFR).',
+      newsletter: 'App news and learning tips. Optional, unsubscribe at any time.',
+    },
+    p: {
+      firstName: 'First name',
+      lastName: 'Last name',
+      email: 'you@example.com',
+      occupation: 'E.g. student, entrepreneur, nurse…',
+    },
+    moreYes: 'Yes, add one',
+    moreNo: 'No, continue',
+    newsletterYes: 'Yes, please',
+    newsletterNo: 'No thanks',
+
+    firstName: 'First name',
+    lastName: 'Last name',
+    email: 'Email',
+    occupation: 'Profession or occupation',
+    nativeLanguage: 'Native language',
+    choose: 'Choose…',
+    targetLanguage: 'Language {n}',
+
+    privacy: 'I have read the <a href="#/confidentialite">privacy policy</a>.',
+    notice: 'Your answers are used for usage statistics and, if you agree, to send you news. Your phrases and lists stay on your device.',
+    submit: 'Enter the studio',
+    sending: 'Sending…',
+
+    errors: {
+      required: 'Please answer to continue.',
+      email: 'Invalid email address.',
+      level: 'Pick a level.',
+      choose: 'Pick an answer.',
+      duplicate: 'This language is already in the list.',
+      privacy: 'Please confirm you have read the privacy policy.',
+      offline: 'You seem to be offline. Reconnect and try again.',
+      server: 'Sending failed. Please try again in a moment.',
+    },
+  },
+
+  cefr: {
+    A1: 'Beginner — I understand and use very simple expressions.',
+    A2: 'Elementary — I get by in everyday situations.',
+    B1: 'Intermediate — I handle most travel and simple work situations.',
+    B2: 'Upper intermediate — I talk comfortably with native speakers.',
+    C1: 'Advanced — I express myself fluently, including at work.',
+    C2: 'Proficient — I understand and speak almost like a native.',
+  },
+
+  studio: {
+    eyebrow: 'Studio',
+    title: 'Your session',
+    greeting: 'Hello {name}',
+
+    language: 'Language to practise',
+    voiceReady: 'High-quality voice ready — works offline.',
+    voiceToDownload: 'High-quality voice, downloaded once ({mb} MB).',
+    download: 'Download the voice',
+    downloading: 'Downloading… {pct}%',
+    deleteVoice: 'Delete',
+    voiceBrowser: 'No high-quality voice for this language yet: playback uses your device’s voice. Audio download and locked-screen playback are not available.',
+    noBrowserVoice: 'No voice available for this language on this device.',
+
+    phrases: 'Your phrases',
+    phrasesHint: 'One phrase per line.',
+    phrasesPlaceholder: 'Where is the station, please?\nI would like a coffee.',
+    countOne: '1 phrase',
+    countMany: '{n} phrases',
+
+    settings: 'Settings',
+    reps: 'Repetitions',
+    pause: 'Silence to repeat',
+    pauseAuto: 'Auto (based on the phrase)',
+    seconds: '{n} s',
+    speed: 'Speed',
+    less: 'Less',
+    more: 'More',
+
+    create: 'Create the session',
+    creating: 'Preparing… {n}/{total}',
+    loadingVoice: 'Loading the voice… {pct}%',
+    listen: 'Listen',
+    stop: 'Stop',
+
+    playerTitle: 'Session ready',
+    phraseOf: 'Phrase {n}/{total}',
+    repOf: 'repetition {n}/{total}',
+    play: 'Play',
+    pauseBtn: 'Pause',
+    prev: 'Previous phrase',
+    next: 'Next phrase',
+    downloadWav: 'Download the audio ({mb} MB)',
+    outdated: 'You changed the session: create it again to hear it.',
+    sessionTitle: 'Shadowing session',
+
+    errors: {
+      noPhrases: 'Add at least one phrase.',
+      tooMany: 'Maximum {max} phrases per session.',
+      tooLong: 'Phrase {n} is too long (maximum {max} characters).',
+      download: 'The voice download failed. Check your connection and try again.',
+      synth: 'The voice could not read your phrases. Check them and try again.',
+      browserVoice: 'Playback with the device voice failed.',
+    },
+  },
+
+  privacy: {
+    eyebrow: 'Privacy',
+    title: 'Privacy policy',
+    updated: 'Last updated: October 2026',
+    sections: [
+      {
+        h: 'Controller',
+        p: 'Maro Moya — Shadowing Studio (maromoya.com). Contact: <a href="mailto:{contact}">{contact}</a>.',
+      },
+      {
+        h: 'Data collected',
+        p: 'On first access: first name, last name, email, native language, languages learned and estimated level, occupation, newsletter choice, interface language and sign-up date.',
+      },
+      {
+        h: 'Why',
+        list: [
+          'Usage statistics (who uses the app, for which languages and levels) — legitimate interest in improving the tool.',
+          'Sending news and tips by email — only with your consent, which you can withdraw at any time.',
+        ],
+      },
+      {
+        h: 'What never leaves your device',
+        p: 'Your phrases, lists, settings and downloaded voices are stored only in your browser. Speech is generated on your device: your phrases are never sent to any service. Voice files are downloaded from HuggingFace and jsDelivr, which then see your IP address.',
+      },
+      {
+        h: 'Where your data is stored',
+        p: 'In a Notion database (Notion Labs, Inc.), through a Cloudflare service that relays the form. These providers may process data outside the European Union under recognised safeguards (Data Privacy Framework / standard contractual clauses). No data is sold or shared.',
+      },
+      {
+        h: 'Retention',
+        p: 'Until you ask for deletion, and at most 3 years after your last activity.',
+      },
+      {
+        h: 'Your rights',
+        p: 'Access, rectification, deletion, objection, withdrawal of consent: write to <a href="mailto:{contact}">{contact}</a>. You may also contact your data protection authority.',
+      },
+    ],
+  },
+};
