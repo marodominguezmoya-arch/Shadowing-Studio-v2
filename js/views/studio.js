@@ -24,7 +24,7 @@ const profile = load('profile', {});
 let prefs = null;
 
 // Prononciation et traduction : interrupteurs globaux, éteints par défaut (la traduction envoie les
-// phrases à Cloudflare). Langue utilisée : la langue maternelle si possible, sinon celle de l'interface.
+// phrases à Cloudflare). Langue utilisée : celle de l'interface (voir phonTarget / translateTarget).
 let phonOn = load('phoneticOn', null) ?? (load('phonetic', 'none') !== 'none');
 let translateOn = load('translateOn', null) ?? (load('translateTo', 'none') !== 'none');
 // Changer cette valeur fait retraduire automatiquement les listes (ex. changement de modèle).
@@ -135,6 +135,8 @@ export function renderStudio(el) {
   renderAction();
   renderPlayer();
   renderInstall();
+  // La langue de l'interface a pu changer : traductions manquantes dans la nouvelle langue.
+  if (translateOn && (rt.live || rt.session)) ensureTranslations(rt.live?.phrases || rt.session.phrases);
 }
 
 function renderInstall() {
@@ -306,20 +308,22 @@ function languageLabel(code) {
   }
 }
 
-// Alphabet de la prononciation : langue maternelle si c'est une langue lectrice, sinon l'interface.
+// Alphabet de la prononciation : langue de l'interface ; sinon (alphabet non pris en charge :
+// allemand, chinois, japonais) langue maternelle ; sinon anglais.
 function phonTarget() {
-  return [profile.native, getLocale()].find((c) => TRANSCRIPTION_TARGETS.includes(c)) || 'en';
+  return [getLocale(), profile.native].find((c) => TRANSCRIPTION_TARGETS.includes(c)) || 'en';
 }
 
-// Langue de traduction : maternelle, sinon interface — mais jamais la langue pratiquée.
+// Langue de traduction : langue de l'interface ; si c'est la langue pratiquée, langue maternelle.
 function translateTarget() {
   const practised = translationCode(prefs.tag);
-  return [profile.native, getLocale()].map((c) => translationCode(c || '')).find((c) => c && c !== practised) || null;
+  return [getLocale(), profile.native].map((c) => translationCode(c || '')).find((c) => c && c !== practised) || null;
 }
 
 function updatePhoneticHint() {
   const el = root?.querySelector('#s-phon-hint');
   if (!el) return;
+  root.querySelector('label[for="s-phon"]').textContent = t('studio.phoneticToggle', { lang: languageLabel(phonTarget()) });
   el.textContent = !phonOn ? '' : espeakVoiceFor(prefs.tag) ? t('studio.phoneticHint') : t('studio.phoneticUnavailable');
 }
 
@@ -369,6 +373,7 @@ function translationPair() {
 function updateTranslateHint() {
   const el = root?.querySelector('#s-trans-hint');
   if (!el) return;
+  root.querySelector('label[for="s-trans"]').textContent = t('studio.translateToggle', { lang: languageLabel(translateTarget() || getLocale()) });
   el.textContent = !translateOn ? '' : translationPair() ? t('studio.translateHint') : t('studio.translateSame');
 }
 

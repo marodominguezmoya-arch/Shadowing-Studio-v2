@@ -237,7 +237,8 @@ _Toutes les questions ouvertes sont tranchées._
 ## 13. Prononciation écrite et traduction (rappel actif)
 
 - **Deux interrupteurs** dans les réglages (éteints par défaut) : « Prononciation écrite » et « Traduction ».
-  Pas de choix de langue : langue maternelle du profil, sinon langue de l'interface (jamais la langue pratiquée).
+  Pas de choix de langue : **langue de l'interface** (demande de Maro, 2026-10-07). Secours : langue maternelle
+  si l'on pratique la langue de l'interface, ou si l'alphabet de prononciation n'existe pas (de, zh, ja) ; sinon anglais.
 - En séance, deux boutons « Voir la prononciation » / « Voir la traduction » sous la phrase : chacun se
   révèle au toucher, se recache au toucher et à chaque nouvelle phrase. Aucun panneau d'édition des
   traductions (retiré à la demande de Maro, 2026-10-07).
