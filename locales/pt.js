@@ -126,6 +126,8 @@ export default {
     translating: 'Traduzindo…',
     translateOffline: 'Tradução indisponível sem conexão.',
     translateError: 'A tradução falhou. Tente novamente mais tarde.',
+    translateRedo: 'Traduzir tudo de novo',
+    translateRedoConfirm: 'Traduzir todas as frases de novo? Suas correções manuais serão substituídas.',
     translationsHint: 'Corrija à vontade: suas alterações ficam salvas na lista.',
     translationsChoose: 'Primeiro escolha um idioma de tradução nas configurações.',
     translateAuto: 'Traduzir automaticamente ({n})',

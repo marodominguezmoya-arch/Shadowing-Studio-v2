@@ -1,7 +1,7 @@
 // Tests du Worker sans réseau : l'API Notion et GitHub Pages sont simulées.
 import { test, beforeEach } from 'node:test';
 import assert from 'node:assert/strict';
-import worker, { validate, validateTranslate, P } from '../src/index.js';
+import worker, { validate, validateTranslate, parseTranslations, P } from '../src/index.js';
 
 const env = {
   ORIGIN_BASE: 'https://example.github.io/shadowing-studio-v2',
@@ -143,26 +143,48 @@ const translate = (body, extraEnv = {}, origin = 'https://maromoya.com') =>
     method: 'POST', headers: { Origin: origin, 'Content-Type': 'application/json' }, body: JSON.stringify(body),
   }), { ...env, ...extraEnv });
 
-test('traduit chaque phrase avec Workers AI', async () => {
+test('traduit avec le LLM, en précisant le dialecte (arabe jordanien)', async () => {
   const runs = [];
-  const AI = { run: async (model, input) => { runs.push({ model, input }); return { translated_text: `[${input.target_lang}] ${input.text}` }; } };
-  const res = await translate({ texts: ['Hello.', 'Thank you.'], source: 'en', target: 'fr' }, { AI });
+  const AI = { run: async (model, input) => { runs.push({ model, input }); return { response: '["Tu vas où ?","Bonjour"]' }; } };
+  const res = await translate({ texts: ['وين رايح؟', 'مرحبا'], source: 'ar-JO', target: 'fr' }, { AI });
   assert.equal(res.status, 200);
-  assert.deepEqual(await res.json(), { translations: ['[fr] Hello.', '[fr] Thank you.'] });
-  assert.equal(runs[0].model, '@cf/meta/m2m100-1.2b');
-  assert.deepEqual(runs[0].input, { text: 'Hello.', source_lang: 'en', target_lang: 'fr' });
+  assert.deepEqual(await res.json(), { translations: ['Tu vas où ?', 'Bonjour'], model: 'llm' });
+  assert.equal(runs.length, 1);
+  assert.match(runs[0].model, /llama-4-scout/);
+  assert.match(runs[0].input.messages[0].content, /Jordanian Arabic/);
+  assert.match(runs[0].input.messages[0].content, /into natural, idiomatic French/);
+});
+
+test('réponse LLM inexploitable → secours m2m100 phrase par phrase', async () => {
+  const runs = [];
+  const AI = { run: async (model, input) => {
+    runs.push(model);
+    if (model.includes('llama')) return { response: 'Voici la traduction : bonjour' };
+    return { translated_text: `[${input.source_lang}>${input.target_lang}] ${input.text}` };
+  } };
+  const res = await translate({ texts: ['Hei', 'Takk'], source: 'nb-NO', target: 'fr' }, { AI });
+  assert.deepEqual(await res.json(), { translations: ['[no>fr] Hei', '[no>fr] Takk'], model: 'm2m100' });
+  assert.equal(runs.length, 3);
+});
+
+test('parseTranslations : nombre d’éléments et contenu vérifiés', () => {
+  assert.deepEqual(parseTranslations('```json\n["a","b"]\n```', 2), ['a', 'b']);
+  assert.equal(parseTranslations('["a"]', 2), null);
+  assert.equal(parseTranslations('["a",""]', 2), null);
+  assert.deepEqual(parseTranslations(['x'], 1), ['x']);
 });
 
 test('traduction : refuse une autre origine et les données invalides', async () => {
-  const AI = { run: async () => ({ translated_text: 'x' }) };
+  const AI = { run: async () => ({ response: '["x"]' }) };
   assert.equal((await translate({ texts: ['a'], source: 'en', target: 'fr' }, { AI }, 'https://evil.example')).status, 403);
   assert.equal(validateTranslate({ texts: [], source: 'en', target: 'fr' }).error, 'texts');
   assert.equal(validateTranslate({ texts: ['x'.repeat(401)], source: 'en', target: 'fr' }).error, 'texts');
   assert.equal(validateTranslate({ texts: ['ok'], source: 'english', target: 'fr' }).error, 'source');
+  assert.equal(validateTranslate({ texts: ['ok'], source: 'ar-JO', target: 'fr' }).error, undefined);
   assert.equal(validateTranslate({ texts: ['ok'], source: 'en', target: '' }).error, 'target');
 });
 
-test('traduction : erreur du modèle → 502', async () => {
+test('traduction : erreur des deux modèles → 502', async () => {
   const AI = { run: async () => { throw new Error('boom'); } };
   assert.equal((await translate({ texts: ['a'], source: 'en', target: 'fr' }, { AI })).status, 502);
 });

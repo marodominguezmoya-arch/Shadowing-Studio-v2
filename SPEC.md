@@ -238,7 +238,11 @@ _Toutes les questions ouvertes sont tranchées._
 - Réglage global « Traduction » (par défaut : langue maternelle). Dans le lecteur, la traduction est **cachée**
   derrière « Voir la traduction » et se recache à chaque nouvelle phrase (rappel actif).
 - Traduction automatique via le Worker : `POST /shadowingstudio/api/translate` → Workers AI
-  `@cf/meta/m2m100-1.2b` (codes ISO 639-1 ; `nb` → `no` ; basque non pris en charge). Limite : 20 requêtes/min
+  **`@cf/meta/llama-4-scout-17b-16e-instruct`** (une requête pour toutes les phrases, réponse JSON vérifiée),
+  avec la variante de la liste (ex. `ar-JO` → « Jordanian Arabic (Levantine dialect) »). Secours :
+  `@cf/meta/m2m100-1.2b`. m2m100 seul a été abandonné le 2026-10-07 : inutilisable sur l'arabe dialectal
+  (« وين رايح هلأ؟ » → « Winston Churchill est-il parti ? »). Coût mesuré : ~8 neurones pour 7 phrases.
+  Bouton « Tout retraduire » pour remplacer d'anciennes traductions. Limite : 20 requêtes/min
   par IP, 40 phrases × 400 caractères par requête. Coût : quota gratuit quotidien de Workers AI.
 - Les traductions sont stockées dans la liste (`translations[langue][phrase]`), donc disponibles hors connexion,
   modifiables dans le panneau « Traductions » (les corrections manuelles ne sont jamais écrasées) et incluses

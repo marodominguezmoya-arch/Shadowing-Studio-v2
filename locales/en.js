@@ -126,6 +126,8 @@ export default {
     translating: 'Translating…',
     translateOffline: 'Translation unavailable offline.',
     translateError: 'Translation failed. Please try again later.',
+    translateRedo: 'Translate everything again',
+    translateRedoConfirm: 'Translate all phrases again? Your manual corrections will be replaced.',
     translationsHint: 'Edit freely: your changes are kept in the list.',
     translationsChoose: 'First choose a translation language in the settings.',
     translateAuto: 'Translate automatically ({n})',

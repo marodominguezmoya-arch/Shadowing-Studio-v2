@@ -283,6 +283,11 @@ function bind() {
         await ensureTranslations(phrases());
         renderTransPanel();
       },
+      'trans-redo': async () => {
+        if (!confirm(t('studio.translateRedoConfirm'))) return;
+        await ensureTranslations(phrases(), { force: true });
+        renderTransPanel();
+      },
       'paste-toggle': () => {
         rt.pasteOpen = !rt.pasteOpen;
         rt.pastePreview = null;
@@ -386,7 +391,7 @@ function translationPair() {
   const source = translationCode(prefs.tag);
   const target = translationCode(translateTo);
   if (!source || !target || source === target) return null;
-  return { source, target };
+  return { source: prefs.tag, target }; // étiquette complète : le relais tient compte du dialecte
 }
 
 function updateTranslateHint() {
@@ -403,13 +408,14 @@ function translationFor(text) {
   return pair ? prefs.translations?.[pair.target]?.[text] || '' : '';
 }
 
-// Traduit les phrases qui n'ont pas encore de traduction (les corrections manuelles sont gardées).
-async function ensureTranslations(list) {
+// Traduit les phrases qui n'ont pas encore de traduction (les corrections manuelles sont gardées),
+// ou toutes les phrases si force = true (« Tout retraduire »).
+async function ensureTranslations(list, { force = false } = {}) {
   const pair = translationPair();
   if (!pair) return;
   prefs.translations ||= {};
   const map = (prefs.translations[pair.target] ||= {});
-  const todo = [...new Set(list.filter((x) => !map[x]))].slice(0, 40);
+  const todo = [...new Set(list.filter((x) => force || !map[x]))].slice(0, 40);
   if (!todo.length) return;
   rt.translateBusy = true;
   rt.translateError = '';
@@ -474,7 +480,10 @@ function renderTransPanel() {
           <span lang="${prefs.tag}">${esc(x)}</span>
           <input class="input" data-trans-index="${i}" lang="${translateTo}" dir="auto" value="${esc(translationFor(x))}" placeholder="…">
         </label>`).join('')}
-      ${missing ? `<button type="button" class="btn btn-ghost btn-sm" data-action="trans-auto" ${rt.translateBusy ? 'disabled' : ''}>${t('studio.translateAuto', { n: missing })}</button>` : ''}
+      <div class="paste-actions">
+        ${missing ? `<button type="button" class="btn btn-ghost btn-sm" data-action="trans-auto" ${rt.translateBusy ? 'disabled' : ''}>${t('studio.translateAuto', { n: missing })}</button>` : ''}
+        ${list.length > missing ? `<button type="button" class="btn-link btn-link-sm" data-action="trans-redo" ${rt.translateBusy ? 'disabled' : ''}>${t('studio.translateRedo')}</button>` : ''}
+      </div>
       ${rt.translateError ? `<p class="hint">${rt.translateError}</p>` : ''}
     </div>`;
   box.querySelectorAll('[data-trans-index]').forEach((input) => {

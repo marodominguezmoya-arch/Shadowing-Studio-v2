@@ -126,6 +126,8 @@ export default {
     translating: 'جارٍ الترجمة…',
     translateOffline: 'الترجمة غير متاحة دون اتصال.',
     translateError: 'فشلت الترجمة. حاول مرة أخرى لاحقًا.',
+    translateRedo: 'إعادة ترجمة الكل',
+    translateRedoConfirm: 'إعادة ترجمة كل الجمل؟ ستُستبدل تصحيحاتك اليدوية.',
     translationsHint: 'صحّح بحرية: تُحفظ تعديلاتك في القائمة.',
     translationsChoose: 'اختر أولًا لغة الترجمة في الإعدادات.',
     translateAuto: 'ترجمة تلقائية ({n})',

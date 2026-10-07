@@ -1,19 +1,13 @@
-// Traduction des phrases (relais Cloudflare → Workers AI, modèle m2m100).
+// Traduction des phrases (relais Cloudflare → Workers AI : Llama 4 Scout, secours m2m100).
+// source = étiquette complète de la liste (« ar-JO ») : le relais en déduit le dialecte.
 
 import { CONFIG, IS_LOCAL } from './config.js';
 
-// Langues prises en charge par m2m100 (codes ISO 639-1) parmi celles de l'app.
-const SUPPORTED = new Set([
-  'af', 'ar', 'bn', 'ca', 'cs', 'da', 'de', 'el', 'en', 'es', 'fa', 'fi', 'fr', 'gl', 'he', 'hi', 'hr',
-  'hu', 'id', 'it', 'ja', 'ko', 'ms', 'nl', 'no', 'pl', 'pt', 'ro', 'ru', 'sk', 'sv', 'sw', 'th', 'tr',
-  'uk', 'ur', 'vi', 'yo', 'zh',
-]);
-const ALIASES = { nb: 'no' }; // norvégien bokmål → « no » pour le modèle
-
+// Toutes les langues de l'app sont traduisibles (grand modèle de langue côté relais).
+// Renvoie le code de langue de base (« ar » pour « ar-JO ») ou null si l'étiquette est invalide.
 export function translationCode(tagOrCode) {
-  const base = tagOrCode.split('-')[0];
-  const code = ALIASES[base] || base;
-  return SUPPORTED.has(code) ? code : null;
+  const base = String(tagOrCode || '').split('-')[0];
+  return /^[a-z]{2,3}$/.test(base) ? base : null;
 }
 
 // Renvoie un tableau de traductions, dans l'ordre des textes.
