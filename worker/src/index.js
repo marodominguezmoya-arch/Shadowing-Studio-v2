@@ -1,10 +1,12 @@
 // Cloudflare Worker — maromoya.com/shadowingstudio*
 //
 //  /shadowingstudio/api/onboard  (POST) → valide le formulaire → crée/met à jour la fiche Notion
+//  /shadowingstudio/api/translate (POST) → traduit des phrases (Workers AI, m2m100)
 //  /shadowingstudio/…                  → sert l'app statique hébergée sur GitHub Pages
 //
 // Variables (wrangler.toml) : ORIGIN_BASE, NOTION_DATABASE_ID, ALLOWED_ORIGINS
 // Secret (wrangler secret put) : NOTION_TOKEN
+// Liaisons : AI (Workers AI), RATE_LIMITER, TRANSLATE_LIMITER
 
 const PREFIX = '/shadowingstudio';
 const NOTION_VERSION = '2022-06-28';
@@ -56,6 +58,10 @@ export default {
 
     if (url.pathname === `${PREFIX}/api/onboard`) {
       return handleOnboard(request, env);
+    }
+
+    if (url.pathname === `${PREFIX}/api/translate`) {
+      return handleTranslate(request, env);
     }
 
     return proxyToPages(request, env, url);
@@ -217,6 +223,64 @@ async function notion(env, path, method, body) {
     throw new Error(`${method} ${path} → ${res.status} ${detail.slice(0, 300)}`);
   }
   return res.json();
+}
+
+// ---------------------------------------------------------------------------
+// Traduction (Workers AI)
+// ---------------------------------------------------------------------------
+
+const TRANSLATE_MODEL = '@cf/meta/m2m100-1.2b';
+const MAX_TEXTS = 40;
+const MAX_TEXT_CHARS = 400;
+const LANG_RE = /^[a-z]{2,3}$/;
+
+async function handleTranslate(request, env) {
+  if (request.method !== 'POST') return json({ error: 'method_not_allowed' }, 405, { Allow: 'POST' });
+
+  const allowed = (env.ALLOWED_ORIGINS || '').split(',').map((s) => s.trim()).filter(Boolean);
+  if (allowed.length && !allowed.includes(request.headers.get('Origin'))) return json({ error: 'forbidden_origin' }, 403);
+
+  if (env.TRANSLATE_LIMITER) {
+    const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
+    const { success } = await env.TRANSLATE_LIMITER.limit({ key: ip });
+    if (!success) return json({ error: 'rate_limited' }, 429);
+  }
+
+  const raw = await request.text();
+  if (raw.length > MAX_TEXTS * MAX_TEXT_CHARS * 2 + 1000) return json({ error: 'too_large' }, 413);
+  let body;
+  try {
+    body = JSON.parse(raw);
+  } catch {
+    return json({ error: 'invalid_json' }, 400);
+  }
+
+  const result = validateTranslate(body);
+  if (result.error) return json({ error: 'invalid', field: result.error }, 400);
+  if (!env.AI) return json({ error: 'not_configured' }, 500);
+
+  const { texts, source, target } = result;
+  try {
+    const translations = await Promise.all(texts.map(async (text) => {
+      const out = await env.AI.run(TRANSLATE_MODEL, { text, source_lang: source, target_lang: target });
+      return String(out?.translated_text ?? '').trim();
+    }));
+    return json({ translations });
+  } catch (err) {
+    console.error('AI error:', err.message);
+    return json({ error: 'translate_failed' }, 502);
+  }
+}
+
+export function validateTranslate(body) {
+  if (!body || typeof body !== 'object') return { error: 'body' };
+  const { texts, source, target } = body;
+  if (!LANG_RE.test(source || '')) return { error: 'source' };
+  if (!LANG_RE.test(target || '')) return { error: 'target' };
+  if (!Array.isArray(texts) || !texts.length || texts.length > MAX_TEXTS) return { error: 'texts' };
+  const clean = texts.map((t) => (typeof t === 'string' ? t.trim() : ''));
+  if (clean.some((t) => !t || t.length > MAX_TEXT_CHARS)) return { error: 'texts' };
+  return { texts: clean, source, target };
 }
 
 // ---------------------------------------------------------------------------

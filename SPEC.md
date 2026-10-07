@@ -57,7 +57,7 @@ Accessible à **https://maromoya.com/shadowingstudio**, dans l'univers visuel de
 ### 4.3 Plus tard (hors périmètre v2.0)
 - Lien de partage d'une liste (encodée dans l'URL).
 - S'enregistrer au micro et comparer au modèle.
-- Traduction des phrases.
+- ~~Traduction des phrases~~ → **fait** (2026-10-07, voir §13).
 
 ## 5. Audio
 
@@ -232,3 +232,16 @@ _Toutes les questions ouvertes sont tranchées._
   ru (cyrillique), ar (écriture arabe). Syllabe accentuée en gras, tons en exposant. Disponible pour toutes
   les langues de pratique sauf le japonais et le yoruba (pas de données espeak-ng). Ne nécessite pas de voix
   téléchargée (phonémiseur seul, ~19 Mo, en cache).
+
+## 13. Traduction des phrases (rappel actif)
+
+- Réglage global « Traduction » (par défaut : langue maternelle). Dans le lecteur, la traduction est **cachée**
+  derrière « Voir la traduction » et se recache à chaque nouvelle phrase (rappel actif).
+- Traduction automatique via le Worker : `POST /shadowingstudio/api/translate` → Workers AI
+  `@cf/meta/m2m100-1.2b` (codes ISO 639-1 ; `nb` → `no` ; basque non pris en charge). Limite : 20 requêtes/min
+  par IP, 40 phrases × 400 caractères par requête. Coût : quota gratuit quotidien de Workers AI.
+- Les traductions sont stockées dans la liste (`translations[langue][phrase]`), donc disponibles hors connexion,
+  modifiables dans le panneau « Traductions » (les corrections manuelles ne sont jamais écrasées) et incluses
+  dans l'export JSON.
+- Confidentialité : les phrases ne quittent l'appareil que si la traduction est activée (mention ajoutée
+  dans les 6 langues).

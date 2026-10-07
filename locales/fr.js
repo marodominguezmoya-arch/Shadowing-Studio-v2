@@ -116,6 +116,20 @@ export default {
     phoneticHint: 'La phrase réécrite avec l’alphabet de la langue choisie. En gras : la syllabe accentuée.',
     phoneticUnavailable: 'Transcription pas encore disponible pour cette langue.',
 
+    translations: 'Traductions',
+    translate: 'Traduction (rappel actif)',
+    translateHint: 'Cachée pendant l’écoute : essayez de retrouver le sens, puis touchez « Voir la traduction ».',
+    translateUnavailable: 'Traduction pas encore disponible pour cette langue.',
+    translateSame: 'Choisissez une langue différente de celle que vous pratiquez.',
+    reveal: 'Voir la traduction',
+    hideTranslation: 'Masquer la traduction',
+    translating: 'Traduction…',
+    translateOffline: 'Traduction indisponible hors connexion.',
+    translateError: 'La traduction a échoué. Réessayez plus tard.',
+    translationsHint: 'Corrigez librement : vos modifications sont gardées dans la liste.',
+    translationsChoose: 'Choisissez d’abord une langue de traduction dans les réglages.',
+    translateAuto: 'Traduire automatiquement ({n})',
+
     create: 'Créer la séance',
     creating: 'Préparation… {n}/{total}',
     loadingVoice: 'Chargement de la voix… {pct} %',
@@ -208,7 +222,7 @@ export default {
       },
       {
         h: 'Ce qui ne quitte pas votre appareil',
-        p: 'Vos phrases, listes, réglages et voix téléchargées sont stockés uniquement dans votre navigateur. La voix est générée sur votre appareil : vos phrases ne sont envoyées à aucun service. Les fichiers de voix sont téléchargés depuis HuggingFace et jsDelivr, qui voient alors votre adresse IP.',
+        p: 'Vos phrases, listes, réglages et voix téléchargées sont stockés uniquement dans votre navigateur. La voix est générée sur votre appareil : vos phrases ne sont envoyées à aucun service. Les fichiers de voix sont téléchargés depuis HuggingFace et jsDelivr, qui voient alors votre adresse IP. Exception : si vous activez la traduction, les phrases à traduire sont envoyées à Cloudflare (Workers AI) pour être traduites ; la traduction est ensuite gardée sur votre appareil.',
       },
       {
         h: 'Où sont stockées vos données',

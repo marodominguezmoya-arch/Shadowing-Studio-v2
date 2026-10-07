@@ -5,6 +5,8 @@ import { t, getLocale } from '../i18n.js';
 import { load, save } from '../storage.js';
 import { initLibrary, currentList, updateList, allLists } from '../library.js';
 import { splitSentences } from '../split.js';
+import { translationCode, translateTexts } from '../translate.js';
+import { sortedLanguages } from '../languages.js';
 import { installMode, promptInstall, dismissInstall, onInstallChange } from '../install.js';
 import { esc } from '../dom.js';
 import { practiceLanguages, findLanguage, defaultTag } from '../audio/catalog.js';
@@ -28,6 +30,9 @@ let phonTarget = load('phonetic', null) ?? (TRANSCRIPTION_TARGETS.includes(profi
 const phonCache = new Map(); // « espeak|cible|texte » → HTML
 let phonPending = false;
 
+// Traduction (rappel actif) : préférence globale, par défaut la langue maternelle.
+let translateTo = load('translateTo', null) ?? (translationCode(profile.native || '') ? profile.native : 'none');
+
 // État d'exécution (survit aux re-rendus : changement de langue d'interface, etc.).
 const rt = {
   voice: 'unknown', // unknown | cached | missing | downloading | browser | none
@@ -38,6 +43,10 @@ const rt = {
   session: null, // { url, timeline, phrases, duration, mb, sig, tag, listId }
   pasteOpen: false,
   pastePreview: null, // phrases découpées en attente de validation
+  revealed: false, // traduction de la phrase en cours affichée ?
+  translateBusy: false,
+  translateError: '',
+  transOpen: false, // panneau « Traductions » ouvert ?
   live: null, // { stop, step }
 };
 const pcmCache = new Map();
@@ -75,8 +84,12 @@ export function renderStudio(el) {
       <label class="label" for="s-text">${t('studio.phrases')}</label>
       <textarea class="input textarea" id="s-text" rows="6" placeholder="${esc(t('studio.phrasesPlaceholder'))}" spellcheck="true">${esc(prefs.text)}</textarea>
       <p class="hint"><span id="s-count"></span> · ${t('studio.phrasesHint')}</p>
-      <button type="button" class="btn-link" data-action="paste-toggle">${t('paste.open')}</button>
+      <div class="phrase-tools">
+        <button type="button" class="btn-link" data-action="paste-toggle">${t('paste.open')}</button>
+        <button type="button" class="btn-link" data-action="trans-toggle">${t('studio.translations')}</button>
+      </div>
       <div id="s-paste"></div>
+      <div id="s-trans-panel"></div>
     </section>
 
     <section class="card">
@@ -107,6 +120,14 @@ export function renderStudio(el) {
         </select>
       </div>
       <p class="hint" id="s-phon-hint"></p>
+      <div class="setting">
+        <label for="s-trans">${t('studio.translate')}</label>
+        <select class="select select-sm" id="s-trans">
+          <option value="none">${t('studio.phoneticNone')}</option>
+          ${sortedLanguages(getLocale()).filter((l) => translationCode(l.code)).map((l) => `<option value="${l.code}" ${l.code === translateTo ? 'selected' : ''}>${esc(l.name)}</option>`).join('')}
+        </select>
+      </div>
+      <p class="hint" id="s-trans-hint"></p>
     </section>
 
     <div id="s-action"></div>
@@ -118,7 +139,9 @@ export function renderStudio(el) {
   bind();
   updateCount();
   updatePhoneticHint();
+  updateTranslateHint();
   renderPaste();
+  renderTransPanel();
   refreshVoice();
   renderAction();
   renderPlayer();
@@ -182,6 +205,8 @@ function bind() {
     persist();
     stopLive();
     updatePhoneticHint();
+    updateTranslateHint();
+    renderTransPanel();
     rt.error = '';
     refreshVoice();
     renderAction();
@@ -208,6 +233,15 @@ function bind() {
     prefs.pause = e.target.value;
     persist();
     onSettingsChanged();
+  });
+
+  $('#s-trans').addEventListener('change', (e) => {
+    translateTo = e.target.value;
+    save('translateTo', translateTo);
+    rt.translateError = '';
+    updateTranslateHint();
+    renderReveal();
+    renderTransPanel();
   });
 
   $('#s-phon').addEventListener('change', (e) => {
@@ -237,6 +271,18 @@ function bind() {
       toggle: togglePlay,
       prev: () => jump(-1),
       next: () => jump(1),
+      reveal: () => {
+        rt.revealed = !rt.revealed;
+        renderReveal();
+      },
+      'trans-toggle': () => {
+        rt.transOpen = !rt.transOpen;
+        renderTransPanel();
+      },
+      'trans-auto': async () => {
+        await ensureTranslations(phrases());
+        renderTransPanel();
+      },
       'paste-toggle': () => {
         rt.pasteOpen = !rt.pasteOpen;
         rt.pastePreview = null;
@@ -328,6 +374,117 @@ function refreshPhonetics() {
 function phoneticLine(text) {
   const html = phoneticHtml(text);
   return html ? `<p class="phonetic" lang="${phonTarget}" dir="${phonTarget === 'ar' ? 'rtl' : 'ltr'}">${html}</p>` : '';
+}
+
+// ---------------------------------------------------------------------------
+// Traduction (rappel actif)
+// ---------------------------------------------------------------------------
+
+// Paire { source, target } utilisable, ou null (désactivée, non prise en charge, même langue).
+function translationPair() {
+  if (translateTo === 'none') return null;
+  const source = translationCode(prefs.tag);
+  const target = translationCode(translateTo);
+  if (!source || !target || source === target) return null;
+  return { source, target };
+}
+
+function updateTranslateHint() {
+  const el = root?.querySelector('#s-trans-hint');
+  if (!el) return;
+  el.textContent = translateTo === 'none' ? ''
+    : !translationCode(prefs.tag) ? t('studio.translateUnavailable')
+    : !translationPair() ? t('studio.translateSame')
+    : t('studio.translateHint');
+}
+
+function translationFor(text) {
+  const pair = translationPair();
+  return pair ? prefs.translations?.[pair.target]?.[text] || '' : '';
+}
+
+// Traduit les phrases qui n'ont pas encore de traduction (les corrections manuelles sont gardées).
+async function ensureTranslations(list) {
+  const pair = translationPair();
+  if (!pair) return;
+  prefs.translations ||= {};
+  const map = (prefs.translations[pair.target] ||= {});
+  const todo = [...new Set(list.filter((x) => !map[x]))].slice(0, 40);
+  if (!todo.length) return;
+  rt.translateBusy = true;
+  rt.translateError = '';
+  renderReveal();
+  try {
+    const out = await translateTexts(todo, pair.source, pair.target);
+    todo.forEach((x, i) => {
+      if (out[i]) map[x] = out[i];
+    });
+    persist();
+  } catch (err) {
+    console.warn('[translate]', err);
+    rt.translateError = navigator.onLine === false ? t('studio.translateOffline') : t('studio.translateError');
+  } finally {
+    rt.translateBusy = false;
+    renderReveal();
+  }
+}
+
+// Zone « Voir la traduction » sous la phrase en cours (cachée par défaut : rappel actif).
+function revealHtml(text) {
+  if (!translationPair() || !text) return '';
+  const tr = translationFor(text);
+  if (tr) {
+    return rt.revealed
+      ? `<button type="button" class="translation" data-action="reveal" lang="${translateTo}" dir="auto" aria-label="${t('studio.hideTranslation')}">${esc(tr)}</button>`
+      : `<button type="button" class="reveal" data-action="reveal" aria-expanded="false">${t('studio.reveal')}</button>`;
+  }
+  if (rt.translateBusy) return `<p class="hint center">${t('studio.translating')}</p>`;
+  return rt.translateError ? `<p class="hint center">${rt.translateError}</p>` : '';
+}
+
+function renderReveal() {
+  if (rt.live) return renderPlayer();
+  const box = root?.querySelector('#p-trans');
+  const s = rt.session;
+  if (!box || !s) return;
+  const i = Math.max(0, timelineIndexAt(s.timeline, audio.currentTime));
+  box.innerHTML = revealHtml(s.phrases[s.timeline[i].phrase]);
+}
+
+// Panneau pour relire / corriger les traductions de la liste.
+function renderTransPanel() {
+  const box = root?.querySelector('#s-trans-panel');
+  if (!box) return;
+  if (!rt.transOpen) {
+    box.innerHTML = '';
+    return;
+  }
+  const pair = translationPair();
+  const list = phrases();
+  if (!pair) {
+    box.innerHTML = `<p class="hint">${translateTo === 'none' ? t('studio.translationsChoose') : root.querySelector('#s-trans-hint').textContent}</p>`;
+    return;
+  }
+  const missing = list.filter((x) => !translationFor(x)).length;
+  box.innerHTML = `
+    <div class="trans-panel">
+      <p class="hint">${t('studio.translationsHint')}</p>
+      ${list.map((x, i) => `
+        <label class="trans-row">
+          <span lang="${prefs.tag}">${esc(x)}</span>
+          <input class="input" data-trans-index="${i}" lang="${translateTo}" dir="auto" value="${esc(translationFor(x))}" placeholder="…">
+        </label>`).join('')}
+      ${missing ? `<button type="button" class="btn btn-ghost btn-sm" data-action="trans-auto" ${rt.translateBusy ? 'disabled' : ''}>${t('studio.translateAuto', { n: missing })}</button>` : ''}
+      ${rt.translateError ? `<p class="hint">${rt.translateError}</p>` : ''}
+    </div>`;
+  box.querySelectorAll('[data-trans-index]').forEach((input) => {
+    input.addEventListener('input', () => {
+      const text = list[Number(input.dataset.transIndex)];
+      prefs.translations ||= {};
+      (prefs.translations[pair.target] ||= {})[text] = input.value.trim();
+      persist();
+    });
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -491,6 +648,7 @@ async function createSession() {
   setStatus('');
   renderAction();
 
+  const translations = ensureTranslations(list); // en parallèle, sans bloquer la séance
   try {
     await ensureVoiceLoaded();
 
@@ -532,11 +690,13 @@ async function createSession() {
       label: practiceLanguages(getLocale()).find((l) => l.tag === lang.tag)?.label || lang.tag,
     };
     audio.src = rt.session.url;
+    rt.revealed = false;
     rt.busy = false;
     setStatus('');
     renderAction();
     renderPlayer();
     audio.play().catch(() => {}); // peut être bloqué si le geste utilisateur a expiré
+    translations.then(() => renderReveal());
   } catch (err) {
     console.error('[studio]', err);
     rt.busy = false;
@@ -573,11 +733,13 @@ function startLive() {
     pause: prefs.pause,
     speed: prefs.speed / 100,
     onStep: (step) => {
+      if (live.step?.phrase !== step.phrase) rt.revealed = false;
       live.step = step;
       renderPlayer();
     },
   });
   rt.live = Object.assign(live, { phrases: list, step: null });
+  ensureTranslations(list);
   live.done
     .catch(() => {
       rt.error = t('studio.errors.browserVoice');
@@ -641,6 +803,7 @@ function renderPlayer() {
       ? `<section class="card player">
            <p class="now-phrase" lang="${prefs.tag}">${esc(rt.live.phrases[step.phrase])}</p>
            ${phoneticLine(rt.live.phrases[step.phrase])}
+           <div class="reveal-box">${revealHtml(rt.live.phrases[step.phrase])}</div>
            <p class="faint center">${t('studio.phraseOf', { n: step.phrase + 1, total: rt.live.phrases.length })} · ${t('studio.repOf', { n: step.rep + 1, total: prefs.reps })}</p>
          </section>`
       : '';
@@ -661,6 +824,7 @@ function renderPlayer() {
       ${outdated ? `<p class="hint center warn">${t('studio.outdated')}</p>` : ''}
       <p class="now-phrase" id="p-phrase" lang="${s.tag}"></p>
       <div id="p-phon"></div>
+      <div id="p-trans" class="reveal-box"></div>
       <p class="faint center" id="p-count"></p>
       <input type="range" class="seek" id="p-seek" min="0" max="${s.duration.toFixed(1)}" step="0.1" value="0" aria-label="Position">
       <p class="times"><span id="p-time">0:00</span><span>${fmt(s.duration)}</span></p>
@@ -676,7 +840,7 @@ function renderPlayer() {
   box.querySelector('#p-seek').addEventListener('input', (e) => {
     audio.currentTime = Number(e.target.value);
   });
-  syncPlayer();
+  syncPlayer(true);
 }
 
 let lastPhonPhrase = null;
@@ -691,10 +855,16 @@ function syncPlayer(forcePhonetic = false) {
   const phrase = s.phrases[entry.phrase];
 
   box.querySelector('#p-phrase').textContent = phrase;
-  const phonBox = box.querySelector('#p-phon');
-  if (forcePhonetic === true || phrase !== lastPhonPhrase || !phonBox.hasChildNodes()) {
+  // Transcription et traduction : redessinées seulement au changement de phrase (ou sur demande),
+  // pas à chaque « timeupdate » — sinon le bouton « Voir la traduction » serait recréé en continu.
+  const phraseChanged = phrase !== lastPhonPhrase;
+  if (phraseChanged) {
+    rt.revealed = false; // nouvelle phrase : traduction recachée
     lastPhonPhrase = phrase;
-    phonBox.innerHTML = phoneticLine(phrase);
+  }
+  if (forcePhonetic === true || phraseChanged) {
+    box.querySelector('#p-phon').innerHTML = phoneticLine(phrase);
+    box.querySelector('#p-trans').innerHTML = revealHtml(phrase);
   }
   box.querySelector('#p-count').textContent =
     `${t('studio.phraseOf', { n: entry.phrase + 1, total: s.phrases.length })} · ${t('studio.repOf', { n: entry.rep + 1, total: prefs.reps })}`;
@@ -719,7 +889,8 @@ function jump(dir) {
   const i = Math.max(0, timelineIndexAt(s.timeline, audio.currentTime));
   const phrase = s.timeline[i].phrase + dir;
   const target = s.timeline.find((e) => e.phrase === Math.max(0, phrase));
-  if (target && phrase < s.phrases.length) audio.currentTime = target.start;
+  // +20 ms : le lecteur peut se placer une fraction avant la cible et rester sur la phrase précédente.
+  if (target && phrase < s.phrases.length) audio.currentTime = target.start + 0.02;
 }
 
 let lastMediaTitle = '';

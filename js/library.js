@@ -108,14 +108,28 @@ export function exportBlob() {
     format: FORMAT,
     version: 1,
     exportedAt: now(),
-    lists: lib.lists.map(({ id, name, tag, text, reps, pause, speed, createdAt, updatedAt }) => ({
-      id, name, tag, text, reps, pause, speed, createdAt, updatedAt,
+    lists: lib.lists.map(({ id, name, tag, text, reps, pause, speed, translations, createdAt, updatedAt }) => ({
+      id, name, tag, text, reps, pause, speed, translations: translations || {}, createdAt, updatedAt,
     })),
   };
   return new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
 }
 
 const str = (v, max) => (typeof v === 'string' ? v.slice(0, max) : '');
+
+// { fr: { "phrase": "traduction" }, … } — on ne garde que des chaînes, en quantité raisonnable.
+function cleanTranslations(raw) {
+  const out = {};
+  if (!raw || typeof raw !== 'object') return out;
+  for (const [lang, map] of Object.entries(raw).slice(0, 20)) {
+    if (!/^[a-z]{2,3}$/.test(lang) || !map || typeof map !== 'object') continue;
+    out[lang] = {};
+    for (const [k, v] of Object.entries(map).slice(0, 200)) {
+      if (typeof v === 'string' && k.length <= 400) out[lang][k] = v.slice(0, 800);
+    }
+  }
+  return out;
+}
 
 // Importe les listes d'un fichier exporté. Une liste déjà présente (même id) n'est remplacée
 // que si la version importée est plus récente. Renvoie { added, updated, skipped }.
@@ -138,6 +152,7 @@ export function importData(json) {
       reps: Math.min(10, Math.max(1, Number(raw.reps) || DEFAULTS.reps)),
       pause: ['auto', '2', '3', '5', '8'].includes(String(raw.pause)) ? String(raw.pause) : DEFAULTS.pause,
       speed: Math.min(150, Math.max(50, Number(raw.speed) || DEFAULTS.speed)),
+      translations: cleanTranslations(raw.translations),
       createdAt: str(raw.createdAt, 40) || now(),
       updatedAt: str(raw.updatedAt, 40) || now(),
     };

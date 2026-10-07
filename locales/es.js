@@ -116,6 +116,20 @@ export default {
     phoneticHint: 'La frase reescrita con el alfabeto del idioma elegido. En negrita: la sílaba tónica.',
     phoneticUnavailable: 'Transcripción todavía no disponible para este idioma.',
 
+    translations: 'Traducciones',
+    translate: 'Traducción (recuerdo activo)',
+    translateHint: 'Oculta mientras escuchas: intenta recordar el significado y luego toca «Ver la traducción».',
+    translateUnavailable: 'Traducción todavía no disponible para este idioma.',
+    translateSame: 'Elige un idioma distinto del que practicas.',
+    reveal: 'Ver la traducción',
+    hideTranslation: 'Ocultar la traducción',
+    translating: 'Traduciendo…',
+    translateOffline: 'Traducción no disponible sin conexión.',
+    translateError: 'La traducción ha fallado. Inténtalo más tarde.',
+    translationsHint: 'Corrige libremente: tus cambios se guardan en la lista.',
+    translationsChoose: 'Primero elige un idioma de traducción en los ajustes.',
+    translateAuto: 'Traducir automáticamente ({n})',
+
     create: 'Crear la sesión',
     creating: 'Preparando… {n}/{total}',
     loadingVoice: 'Cargando la voz… {pct} %',
@@ -208,7 +222,7 @@ export default {
       },
       {
         h: 'Lo que no sale de tu dispositivo',
-        p: 'Tus frases, listas, ajustes y voces descargadas se guardan solo en tu navegador. La voz y la transcripción se generan en tu dispositivo: tus frases no se envían a ningún servicio. Los archivos de voz se descargan de HuggingFace y jsDelivr, que ven entonces tu dirección IP.',
+        p: 'Tus frases, listas, ajustes y voces descargadas se guardan solo en tu navegador. La voz y la transcripción se generan en tu dispositivo: tus frases no se envían a ningún servicio. Los archivos de voz se descargan de HuggingFace y jsDelivr, que ven entonces tu dirección IP. Excepción: si activas la traducción, las frases que hay que traducir se envían a Cloudflare (Workers AI) para traducirlas; la traducción se guarda después en tu dispositivo.',
       },
       {
         h: 'Dónde se guardan tus datos',

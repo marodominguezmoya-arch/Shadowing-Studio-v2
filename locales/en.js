@@ -116,6 +116,20 @@ export default {
     phoneticHint: 'The phrase rewritten with the spelling of the chosen language. In bold: the stressed syllable.',
     phoneticUnavailable: 'Transcription not available for this language yet.',
 
+    translations: 'Translations',
+    translate: 'Translation (active recall)',
+    translateHint: 'Hidden while you listen: try to recall the meaning, then tap “Show translation”.',
+    translateUnavailable: 'Translation not available for this language yet.',
+    translateSame: 'Choose a language different from the one you are practising.',
+    reveal: 'Show translation',
+    hideTranslation: 'Hide translation',
+    translating: 'Translating…',
+    translateOffline: 'Translation unavailable offline.',
+    translateError: 'Translation failed. Please try again later.',
+    translationsHint: 'Edit freely: your changes are kept in the list.',
+    translationsChoose: 'First choose a translation language in the settings.',
+    translateAuto: 'Translate automatically ({n})',
+
     create: 'Create the session',
     creating: 'Preparing… {n}/{total}',
     loadingVoice: 'Loading the voice… {pct}%',
@@ -208,7 +222,7 @@ export default {
       },
       {
         h: 'What never leaves your device',
-        p: 'Your phrases, lists, settings and downloaded voices are stored only in your browser. Speech is generated on your device: your phrases are never sent to any service. Voice files are downloaded from HuggingFace and jsDelivr, which then see your IP address.',
+        p: 'Your phrases, lists, settings and downloaded voices are stored only in your browser. Speech is generated on your device: your phrases are never sent to any service. Voice files are downloaded from HuggingFace and jsDelivr, which then see your IP address. Exception: if you turn on translation, the phrases to translate are sent to Cloudflare (Workers AI) to be translated; the translation is then kept on your device.',
       },
       {
         h: 'Where your data is stored',

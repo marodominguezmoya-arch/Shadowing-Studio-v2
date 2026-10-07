@@ -8,6 +8,7 @@ export const CONFIG = {
   // Relatif : en production, résolu en https://maromoya.com/shadowingstudio/api/onboard
   // (route servie par le Cloudflare Worker).
   onboardEndpoint: 'api/onboard',
+  translateEndpoint: 'api/translate',
 
   // En local, aucun Worker n'existe encore : l'envoi est simulé et affiché dans la console.
   mockOnboard: IS_LOCAL,

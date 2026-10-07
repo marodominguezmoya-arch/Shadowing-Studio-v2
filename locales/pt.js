@@ -116,6 +116,20 @@ export default {
     phoneticHint: 'A frase reescrita com o alfabeto do idioma escolhido. Em negrito: a sílaba tônica.',
     phoneticUnavailable: 'Transcrição ainda não disponível para este idioma.',
 
+    translations: 'Traduções',
+    translate: 'Tradução (lembrança ativa)',
+    translateHint: 'Oculta enquanto você ouve: tente lembrar o significado e depois toque em “Ver a tradução”.',
+    translateUnavailable: 'Tradução ainda não disponível para este idioma.',
+    translateSame: 'Escolha um idioma diferente do que você está praticando.',
+    reveal: 'Ver a tradução',
+    hideTranslation: 'Ocultar a tradução',
+    translating: 'Traduzindo…',
+    translateOffline: 'Tradução indisponível sem conexão.',
+    translateError: 'A tradução falhou. Tente novamente mais tarde.',
+    translationsHint: 'Corrija à vontade: suas alterações ficam salvas na lista.',
+    translationsChoose: 'Primeiro escolha um idioma de tradução nas configurações.',
+    translateAuto: 'Traduzir automaticamente ({n})',
+
     create: 'Criar a sessão',
     creating: 'Preparando… {n}/{total}',
     loadingVoice: 'Carregando a voz… {pct} %',
@@ -208,7 +222,7 @@ export default {
       },
       {
         h: 'O que não sai do seu aparelho',
-        p: 'Suas frases, listas, configurações e vozes baixadas ficam apenas no seu navegador. A voz e a transcrição são geradas no seu aparelho: suas frases não são enviadas a nenhum serviço. Os arquivos de voz são baixados do HuggingFace e do jsDelivr, que então veem o seu endereço IP.',
+        p: 'Suas frases, listas, configurações e vozes baixadas ficam apenas no seu navegador. A voz e a transcrição são geradas no seu aparelho: suas frases não são enviadas a nenhum serviço. Os arquivos de voz são baixados do HuggingFace e do jsDelivr, que então veem o seu endereço IP. Exceção: se você ativar a tradução, as frases a traduzir são enviadas à Cloudflare (Workers AI) para serem traduzidas; a tradução fica depois guardada no seu aparelho.',
       },
       {
         h: 'Onde seus dados ficam guardados',
