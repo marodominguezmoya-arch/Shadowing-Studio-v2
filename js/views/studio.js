@@ -3,7 +3,7 @@
 
 import { t, getLocale } from '../i18n.js';
 import { load, save } from '../storage.js';
-import { initLibrary, currentList, updateList, allLists } from '../library.js';
+import { initLibrary, currentList, updateList, allLists, listName } from '../library.js';
 import { splitSentences } from '../split.js';
 import { translationCode, translateTexts } from '../translate.js';
 import { installMode, promptInstall, dismissInstall, onInstallChange } from '../install.js';
@@ -59,7 +59,7 @@ let root = null;
 
 export function renderStudio(el) {
   root = el;
-  initLibrary({ defaultTag: defaultTag(profile), defaultName: t('library.firstName') });
+  initLibrary({ defaultTag: defaultTag(profile) });
   prefs = currentList();
   if (!findLanguage(prefs.tag)) prefs.tag = defaultTag(profile);
   const langs = practiceLanguages(getLocale());
@@ -68,7 +68,7 @@ export function renderStudio(el) {
   root.innerHTML = `<div class="studio">
     <p class="eyebrow">${t('studio.eyebrow')}${profile.firstName ? ` · ${t('studio.greeting', { name: esc(profile.firstName) })}` : ''}</p>
     <div class="list-head">
-      <h1 class="studio-title">${esc(prefs.name)}</h1>
+      <h1 class="studio-title">${esc(listName(prefs))}</h1>
       <a class="btn btn-ghost btn-sm" href="#/listes">${t('library.myLists')} (${count})</a>
     </div>
 

@@ -26,6 +26,11 @@ const listeners = new Set();
 
 export const availableLocales = Object.keys(LOCALES);
 
+// Valeur d'une clé dans toutes les langues (ex. reconnaître un nom par défaut enregistré autrefois).
+export function allTranslations(key) {
+  return Object.values(LOCALES).map((dict) => lookup(dict, key)).filter((v) => typeof v === 'string');
+}
+
 export function initLocale() {
   const saved = load('locale');
   const browser = (navigator.language || '').slice(0, 2).toLowerCase();

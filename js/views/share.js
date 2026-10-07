@@ -36,7 +36,7 @@ export async function renderShare(root, payload) {
   </div>`;
 
   root.querySelector('[data-action="add"]').addEventListener('click', () => {
-    initLibrary({ defaultTag: defaultTag(load('profile', {})), defaultName: t('library.firstName') });
+    initLibrary({ defaultTag: defaultTag(load('profile', {})) });
     createList(list); // devient la liste en cours
     location.hash = '#/';
   });

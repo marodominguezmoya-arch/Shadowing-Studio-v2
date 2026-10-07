@@ -2,6 +2,7 @@
 // Chaque liste garde sa langue et ses réglages. Les listes sont du texte : quelques Ko chacune.
 
 import { load, save } from './storage.js';
+import { t, allTranslations } from './i18n.js';
 
 const KEY = 'library';
 const FORMAT = 'shadowing-studio-lists';
@@ -22,14 +23,32 @@ function persist() {
   save(KEY, lib);
 }
 
+// Nom affiché : une liste jamais renommée (nom vide) prend « Ma première liste » dans la langue
+// de l'interface du moment, au lieu d'un nom figé dans la langue active à sa création.
+export function listName(list) {
+  return list?.name || t('library.firstName');
+}
+
 // Charge la bibliothèque ; à la première ouverture, reprend le brouillon de la v2.0 (clé « studio »).
-export function initLibrary({ defaultTag, defaultName }) {
+export function initLibrary({ defaultTag }) {
   lib = load(KEY, null);
-  if (lib && Array.isArray(lib.lists) && lib.lists.length) return;
+  if (lib && Array.isArray(lib.lists) && lib.lists.length) {
+    // Anciennes versions : le nom par défaut était enregistré en toutes lettres (« Minha primeira lista »).
+    const defaults = new Set(allTranslations('library.firstName'));
+    let changed = false;
+    for (const l of lib.lists) {
+      if (defaults.has(l.name)) {
+        l.name = '';
+        changed = true;
+      }
+    }
+    if (changed) persist();
+    return;
+  }
 
   const old = load('studio', null);
   const list = newList({
-    name: defaultName,
+    name: '',
     tag: old?.tag || defaultTag,
     text: old?.text || '',
     reps: old?.reps ?? DEFAULTS.reps,
@@ -90,7 +109,7 @@ export function createList({ name, tag, text = '', reps, pause, speed }) {
 export function duplicateList(id, suffix) {
   const src = getList(id);
   if (!src) return null;
-  const copy = newList({ ...src, id: undefined, name: `${src.name} ${suffix}`.trim() });
+  const copy = newList({ ...src, id: undefined, name: `${listName(src)} ${suffix}`.trim() });
   copy.id = uid();
   lib.lists.push(copy);
   persist();
@@ -98,10 +117,10 @@ export function duplicateList(id, suffix) {
 }
 
 // Supprime ; s'il ne reste rien, recrée une liste vide (le studio a toujours une liste courante).
-export function deleteList(id, fallbackName) {
+export function deleteList(id) {
   const removed = getList(id);
   lib.lists = lib.lists.filter((l) => l.id !== id);
-  if (!lib.lists.length) lib.lists.push(newList({ name: fallbackName, tag: removed?.tag }));
+  if (!lib.lists.length) lib.lists.push(newList({ name: '', tag: removed?.tag }));
   if (lib.currentId === id) lib.currentId = allLists()[0].id;
   persist();
 }
@@ -153,7 +172,7 @@ export function importData(json) {
   for (const raw of data.lists.slice(0, MAX_IMPORT)) {
     const item = {
       id: str(raw.id, 40) || uid(),
-      name: str(raw.name, 80) || '—',
+      name: str(raw.name, 80),
       tag: str(raw.tag, 20) || 'en-US',
       text: str(raw.text, 40000),
       reps: Math.min(10, Math.max(1, Number(raw.reps) || DEFAULTS.reps)),

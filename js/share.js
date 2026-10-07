@@ -1,6 +1,8 @@
 // Partage d'une liste par lien : la liste est compressée et encodée dans le fragment de l'URL
 // (#/partage/…). Rien n'est stocké sur un serveur, et le fragment n'est jamais envoyé au réseau.
 
+import { listName } from './library.js';
+
 const VERSION = 1;
 const MAX_PHRASES = 200;
 const MAX_CHARS = 400;
@@ -43,7 +45,7 @@ async function decompress(payload) {
 export async function shareUrl(list) {
   const data = {
     v: VERSION,
-    n: list.name,
+    n: listName(list),
     t: list.tag,
     p: list.text.split('\n').map((x) => x.trim()).filter(Boolean).slice(0, MAX_PHRASES),
     r: list.reps,
@@ -82,7 +84,7 @@ export async function shareList(list, message, url) {
   url ||= await shareUrl(list);
   if (navigator.share) {
     try {
-      await navigator.share({ title: list.name, text: message, url });
+      await navigator.share({ title: listName(list), text: message, url });
       return 'shared';
     } catch (err) {
       if (err?.name === 'AbortError') return 'cancelled';

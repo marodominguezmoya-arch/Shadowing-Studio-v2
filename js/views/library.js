@@ -6,7 +6,7 @@ import { load } from '../storage.js';
 import { practiceLanguages } from '../audio/catalog.js';
 import { defaultTag } from '../audio/catalog.js';
 import {
-  initLibrary, allLists, currentList, setCurrent, createList, updateList,
+  initLibrary, listName, allLists, currentList, setCurrent, createList, updateList,
   duplicateList, deleteList, exportBlob, importData,
 } from '../library.js';
 import { shareUrl, shareList } from '../share.js';
@@ -14,7 +14,7 @@ import { shareUrl, shareList } from '../share.js';
 let notice = ''; // message après import/export
 
 export function renderLibrary(root) {
-  initLibrary({ defaultTag: defaultTag(load('profile', {})), defaultName: t('library.firstName') });
+  initLibrary({ defaultTag: defaultTag(load('profile', {})) });
   const lists = allLists();
   const current = currentList();
   const labels = Object.fromEntries(practiceLanguages(getLocale()).map((l) => [l.tag, l.label]));
@@ -34,7 +34,7 @@ export function renderLibrary(root) {
         return `
         <li class="card list-card ${l.id === current.id ? 'is-current' : ''}">
           <button type="button" class="list-open" data-action="open" data-id="${l.id}">
-            <span class="list-name">${esc(l.name)}</span>
+            <span class="list-name">${esc(listName(l))}</span>
             ${l.id === current.id ? `<span class="badge">${t('library.current')}</span>` : ''}
             <span class="list-meta">${esc(labels[l.tag] || l.tag)} · ${n === 1 ? t('studio.countOne') : t('studio.countMany', { n })} · ${date.format(new Date(l.updatedAt))}</span>
           </button>
@@ -86,7 +86,7 @@ export function renderLibrary(root) {
       }
       case 'share': {
         const list = lists.find((l) => l.id === id);
-        shareList(list, t('library.shareMessage', { name: list.name }), urls.get(id)).then((result) => {
+        shareList(list, t('library.shareMessage', { name: listName(list) }), urls.get(id)).then((result) => {
           if (result === 'copied') {
             notice = t('library.shareCopied');
             rerender();
@@ -96,7 +96,7 @@ export function renderLibrary(root) {
       }
       case 'rename': {
         const list = lists.find((l) => l.id === id);
-        const name = prompt(t('library.renamePrompt'), list.name);
+        const name = prompt(t('library.renamePrompt'), listName(list));
         if (name === null || !name.trim()) return;
         updateList(id, { name: name.trim().slice(0, 80) });
         rerender();
@@ -108,8 +108,8 @@ export function renderLibrary(root) {
         break;
       case 'delete': {
         const list = lists.find((l) => l.id === id);
-        if (!confirm(t('library.deleteConfirm', { name: list.name }))) return;
-        deleteList(id, t('library.defaultName', { n: 1 }));
+        if (!confirm(t('library.deleteConfirm', { name: listName(list) }))) return;
+        deleteList(id);
         rerender();
         break;
       }
