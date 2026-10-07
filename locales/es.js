@@ -165,6 +165,9 @@ export default {
     new: 'Nueva lista',
     newPrompt: 'Nombre de la nueva lista:',
     current: 'Actual',
+    share: 'Compartir',
+    shareMessage: 'Practica estas frases en Shadowing Studio: «{name}»',
+    shareCopied: 'Enlace copiado: pégalo en un mensaje para compartir la lista.',
     rename: 'Renombrar',
     renamePrompt: 'Nuevo nombre:',
     duplicate: 'Duplicar',
@@ -178,6 +181,14 @@ export default {
     exported: 'Archivo guardado.',
     imported: 'Importación terminada: {added} añadida(s), {updated} actualizada(s), {skipped} ya al día.',
     importError: 'Este archivo no es una copia de seguridad de Shadowing Studio.',
+  },
+
+  share: {
+    eyebrow: 'Lista compartida',
+    invalidTitle: 'Enlace no válido',
+    invalid: 'Este enlace está incompleto o dañado. Pide a la persona que te lo vuelva a enviar.',
+    add: 'Añadir a mis listas',
+    decline: 'No, gracias',
   },
 
   paste: {

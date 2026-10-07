@@ -9,6 +9,7 @@ import {
   initLibrary, allLists, currentList, setCurrent, createList, updateList,
   duplicateList, deleteList, exportBlob, importData,
 } from '../library.js';
+import { shareUrl, shareList } from '../share.js';
 
 let notice = ''; // message après import/export
 
@@ -25,6 +26,7 @@ export function renderLibrary(root) {
     <h1 class="studio-title">${t('library.myLists')}</h1>
 
     <button type="button" class="btn btn-primary btn-block" data-action="new">+ ${t('library.new')}</button>
+    ${notice ? `<p class="notice-box" role="status">${notice}</p>` : ''}
 
     <ul class="lists">
       ${lists.map((l) => {
@@ -37,6 +39,7 @@ export function renderLibrary(root) {
             <span class="list-meta">${esc(labels[l.tag] || l.tag)} · ${n === 1 ? t('studio.countOne') : t('studio.countMany', { n })} · ${date.format(new Date(l.updatedAt))}</span>
           </button>
           <div class="list-actions">
+            <button type="button" class="btn-link btn-link-sm" data-action="share" data-id="${l.id}">${t('library.share')}</button>
             <button type="button" class="btn-link btn-link-sm" data-action="rename" data-id="${l.id}">${t('library.rename')}</button>
             <button type="button" class="btn-link btn-link-sm" data-action="duplicate" data-id="${l.id}">${t('library.duplicate')}</button>
             <button type="button" class="btn-link btn-link-sm danger" data-action="delete" data-id="${l.id}">${t('library.delete')}</button>
@@ -54,11 +57,14 @@ export function renderLibrary(root) {
           <input type="file" accept="application/json,.json" id="l-import" hidden>
         </label>
       </div>
-      ${notice ? `<p class="hint" role="status" style="margin-top:12px">${notice}</p>` : ''}
     </section>
   </div>`;
 
   const rerender = () => renderLibrary(root);
+
+  // Liens de partage préparés à l'avance (voir shareList).
+  const urls = new Map();
+  lists.forEach((l) => shareUrl(l).then((u) => urls.set(l.id, u)).catch(() => {}));
 
   root.querySelector('.library').addEventListener('click', (e) => {
     const btn = e.target.closest('[data-action]');
@@ -76,6 +82,16 @@ export function renderLibrary(root) {
         if (name === null) return;
         createList({ name: name.trim() || t('library.defaultName', { n: lists.length + 1 }) });
         location.hash = '#/';
+        break;
+      }
+      case 'share': {
+        const list = lists.find((l) => l.id === id);
+        shareList(list, t('library.shareMessage', { name: list.name }), urls.get(id)).then((result) => {
+          if (result === 'copied') {
+            notice = t('library.shareCopied');
+            rerender();
+          }
+        });
         break;
       }
       case 'rename': {

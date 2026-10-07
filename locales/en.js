@@ -165,6 +165,9 @@ export default {
     new: 'New list',
     newPrompt: 'Name of the new list:',
     current: 'Current',
+    share: 'Share',
+    shareMessage: 'Practise these phrases with me on Shadowing Studio: “{name}”',
+    shareCopied: 'Link copied: paste it into a message to share the list.',
     rename: 'Rename',
     renamePrompt: 'New name:',
     duplicate: 'Duplicate',
@@ -178,6 +181,14 @@ export default {
     exported: 'File saved.',
     imported: 'Import done: {added} added, {updated} updated, {skipped} already up to date.',
     importError: 'This file is not a Shadowing Studio backup.',
+  },
+
+  share: {
+    eyebrow: 'Shared list',
+    invalidTitle: 'Invalid link',
+    invalid: 'This share link is incomplete or damaged. Ask the sender to send it again.',
+    add: 'Add to my lists',
+    decline: 'No thanks',
   },
 
   paste: {

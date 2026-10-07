@@ -1,12 +1,13 @@
 // Point d'entrée : langue, routage par hash, garde d'onboarding.
 
 import { initLocale, setLocale, getLocale, onLocaleChange, t, availableLocales, LOCALE_NAMES } from './i18n.js';
-import { load, remove } from './storage.js';
+import { load, save, remove } from './storage.js';
 import { IS_LOCAL } from './config.js';
 import { renderOnboarding } from './views/onboarding.js';
 import { renderPrivacy } from './views/privacy.js';
 import { renderStudio } from './views/studio.js';
 import { renderLibrary } from './views/library.js';
+import { renderShare } from './views/share.js';
 import { registerServiceWorker } from './install.js';
 
 const view = document.getElementById('view');
@@ -25,16 +26,22 @@ if (IS_LOCAL && new URLSearchParams(location.search).has('reset')) {
 function route() {
   const hash = location.hash.replace(/^#\/?/, '');
 
+  // Lien de partage reçu par un nouvel utilisateur : on le garde pendant l'onboarding.
+  if (hash.startsWith('partage/') && !load('onboarded')) save('pendingShare', hash.slice('partage/'.length));
+
   if (hash === 'confidentialite') {
     renderPrivacy(view);
   } else if (!load('onboarded')) {
     renderOnboarding(view, {
       onDone: () => {
-        location.hash = '#/';
+        const pending = load('pendingShare');
+        location.hash = pending ? `#/partage/${pending}` : '#/';
         route();
         view.focus();
       },
     });
+  } else if (hash.startsWith('partage/')) {
+    renderShare(view, hash.slice('partage/'.length));
   } else if (hash === 'listes') {
     renderLibrary(view);
   } else {

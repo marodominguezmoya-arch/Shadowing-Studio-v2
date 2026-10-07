@@ -55,8 +55,8 @@ Accessible à **https://maromoya.com/shadowingstudio**, dans l'univers visuel de
 - **Interface multilingue** : FR, EN, ES, PT, RU, AR, avec prise en charge **droite-à-gauche** pour l'arabe.
 
 ### 4.3 Plus tard (hors périmètre v2.0)
-- Lien de partage d'une liste (encodée dans l'URL).
-- S'enregistrer au micro et comparer au modèle.
+- ~~Lien de partage d'une liste~~ → **fait** (2026-10-07, voir §14).
+- ~~S'enregistrer au micro et comparer au modèle~~ → écarté par Maro (2026-10-07).
 - ~~Traduction des phrases~~ → **fait** (2026-10-07, voir §13).
 
 ## 5. Audio
@@ -250,3 +250,15 @@ _Toutes les questions ouvertes sont tranchées._
   automatiquement (utilisé pour remplacer les traductions m2m100).
 - Confidentialité : les phrases ne quittent l'appareil que si la traduction est activée (mention dans les
   6 langues).
+
+## 14. Partage d'une liste par lien
+
+- « Mes listes » → **Partager** : feuille de partage du téléphone (`navigator.share`), sinon copie du lien.
+- Le lien contient la liste (nom, langue, phrases, réglages) compressée (deflate-raw + base64url) dans le
+  fragment : `https://maromoya.com/shadowingstudio/#/partage/z…`. Aucun stockage serveur ; le fragment n'est
+  pas envoyé au réseau. ~250 caractères pour 4 phrases, ~340 pour 40. Les traductions ne sont pas incluses
+  (le destinataire les obtient dans sa propre langue).
+- Destinataire : écran « Liste partagée » (aperçu → « Ajouter à mes listes », crée une nouvelle liste).
+  Nouvel utilisateur : le lien est gardé pendant l'onboarding (`pendingShare`), puis l'écran s'affiche.
+- Liens préparés à l'avance à l'affichage de la bibliothèque : Safari iOS n'ouvre la feuille de partage que
+  juste après un toucher.

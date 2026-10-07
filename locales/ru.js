@@ -165,6 +165,9 @@ export default {
     new: 'Новый список',
     newPrompt: 'Название нового списка:',
     current: 'Текущий',
+    share: 'Поделиться',
+    shareMessage: 'Потренируйся с этими фразами в Shadowing Studio: «{name}»',
+    shareCopied: 'Ссылка скопирована: вставьте её в сообщение, чтобы поделиться списком.',
     rename: 'Переименовать',
     renamePrompt: 'Новое название:',
     duplicate: 'Дублировать',
@@ -178,6 +181,14 @@ export default {
     exported: 'Файл сохранён.',
     imported: 'Импорт завершён: добавлено {added}, обновлено {updated}, без изменений {skipped}.',
     importError: 'Этот файл не является резервной копией Shadowing Studio.',
+  },
+
+  share: {
+    eyebrow: 'Общий список',
+    invalidTitle: 'Неверная ссылка',
+    invalid: 'Эта ссылка неполная или повреждена. Попросите отправителя прислать её ещё раз.',
+    add: 'Добавить в мои списки',
+    decline: 'Нет, спасибо',
   },
 
   paste: {

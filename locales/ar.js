@@ -165,6 +165,9 @@ export default {
     new: 'قائمة جديدة',
     newPrompt: 'اسم القائمة الجديدة:',
     current: 'الحالية',
+    share: 'مشاركة',
+    shareMessage: 'تدرّب على هذه الجمل في Shadowing Studio: «{name}»',
+    shareCopied: 'تم نسخ الرابط: الصقه في رسالة لمشاركة القائمة.',
     rename: 'إعادة التسمية',
     renamePrompt: 'الاسم الجديد:',
     duplicate: 'نسخ',
@@ -178,6 +181,14 @@ export default {
     exported: 'تم حفظ الملف.',
     imported: 'اكتمل الاستيراد: أُضيفت {added}، وحُدّثت {updated}، و{skipped} محدّثة مسبقًا.',
     importError: 'هذا الملف ليس نسخة احتياطية من Shadowing Studio.',
+  },
+
+  share: {
+    eyebrow: 'قائمة مُشارَكة',
+    invalidTitle: 'رابط غير صالح',
+    invalid: 'رابط المشاركة هذا ناقص أو تالف. اطلب من المرسل إعادة إرساله.',
+    add: 'إضافة إلى قوائمي',
+    decline: 'لا، شكرًا',
   },
 
   paste: {

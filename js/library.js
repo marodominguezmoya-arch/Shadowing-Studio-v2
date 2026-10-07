@@ -71,9 +71,16 @@ export function updateList(id, fields) {
   persist();
 }
 
-export function createList({ name, tag, text = '' }) {
+export function createList({ name, tag, text = '', reps, pause, speed }) {
   const base = currentList();
-  const list = newList({ name, tag: tag || base?.tag, text, reps: base?.reps, pause: base?.pause, speed: base?.speed });
+  const list = newList({
+    name,
+    tag: tag || base?.tag,
+    text,
+    reps: reps ?? base?.reps,
+    pause: pause ?? base?.pause,
+    speed: speed ?? base?.speed,
+  });
   lib.lists.push(list);
   lib.currentId = list.id;
   persist();

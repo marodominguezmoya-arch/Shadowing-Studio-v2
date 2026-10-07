@@ -584,6 +584,18 @@ input[type="range"] { width: 100%; accent-color: var(--accent); min-height: 32px
 .paste-preview li { margin: 0 0 4px; }
 .paste-actions { display: flex; flex-wrap: wrap; gap: 8px; }
 
+/* Partage */
+.notice-box {
+  margin: 12px 0 0;
+  padding: 10px 14px;
+  border: 1px solid var(--accent);
+  border-radius: 12px;
+  background: var(--accent-soft);
+  font-size: 14px;
+}
+.share-preview { max-height: 50vh; margin: 0; }
+.share .btn-block { margin-top: 4px; }
+
 /* Bibliothèque */
 .lists { display: grid; gap: 10px; margin: 18px 0; padding: 0; list-style: none; }
 .list-card { margin: 0; padding: 0; overflow: hidden; }
