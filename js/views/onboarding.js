@@ -82,7 +82,7 @@ function template() {
       </form>
 
       ${state.screen !== 'welcome' ? `
-        <button type="button" class="onb-back" data-action="prev">← ${t('common.back')}</button>` : ''}
+        <button type="button" class="onb-back" data-action="prev"><span class="arrow" aria-hidden="true">←</span> ${t('common.back')}</button>` : ''}
     </section>
   `;
 }

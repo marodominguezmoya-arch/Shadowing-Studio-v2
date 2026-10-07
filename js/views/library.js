@@ -20,7 +20,7 @@ export function renderLibrary(root) {
   const date = new Intl.DateTimeFormat(getLocale(), { day: 'numeric', month: 'short' });
 
   root.innerHTML = `<div class="library">
-    <p class="back"><a href="#/">← ${t('library.backToStudio')}</a></p>
+    <p class="back"><a href="#/"><span class="arrow" aria-hidden="true">←</span> ${t('library.backToStudio')}</a></p>
     <p class="eyebrow">${t('library.eyebrow')}</p>
     <h1 class="studio-title">${t('library.myLists')}</h1>
 

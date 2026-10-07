@@ -194,7 +194,7 @@ Cohérent avec **maromoya.com** (lui-même inspiré de danieldalen.com) :
 |---|---|---|
 | **v2.0 (lancement)** — **en ligne** (2026-10-06) | Interface FR + EN ; onboarding + Worker + CRM Notion + RGPD ; lecture directe + **export audio fiable** (voix locales + repli) + lecture écran verrouillé ; réglages de séance | **Obligatoire** |
 | v2.1 | Bibliothèque de listes, export/import JSON, découpage de texte collé ; PWA hors-ligne | **Fait** (2026-10-07) |
-| v2.2 | Interface complète FR/EN/ES/PT/RU/AR (RTL) ; transcription phonétique | Ensuite |
+| v2.2 | Interface complète FR/EN/ES/PT/RU/AR (RTL) ; transcription phonétique | **Fait** (2026-10-07) |
 
 ## 10. Questions ouvertes
 
@@ -220,3 +220,15 @@ _Toutes les questions ouvertes sont tranchées._
 - **Découpage** : `Intl.Segmenter` (règles de la langue de la liste), abréviations courtes recollées
   (« M. Dupont »), phrases > 400 caractères recoupées aux virgules.
 - **Icônes** : `python3 scripts/make-icons.py`.
+
+## 12. Notes techniques v2.2
+
+- **Interface** : `locales/{fr,en,es,pt,ru,ar}.js` (pt = portugais du Brésil, ar = arabe standard moderne),
+  menu de langue dans la barre du haut, `dir="rtl"` pour l'arabe. `node scripts/check-locales.mjs` vérifie que
+  chaque langue a les mêmes textes et variables que le français. Traductions à faire relire par des natifs.
+- **Transcription phonétique** (`js/phonetic.js`) : la v1 utilisait des règles de remplacement de lettres
+  (22 paires). La v2 part de la **prononciation réelle** (API) produite par espeak-ng — le phonémiseur déjà
+  utilisé pour les voix — puis la réécrit avec l'orthographe d'une langue lectrice : fr, en, es, pt (latin),
+  ru (cyrillique), ar (écriture arabe). Syllabe accentuée en gras, tons en exposant. Disponible pour toutes
+  les langues de pratique sauf le japonais et le yoruba (pas de données espeak-ng). Ne nécessite pas de voix
+  téléchargée (phonémiseur seul, ~19 Mo, en cache).

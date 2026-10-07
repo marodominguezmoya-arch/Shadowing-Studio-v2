@@ -2,9 +2,16 @@
 
 import fr from '../locales/fr.js';
 import en from '../locales/en.js';
+import es from '../locales/es.js';
+import pt from '../locales/pt.js';
+import ru from '../locales/ru.js';
+import ar from '../locales/ar.js';
 import { load, save } from './storage.js';
 
-const LOCALES = { fr, en };
+const LOCALES = { fr, en, es, pt, ru, ar };
+
+// Nom de chaque langue dans sa propre langue (menu de choix).
+export const LOCALE_NAMES = { fr: 'Français', en: 'English', es: 'Español', pt: 'Português', ru: 'Русский', ar: 'العربية' };
 const RTL = new Set(['ar', 'he', 'fa', 'ur']);
 const DEFAULT = 'fr';
 

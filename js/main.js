@@ -1,6 +1,6 @@
 // Point d'entrée : langue, routage par hash, garde d'onboarding.
 
-import { initLocale, setLocale, getLocale, onLocaleChange, t } from './i18n.js';
+import { initLocale, setLocale, getLocale, onLocaleChange, t, availableLocales, LOCALE_NAMES } from './i18n.js';
 import { load, remove } from './storage.js';
 import { IS_LOCAL } from './config.js';
 import { renderOnboarding } from './views/onboarding.js';
@@ -47,16 +47,15 @@ function syncFooter() {
   document.getElementById('footer-copyright').textContent = t('common.copyright', { year: new Date().getFullYear() });
 }
 
-function syncLocaleButtons() {
-  document.querySelectorAll('[data-locale]').forEach((btn) => {
-    btn.setAttribute('aria-pressed', String(btn.dataset.locale === getLocale()));
-  });
-}
+const localeSelect = document.getElementById('locale-select');
+localeSelect.innerHTML = availableLocales
+  .map((code) => `<option value="${code}" lang="${code}">${LOCALE_NAMES[code]}</option>`)
+  .join('');
+localeSelect.addEventListener('change', () => setLocale(localeSelect.value));
 
-document.querySelector('.locale-switch').addEventListener('click', (e) => {
-  const btn = e.target.closest('[data-locale]');
-  if (btn) setLocale(btn.dataset.locale);
-});
+function syncLocaleButtons() {
+  localeSelect.value = getLocale();
+}
 
 onLocaleChange(() => {
   syncLocaleButtons();

@@ -8,7 +8,7 @@ export function renderPrivacy(root) {
   const sections = t('privacy.sections');
 
   root.innerHTML = `
-    <p class="back"><a href="#/" data-action="back">← ${t('common.back')}</a></p>
+    <p class="back"><a href="#/" data-action="back"><span class="arrow" aria-hidden="true">←</span> ${t('common.back')}</a></p>
     <p class="eyebrow">${t('privacy.eyebrow')}</p>
     <h1>${t('privacy.title')}</h1>
     <p class="faint">${t('privacy.updated')}</p>

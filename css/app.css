@@ -158,27 +158,30 @@ button, input, select, textarea { font: inherit; color: inherit; }
 }
 
 .locale-switch {
+  position: relative;
   display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+  padding-inline: 12px 10px;
   border: 1px solid var(--border);
   border-radius: var(--radius-pill);
-  padding: 3px;
-}
-.locale-switch button {
-  min-width: 40px;
-  min-height: 34px;
-  border: 0;
-  border-radius: var(--radius-pill);
-  background: transparent;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  letter-spacing: 0.08em;
   color: var(--text-faint);
+}
+.locale-switch:focus-within { border-color: var(--accent); }
+.locale-switch select {
+  appearance: none;
+  -webkit-appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
 }
-.locale-switch button[aria-pressed="true"] {
-  background: var(--text);
-  color: var(--on-primary);
-}
+.locale-switch select:focus { outline: none; }
+
+[dir="rtl"] .arrow { display: inline-block; transform: scaleX(-1); }
 
 /* ---------- Mise en page des vues ---------- */
 main {
@@ -346,7 +349,8 @@ h3 {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 6px 6px 6px 14px;
+  padding-block: 6px;
+  padding-inline: 14px 6px;
   border: 1px solid var(--border-strong);
   border-radius: var(--radius-pill);
   font-size: 14px;
