@@ -7,10 +7,6 @@ export default {
     remove: 'Убрать',
   },
 
-  hello: {
-    tap: 'Коснитесь экрана, чтобы начать',
-  },
-
   onboarding: {
     eyebrow: 'Добро пожаловать',
     title: 'Перед началом',

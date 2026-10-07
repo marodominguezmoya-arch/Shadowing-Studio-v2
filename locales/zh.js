@@ -7,10 +7,6 @@ export default {
     remove: '移除',
   },
 
-  hello: {
-    tap: '轻触屏幕开始',
-  },
-
   onboarding: {
     eyebrow: '欢迎',
     title: '开始之前',

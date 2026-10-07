@@ -264,11 +264,11 @@ _Toutes les questions ouvertes sont tranchées._
 - Liens préparés à l'avance à l'affichage de la bibliothèque : Safari iOS n'ouvre la feuille de partage que
   juste après un toucher.
 
-## 15. Écran « Hello » (première visite)
+## 15. Salutation qui défile (accueil du formulaire)
 
-- Comme l'iPhone neuf : à la toute première visite (avant le formulaire), des salutations défilent vers le haut
-  (Bonjour, Hello, مرحبا, Hola, Olá, Hallo, Ciao, 你好, こんにちは, Привет, Merhaba, 안녕하세요…), toutes les 1,8 s.
-  Un toucher (ou Entrée) pour commencer ; ne réapparaît plus ensuite (`helloSeen`).
+- Sur l'écran d'accueil du formulaire, au-dessus du titre « Avant de commencer » (à la place de « Bienvenue »),
+  une salutation en grand défile vers le haut toutes les 1,8 s : Bonjour, Hello, مرحبا, Hola, Olá, Hallo, Ciao,
+  你好, こんにちは, Привет, Merhaba, 안녕하세요… (~25 langues, chacune dans son écriture).
 - Première salutation : langue du pays de connexion, fourni par Cloudflare (`GET /shadowingstudio/api/hello` →
   `{ country }`, rien n'est enregistré) ; sinon langue du téléphone (hors connexion, local).
-- Animations réduites si le téléphone le demande (fondu sans glissement).
+- Un premier essai en écran plein (façon iPhone neuf) a été remplacé à la demande de Maro (2026-10-07).

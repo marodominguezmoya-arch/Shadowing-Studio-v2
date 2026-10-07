@@ -6,6 +6,7 @@ import { CONFIG } from '../config.js';
 import { sortedLanguages, languageName, CEFR_LEVELS } from '../languages.js';
 import { save } from '../storage.js';
 import { esc } from '../dom.js';
+import { mountGreetings } from './hello.js';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const TEXT_FIELDS = {
@@ -41,8 +42,14 @@ function sequence() {
   ];
 }
 
+let stopGreetings = null;
+
 export function renderOnboarding(root, { onDone }) {
+  stopGreetings?.();
+  stopGreetings = null;
   root.innerHTML = template();
+  const stage = root.querySelector('.greet-stage');
+  if (stage) stopGreetings = mountGreetings(stage);
   bind(root, onDone);
   focusFirst(root);
 }
@@ -100,7 +107,8 @@ function nextButton(label = t('common.next')) {
 
 function screenWelcome() {
   return `
-    <p class="eyebrow">${t('onboarding.eyebrow')}</p>
+    <div class="greet-stage" aria-hidden="true"></div>
+    <p class="visually-hidden">${t('onboarding.eyebrow')}</p>
     <h1 class="onb-title" id="onb-q" tabindex="-1">${t('onboarding.title')}</h1>
     <p class="lead">${t('onboarding.lead')}</p>
     ${nextButton(t('onboarding.start'))}

@@ -1,7 +1,6 @@
-// Écran « Hello » de la toute première visite (façon iPhone neuf) : des salutations qui défilent
-// vers le haut, la première dans la langue du pays de connexion. Un toucher pour commencer.
+// Salutation qui défile vers le haut (Bonjour → Hello → مرحبا → Hola…), au-dessus du titre de
+// l'écran d'accueil du formulaire. La première est dans la langue du pays de connexion.
 
-import { t } from '../i18n.js';
 import { IS_LOCAL } from '../config.js';
 
 // [langue, salutation] — la langue sert aussi d'attribut lang (police, sens d'écriture).
@@ -31,19 +30,25 @@ const COUNTRY_LANG = {
 
 const STEP_MS = 1800;
 
-async function firstLanguage() {
-  const fallback = (navigator.language || 'en').slice(0, 2).toLowerCase();
-  if (IS_LOCAL) return fallback;
-  try {
-    const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), 1500);
-    const res = await fetch('api/hello', { signal: ctrl.signal, cache: 'no-store' });
-    clearTimeout(timer);
-    const { country } = await res.json();
-    return COUNTRY_LANG[country] || (country ? 'en' : fallback);
-  } catch {
-    return fallback; // hors connexion ou lent : langue du téléphone
-  }
+// Langue de la première salutation : pays de connexion (Cloudflare), sinon langue du téléphone.
+// Demandée une seule fois par visite.
+let firstLangPromise = null;
+function firstLanguage() {
+  firstLangPromise ||= (async () => {
+    const fallback = (navigator.language || 'en').slice(0, 2).toLowerCase();
+    if (IS_LOCAL) return fallback;
+    try {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 1500);
+      const res = await fetch('api/hello', { signal: ctrl.signal, cache: 'no-store' });
+      clearTimeout(timer);
+      const { country } = await res.json();
+      return COUNTRY_LANG[country] || (country ? 'en' : fallback);
+    } catch {
+      return fallback; // hors connexion ou lent
+    }
+  })();
+  return firstLangPromise;
 }
 
 function ordered(first) {
@@ -51,65 +56,42 @@ function ordered(first) {
   return [start, ...GREETINGS.filter((g) => g !== start)];
 }
 
-// Affiche l'écran par-dessus toute l'app ; appelle onDone après le toucher.
-export async function showHello({ onDone }) {
-  const el = document.createElement('div');
-  el.className = 'hello';
-  el.setAttribute('role', 'button');
-  el.setAttribute('tabindex', '0');
-  el.setAttribute('aria-label', t('hello.tap'));
-  el.innerHTML = `
-    <div class="hello-stage" aria-hidden="true"></div>
-    <p class="hello-tap">${t('hello.tap')}</p>
-    <p class="hello-brand">SHADOWING STUDIO</p>`;
-  document.body.append(el);
-  document.body.classList.add('hello-open');
-  el.focus();
-
-  const stage = el.querySelector('.hello-stage');
-  const list = ordered(await firstLanguage());
-  let i = 0;
+// Lance le défilement dans `stage` ; renvoie une fonction d'arrêt.
+export function mountGreetings(stage) {
+  let stopped = false;
+  let timer = null;
   let current = null;
+  let i = 0;
 
-  const show = () => {
-    const [lang, word] = list[i % list.length];
-    const next = document.createElement('span');
-    next.className = 'hello-word entering';
-    next.lang = lang;
-    next.dir = RTL.has(lang) ? 'rtl' : 'ltr';
-    next.textContent = word;
-    stage.append(next);
-    next.getBoundingClientRect(); // force le point de départ de l'animation
-    next.classList.remove('entering');
-    if (current) {
-      const old = current;
-      old.classList.add('leaving');
-      setTimeout(() => old.remove(), 900);
-    }
-    current = next;
-    i++;
-  };
-  show();
-  const timer = setInterval(show, STEP_MS);
-  setTimeout(() => el.classList.add('show-tap'), 1600);
-
-  let done = false;
-  const finish = () => {
-    if (done) return;
-    done = true;
-    clearInterval(timer);
-    el.classList.add('closing');
-    setTimeout(() => {
-      el.remove();
-      document.body.classList.remove('hello-open');
-      onDone();
-    }, 450);
-  };
-  el.addEventListener('click', finish);
-  el.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      finish();
-    }
+  firstLanguage().then((first) => {
+    if (stopped) return;
+    const list = ordered(first);
+    const show = () => {
+      if (!stage.isConnected) return stop();
+      const [lang, word] = list[i % list.length];
+      const next = document.createElement('span');
+      next.className = 'greet-word entering';
+      next.lang = lang;
+      next.dir = RTL.has(lang) ? 'rtl' : 'ltr';
+      next.textContent = word;
+      stage.append(next);
+      next.getBoundingClientRect(); // force le point de départ de l'animation
+      next.classList.remove('entering');
+      if (current) {
+        const old = current;
+        old.classList.add('leaving');
+        setTimeout(() => old.remove(), 900);
+      }
+      current = next;
+      i++;
+    };
+    show();
+    timer = setInterval(show, STEP_MS);
   });
+
+  function stop() {
+    stopped = true;
+    clearInterval(timer);
+  }
+  return stop;
 }
