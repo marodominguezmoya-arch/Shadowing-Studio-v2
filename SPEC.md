@@ -223,7 +223,8 @@ _Toutes les questions ouvertes sont tranchées._
 
 ## 12. Notes techniques v2.2
 
-- **Interface** : `locales/{fr,en,es,pt,ru,ar}.js` (pt = portugais du Brésil, ar = arabe standard moderne),
+- **Interface** : `locales/{fr,en,es,pt,de,ru,ar,zh,ja}.js` (pt = portugais du Brésil, ar = arabe standard
+  moderne, zh = mandarin en caractères simplifiés ; de/zh/ja ajoutés le 2026-10-07),
   menu de langue dans la barre du haut, `dir="rtl"` pour l'arabe. `node scripts/check-locales.mjs` vérifie que
   chaque langue a les mêmes textes et variables que le français. Traductions à faire relire par des natifs.
 - **Transcription phonétique** (`js/phonetic.js`) : la v1 utilisait des règles de remplacement de lettres

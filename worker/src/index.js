@@ -34,7 +34,7 @@ const LANGUAGE_CODES = new Set([
   'ro', 'ru', 'sk', 'sv', 'sw', 'th', 'tr', 'uk', 'ur', 'vi', 'yo', 'zh',
 ]);
 const CEFR = new Set(['A1', 'A2', 'B1', 'B2', 'C1', 'C2']);
-const UI_LOCALES = new Set(['fr', 'en', 'es', 'pt', 'ru', 'ar']);
+const UI_LOCALES = new Set(['fr', 'en', 'es', 'pt', 'de', 'ru', 'ar', 'zh', 'ja']);
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const MAX_TARGETS = 5;
 const MAX_BODY = 4096;

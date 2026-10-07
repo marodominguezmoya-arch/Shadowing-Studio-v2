@@ -5,7 +5,7 @@
 // - Moteur vocal sur jsDelivr (versions figées, donc immuables) : copie locale d'abord.
 // - Voix (HuggingFace) et API : non gérées ici (les voix ont leur propre cache).
 
-const VERSION = '2.5.0';
+const VERSION = '2.6.0';
 const SHELL = `ss2-shell-${VERSION}`;
 const CDN = 'ss2-cdn-v1';
 const NETWORK_TIMEOUT = 4000;
@@ -45,6 +45,9 @@ const APP_FILES = [
   'locales/pt.js',
   'locales/ru.js',
   'locales/ar.js',
+  'locales/de.js',
+  'locales/zh.js',
+  'locales/ja.js',
   'assets/fonts/inter-latin-wght-normal.woff2',
   'assets/fonts/inter-latin-ext-wght-normal.woff2',
   'assets/fonts/inter-cyrillic-wght-normal.woff2',
