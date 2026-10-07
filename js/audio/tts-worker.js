@@ -3,6 +3,7 @@
 // Messages reçus :
 //   { id, type: 'load',  voice: { key, path } }          → charge (et met en cache) la voix
 //   { id, type: 'synth', texts: [..], speed }            → { pcms: [Float32Array], sampleRate }
+//   { id, type: 'ipa',   texts: [..], espeak }           → [chaîne API par texte] (transcription)
 //   { id, type: 'has',   voice }                         → { cached: bool }
 //   { id, type: 'delete', voice }                        → supprime la voix du cache
 // Messages envoyés : { id, ok, result } | { id, ok: false, error } | { id, progress: { loaded, total, label } }
@@ -17,33 +18,46 @@ const CACHE_NAME = 'ss2-voices-v1';
 
 let PIPER_BASE = '';
 
-// Moteur (ONNX Runtime + script du phonémiseur) chargé à la demande, depuis le cache de l'app
-// s'il y est déjà : la voix fonctionne ainsi hors connexion, sans dépendre du service worker.
-let engineReady = null;
+// Moteur chargé à la demande, depuis le cache de l'app s'il y est déjà : la voix fonctionne
+// ainsi hors connexion, sans dépendre du service worker.
+//  - script du phonémiseur (espeak-ng) : voix ET transcription phonétique
+//  - ONNX Runtime : uniquement pour la voix
+const blobUrl = (bytes, type) => URL.createObjectURL(new Blob([bytes], { type }));
+let phonemizerScriptReady = null;
+let ortReady = null;
 
-function ensureEngine(id) {
-  engineReady ||= (async () => {
-    const [ortJs, phonemizeJs, ortWasm] = await Promise.all([
-      cachedFetch(ORT_BASE + 'ort.wasm.min.js', { id, label: 'engine', weight: 0.02, offset: 0, totalWeight: 1 }),
-      cachedFetch(PHONEMIZE_BASE + 'piper_phonemize.js', { id, label: 'engine', weight: 0.01, offset: 0.02, totalWeight: 1 }),
-      cachedFetch(ORT_BASE + 'ort-wasm-simd.wasm', { id, label: 'engine', weight: 0.09, offset: 0.03, totalWeight: 1 }),
-    ]);
-    const blobUrl = (bytes, type) => URL.createObjectURL(new Blob([bytes], { type }));
-    try {
-      importScripts(blobUrl(ortJs, 'text/javascript'), blobUrl(phonemizeJs, 'text/javascript'));
-    } catch (err) {
-      throw staged('init', new Error(`chargement du moteur impossible : ${err.message}`));
-    }
-    // Toujours mono-thread : ort-wasm-simd.wasm, sans mémoire partagée (compatible iPhone).
-    ort.env.wasm.numThreads = 1;
-    ort.env.wasm.proxy = false;
-    ort.env.wasm.wasmPaths = { 'ort-wasm-simd.wasm': blobUrl(ortWasm, 'application/wasm') };
-  })().catch((err) => {
-    engineReady = null; // nouvel essai possible
+function once(fn) {
+  let p = null;
+  return (...args) => (p ||= fn(...args).catch((err) => {
+    p = null; // nouvel essai possible
     throw err;
-  });
-  return engineReady;
+  }));
 }
+
+const ensurePhonemizerScript = once(async (id) => {
+  const js = await cachedFetch(PHONEMIZE_BASE + 'piper_phonemize.js', { id, label: 'engine', weight: 0.01, offset: 0.02, totalWeight: 1 });
+  try {
+    importScripts(blobUrl(js, 'text/javascript'));
+  } catch (err) {
+    throw staged('init', new Error(`chargement du phonémiseur impossible : ${err.message}`));
+  }
+});
+
+const ensureOrt = once(async (id) => {
+  const [ortJs, ortWasm] = await Promise.all([
+    cachedFetch(ORT_BASE + 'ort.wasm.min.js', { id, label: 'engine', weight: 0.02, offset: 0, totalWeight: 1 }),
+    cachedFetch(ORT_BASE + 'ort-wasm-simd.wasm', { id, label: 'engine', weight: 0.09, offset: 0.03, totalWeight: 1 }),
+  ]);
+  try {
+    importScripts(blobUrl(ortJs, 'text/javascript'));
+  } catch (err) {
+    throw staged('init', new Error(`chargement du moteur impossible : ${err.message}`));
+  }
+  // Toujours mono-thread : ort-wasm-simd.wasm, sans mémoire partagée (compatible iPhone).
+  ort.env.wasm.numThreads = 1;
+  ort.env.wasm.proxy = false;
+  ort.env.wasm.wasmPaths = { 'ort-wasm-simd.wasm': blobUrl(ortWasm, 'application/wasm') };
+});
 
 let current = null; // { key, session, config }
 let phonemizeUrls = null; // { wasm, data } en blob: URLs
@@ -57,6 +71,7 @@ self.onmessage = async (e) => {
       result = true;
     } else if (type === 'load') result = await loadVoice(e.data.voice, id);
     else if (type === 'synth') result = await synth(e.data.texts, e.data.speed);
+    else if (type === 'ipa') result = await ipa(e.data.texts, e.data.espeak, id);
     else if (type === 'has') result = { cached: await hasVoice(e.data.voice) };
     else if (type === 'delete') result = await deleteVoice(e.data.voice);
     else throw new Error('type inconnu : ' + type);
@@ -178,6 +193,7 @@ async function deleteVoice(voice) {
 
 // Le phonémiseur (espeak-ng, ~18 Mo) est commun à toutes les langues.
 async function ensurePhonemizer(id) {
+  await ensurePhonemizerScript(id);
   if (phonemizeUrls) return;
   const [wasm, data] = await Promise.all([
     cachedFetch(PHONEMIZE_BASE + 'piper_phonemize.wasm', { id, label: 'phonemizer', weight: 0.02, offset: 0.12, totalWeight: 1 }),
@@ -192,7 +208,7 @@ async function ensurePhonemizer(id) {
 async function loadVoice(voice, id) {
   if (current && current.key === voice.key) return { key: voice.key, sampleRate: current.config.audio.sample_rate };
 
-  await ensureEngine(id);
+  await ensureOrt(id);
   await ensurePhonemizer(id);
   const { model, config } = voiceUrls(voice);
   const configBytes = await cachedFetch(config, { id, label: 'config', weight: 0.01, offset: 0.32, totalWeight: 1 });
@@ -253,7 +269,8 @@ async function phonemize(texts, espeakVoice) {
     const results = [];
     for (const line of phonemizeOutput) {
       try {
-        results.push(JSON.parse(line).phoneme_ids);
+        const parsed = JSON.parse(line);
+        results.push({ ids: parsed.phoneme_ids, ipa: parsed.phonemes.join('') });
       } catch {
         /* ligne non JSON : ignorée */
       }
@@ -263,6 +280,18 @@ async function phonemize(texts, espeakVoice) {
   } finally {
     phonemizeOutput = null;
   }
+}
+
+// Prononciation (API) de chaque texte, pour la transcription phonétique. N'utilise pas de voix.
+async function ipa(texts, espeakVoice, id) {
+  await ensurePhonemizer(id);
+  let res;
+  try {
+    res = await phonemize(texts, espeakVoice);
+  } catch (err) {
+    throw staged('phonemize', err);
+  }
+  return res.map((r) => r.ipa);
 }
 
 async function synth(texts, speed = 1) {
@@ -280,7 +309,7 @@ async function synth(texts, speed = 1) {
   const lengthScale = (inf.length_scale ?? 1) / Math.max(0.3, speed);
 
   const pcms = [];
-  for (const phonemeIds of ids) {
+  for (const { ids: phonemeIds } of ids) {
     const feeds = {
       input: new ort.Tensor('int64', BigInt64Array.from(phonemeIds.map(BigInt)), [1, phonemeIds.length]),
       input_lengths: new ort.Tensor('int64', BigInt64Array.from([BigInt(phonemeIds.length)]), [1]),

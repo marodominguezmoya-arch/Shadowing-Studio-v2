@@ -2,13 +2,14 @@
 // ou lecture en direct (voix du navigateur) quand aucune voix locale n'existe.
 
 import { t, getLocale } from '../i18n.js';
-import { load } from '../storage.js';
+import { load, save } from '../storage.js';
 import { initLibrary, currentList, updateList, allLists } from '../library.js';
 import { splitSentences } from '../split.js';
 import { installMode, promptInstall, dismissInstall, onInstallChange } from '../install.js';
 import { esc } from '../dom.js';
 import { practiceLanguages, findLanguage, defaultTag } from '../audio/catalog.js';
-import { isVoiceCached, loadVoice, deleteVoice, synthesize } from '../audio/piper.js';
+import { isVoiceCached, loadVoice, deleteVoice, synthesize, phonemesOf } from '../audio/piper.js';
+import { TRANSCRIPTION_TARGETS, espeakVoiceFor, ipaToSpelling, STRESS_ON, STRESS_OFF } from '../phonetic.js';
 import { buildSession, encodeWav, timelineIndexAt } from '../audio/session.js';
 import { playLive, findVoice, webSpeechSupported } from '../audio/webspeech.js';
 
@@ -20,6 +21,12 @@ const SYNTH_BATCH = 4;
 const profile = load('profile', {});
 // « prefs » = la liste courante de la bibliothèque (objet modifié en place puis sauvegardé).
 let prefs = null;
+
+// Transcription phonétique : préférence globale (pas par liste). Par défaut, la langue maternelle
+// si elle fait partie des langues lectrices.
+let phonTarget = load('phonetic', null) ?? (TRANSCRIPTION_TARGETS.includes(profile.native) ? profile.native : 'none');
+const phonCache = new Map(); // « espeak|cible|texte » → HTML
+let phonPending = false;
 
 // État d'exécution (survit aux re-rendus : changement de langue d'interface, etc.).
 const rt = {
@@ -92,6 +99,14 @@ export function renderStudio(el) {
         <label for="s-speed">${t('studio.speed')} <output id="s-speed-val">${prefs.speed} %</output></label>
         <input type="range" id="s-speed" min="50" max="150" step="5" value="${prefs.speed}">
       </div>
+      <div class="setting">
+        <label for="s-phon">${t('studio.phonetic')}</label>
+        <select class="select select-sm" id="s-phon">
+          <option value="none">${t('studio.phoneticNone')}</option>
+          ${phoneticTargets().map((o) => `<option value="${o.code}" ${o.code === phonTarget ? 'selected' : ''}>${esc(o.label)}</option>`).join('')}
+        </select>
+      </div>
+      <p class="hint" id="s-phon-hint"></p>
     </section>
 
     <div id="s-action"></div>
@@ -102,6 +117,7 @@ export function renderStudio(el) {
 
   bind();
   updateCount();
+  updatePhoneticHint();
   renderPaste();
   refreshVoice();
   renderAction();
@@ -165,6 +181,7 @@ function bind() {
     prefs.tag = e.target.value;
     persist();
     stopLive();
+    updatePhoneticHint();
     rt.error = '';
     refreshVoice();
     renderAction();
@@ -191,6 +208,13 @@ function bind() {
     prefs.pause = e.target.value;
     persist();
     onSettingsChanged();
+  });
+
+  $('#s-phon').addEventListener('change', (e) => {
+    phonTarget = e.target.value;
+    save('phonetic', phonTarget);
+    updatePhoneticHint();
+    refreshPhonetics();
   });
 
   $('#s-speed').addEventListener('input', (e) => {
@@ -238,6 +262,72 @@ function onSettingsChanged() {
 function updateCount() {
   const n = phrases().length;
   root.querySelector('#s-count').textContent = n === 1 ? t('studio.countOne') : t('studio.countMany', { n });
+}
+
+// ---------------------------------------------------------------------------
+// Transcription phonétique
+// ---------------------------------------------------------------------------
+
+function phoneticTargets() {
+  const names = new Intl.DisplayNames([getLocale()], { type: 'language' });
+  return TRANSCRIPTION_TARGETS.map((code) => {
+    const label = names.of(code) || code;
+    return { code, label: label.charAt(0).toLocaleUpperCase(getLocale()) + label.slice(1) };
+  });
+}
+
+function updatePhoneticHint() {
+  const el = root?.querySelector('#s-phon-hint');
+  if (!el) return;
+  const unavailable = phonTarget !== 'none' && !espeakVoiceFor(prefs.tag);
+  el.textContent = phonTarget === 'none' ? '' : unavailable ? t('studio.phoneticUnavailable') : t('studio.phoneticHint');
+}
+
+const phonKey = (espeak, target, text) => `${espeak}|${target}|${text}`;
+
+// HTML de la transcription d'une phrase ('' si désactivée / indisponible, « … » si en calcul).
+function phoneticHtml(text) {
+  const espeak = espeakVoiceFor(prefs.tag);
+  if (phonTarget === 'none' || !espeak || !text) return '';
+  const cached = phonCache.get(phonKey(espeak, phonTarget, text));
+  if (cached === undefined) {
+    requestPhonetics();
+    return '…';
+  }
+  return cached;
+}
+
+async function requestPhonetics() {
+  const espeak = espeakVoiceFor(prefs.tag);
+  const target = phonTarget;
+  if (phonPending || target === 'none' || !espeak) return;
+  const list = rt.live?.phrases || rt.session?.phrases || phrases();
+  const todo = [...new Set(list.filter((x) => !phonCache.has(phonKey(espeak, target, x))))];
+  if (!todo.length) return;
+  phonPending = true;
+  try {
+    const ipas = await phonemesOf(todo, espeak);
+    todo.forEach((x, i) => {
+      const html = esc(ipaToSpelling(ipas[i], target)).replaceAll(STRESS_ON, '<strong>').replaceAll(STRESS_OFF, '</strong>');
+      phonCache.set(phonKey(espeak, target, x), html);
+    });
+  } catch (err) {
+    console.warn('[phonetic]', err);
+    todo.forEach((x) => phonCache.set(phonKey(espeak, target, x), ''));
+  } finally {
+    phonPending = false;
+  }
+  refreshPhonetics();
+}
+
+function refreshPhonetics() {
+  if (rt.live) renderPlayer();
+  else syncPlayer(true);
+}
+
+function phoneticLine(text) {
+  const html = phoneticHtml(text);
+  return html ? `<p class="phonetic" lang="${phonTarget}" dir="${phonTarget === 'ar' ? 'rtl' : 'ltr'}">${html}</p>` : '';
 }
 
 // ---------------------------------------------------------------------------
@@ -550,6 +640,7 @@ function renderPlayer() {
     box.innerHTML = step
       ? `<section class="card player">
            <p class="now-phrase" lang="${prefs.tag}">${esc(rt.live.phrases[step.phrase])}</p>
+           ${phoneticLine(rt.live.phrases[step.phrase])}
            <p class="faint center">${t('studio.phraseOf', { n: step.phrase + 1, total: rt.live.phrases.length })} · ${t('studio.repOf', { n: step.rep + 1, total: prefs.reps })}</p>
          </section>`
       : '';
@@ -569,6 +660,7 @@ function renderPlayer() {
       <p class="eyebrow center">${t('studio.playerTitle')}</p>
       ${outdated ? `<p class="hint center warn">${t('studio.outdated')}</p>` : ''}
       <p class="now-phrase" id="p-phrase" lang="${s.tag}"></p>
+      <div id="p-phon"></div>
       <p class="faint center" id="p-count"></p>
       <input type="range" class="seek" id="p-seek" min="0" max="${s.duration.toFixed(1)}" step="0.1" value="0" aria-label="Position">
       <p class="times"><span id="p-time">0:00</span><span>${fmt(s.duration)}</span></p>
@@ -587,7 +679,9 @@ function renderPlayer() {
   syncPlayer();
 }
 
-function syncPlayer() {
+let lastPhonPhrase = null;
+
+function syncPlayer(forcePhonetic = false) {
   const s = rt.session;
   const box = root?.querySelector('#s-player');
   if (!s || !box || !box.querySelector('#p-phrase')) return;
@@ -597,6 +691,11 @@ function syncPlayer() {
   const phrase = s.phrases[entry.phrase];
 
   box.querySelector('#p-phrase').textContent = phrase;
+  const phonBox = box.querySelector('#p-phon');
+  if (forcePhonetic === true || phrase !== lastPhonPhrase || !phonBox.hasChildNodes()) {
+    lastPhonPhrase = phrase;
+    phonBox.innerHTML = phoneticLine(phrase);
+  }
   box.querySelector('#p-count').textContent =
     `${t('studio.phraseOf', { n: entry.phrase + 1, total: s.phrases.length })} · ${t('studio.repOf', { n: entry.rep + 1, total: prefs.reps })}`;
   const seek = box.querySelector('#p-seek');

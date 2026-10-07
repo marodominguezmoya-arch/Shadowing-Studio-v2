@@ -615,6 +615,15 @@ input[type="range"] { width: 100%; accent-color: var(--accent); min-height: 32px
   display: grid;
   place-items: center;
 }
+.phonetic {
+  margin: 0 0 6px;
+  text-align: center;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--accent);
+  overflow-wrap: anywhere;
+}
+.phonetic strong { font-weight: 800; text-decoration: underline; text-underline-offset: 3px; }
 .seek { margin: 14px 0 0; }
 .times { display: flex; justify-content: space-between; margin: 0; font-family: var(--font-mono); font-size: 12px; color: var(--text-faint); }
 .transport { display: flex; justify-content: center; align-items: center; gap: 18px; margin: 10px 0 18px; }

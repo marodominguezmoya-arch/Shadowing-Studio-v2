@@ -111,6 +111,11 @@ export default {
     less: 'Moins',
     more: 'Plus',
 
+    phonetic: 'Transcription phonétique',
+    phoneticNone: 'Aucune',
+    phoneticHint: 'La phrase réécrite avec l’alphabet de la langue choisie. En gras : la syllabe accentuée.',
+    phoneticUnavailable: 'Transcription pas encore disponible pour cette langue.',
+
     create: 'Créer la séance',
     creating: 'Préparation… {n}/{total}',
     loadingVoice: 'Chargement de la voix… {pct} %',

@@ -111,6 +111,11 @@ export default {
     less: 'Less',
     more: 'More',
 
+    phonetic: 'Phonetic transcription',
+    phoneticNone: 'None',
+    phoneticHint: 'The phrase rewritten with the spelling of the chosen language. In bold: the stressed syllable.',
+    phoneticUnavailable: 'Transcription not available for this language yet.',
+
     create: 'Create the session',
     creating: 'Preparing… {n}/{total}',
     loadingVoice: 'Loading the voice… {pct}%',

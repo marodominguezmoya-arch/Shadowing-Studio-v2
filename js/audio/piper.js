@@ -56,3 +56,8 @@ export function deleteVoice(voice) {
 export function synthesize(texts, speed = 1) {
   return call('synth', { texts, speed });
 }
+
+// Prononciation API de chaque texte (voix espeak-ng, ex. 'en-us'). onProgress : 1er téléchargement.
+export function phonemesOf(texts, espeak, onProgress) {
+  return call('ipa', { texts, espeak }, onProgress);
+}
