@@ -1,6 +1,7 @@
 // Cloudflare Worker — maromoya.com/shadowingstudio*
 //
 //  /shadowingstudio/api/onboard  (POST) → valide le formulaire → crée/met à jour la fiche Notion
+//  /shadowingstudio/api/hello (GET)      → pays de connexion (écran d'accueil)
 //  /shadowingstudio/api/translate (POST) → traduit des phrases (Workers AI : Llama 4 Scout, secours m2m100)
 //  /shadowingstudio/…                  → sert l'app statique hébergée sur GitHub Pages
 //
@@ -62,6 +63,11 @@ export default {
 
     if (url.pathname === `${PREFIX}/api/translate`) {
       return handleTranslate(request, env);
+    }
+
+    // Pays de connexion (déduit de l'IP par Cloudflare) pour l'écran « Hello ». Rien n'est enregistré.
+    if (url.pathname === `${PREFIX}/api/hello`) {
+      return json({ country: request.cf?.country || null });
     }
 
     return proxyToPages(request, env, url);

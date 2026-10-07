@@ -188,3 +188,13 @@ test('traduction : erreur des deux modèles → 502', async () => {
   const AI = { run: async () => { throw new Error('boom'); } };
   assert.equal((await translate({ texts: ['a'], source: 'en', target: 'fr' }, { AI })).status, 502);
 });
+
+test('api/hello renvoie le pays fourni par Cloudflare, sans cache', async () => {
+  const req = new Request('https://maromoya.com/shadowingstudio/api/hello');
+  Object.defineProperty(req, 'cf', { value: { country: 'JO' } });
+  const res = await worker.fetch(req, env);
+  assert.deepEqual(await res.json(), { country: 'JO' });
+  assert.equal(res.headers.get('Cache-Control'), 'no-store');
+  const none = await worker.fetch(new Request('https://maromoya.com/shadowingstudio/api/hello'), env);
+  assert.deepEqual(await none.json(), { country: null });
+});

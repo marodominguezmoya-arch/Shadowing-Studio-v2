@@ -7,6 +7,10 @@ export default {
     remove: 'Remover',
   },
 
+  hello: {
+    tap: 'Toque na tela para começar',
+  },
+
   onboarding: {
     eyebrow: 'Boas-vindas',
     title: 'Antes de começar',

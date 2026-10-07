@@ -8,9 +8,11 @@ import { renderPrivacy } from './views/privacy.js';
 import { renderStudio } from './views/studio.js';
 import { renderLibrary } from './views/library.js';
 import { renderShare } from './views/share.js';
+import { showHello } from './views/hello.js';
 import { registerServiceWorker } from './install.js';
 
 const view = document.getElementById('view');
+let helloShowing = false;
 
 // La copie brute sur github.io n'a pas d'API : on renvoie vers l'adresse officielle.
 if (location.hostname.endsWith('github.io')) {
@@ -19,7 +21,7 @@ if (location.hostname.endsWith('github.io')) {
 
 // Outil de dev : http://localhost:8080/?reset efface l'onboarding pour le retester.
 if (IS_LOCAL && new URLSearchParams(location.search).has('reset')) {
-  ['onboarded', 'profile'].forEach(remove);
+  ['onboarded', 'profile', 'helloSeen'].forEach(remove);
   history.replaceState(null, '', location.pathname);
 }
 
@@ -32,6 +34,17 @@ function route() {
   if (hash === 'confidentialite') {
     renderPrivacy(view);
   } else if (!load('onboarded')) {
+    // Toute première visite : écran « Hello » par-dessus le formulaire, une seule fois.
+    if (!load('helloSeen') && !helloShowing) {
+      helloShowing = true;
+      showHello({
+        onDone: () => {
+          save('helloSeen', true);
+          helloShowing = false;
+          view.querySelector('#onb-q')?.focus();
+        },
+      });
+    }
     renderOnboarding(view, {
       onDone: () => {
         const pending = load('pendingShare');

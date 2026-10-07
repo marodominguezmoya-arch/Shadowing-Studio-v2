@@ -231,6 +231,69 @@ h3 {
 .muted { color: var(--text-muted); }
 .faint { color: var(--text-faint); font-size: 14px; }
 
+/* ---------- Écran « Hello » (première visite) ---------- */
+body.hello-open { overflow: hidden; }
+.hello {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: env(safe-area-inset-top) var(--gutter) env(safe-area-inset-bottom);
+  background: var(--bg);
+  cursor: pointer;
+  outline: none;
+  transition: opacity 0.45s ease;
+}
+.hello.closing { opacity: 0; }
+.hello-stage {
+  position: relative;
+  width: 100%;
+  height: 1.5em;
+  font-size: clamp(3rem, 15vw, 6.5rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.5;
+}
+.hello-word {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  background: linear-gradient(100deg, var(--text) 20%, var(--accent) 90%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  transition: transform 0.85s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.85s ease;
+}
+.hello-word.entering { transform: translateY(55%); opacity: 0; }
+.hello-word.leaving { transform: translateY(-55%); opacity: 0; }
+.hello-tap {
+  position: absolute;
+  bottom: calc(env(safe-area-inset-bottom) + 76px);
+  margin: 0;
+  font-size: 14.5px;
+  color: var(--text-faint);
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+.hello.show-tap .hello-tap { opacity: 1; animation: hello-pulse 2.6s ease-in-out 0.8s infinite; }
+@keyframes hello-pulse { 50% { opacity: 0.45; } }
+.hello-brand {
+  position: absolute;
+  bottom: calc(env(safe-area-inset-bottom) + 30px);
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  color: var(--accent);
+}
+@media (prefers-reduced-motion: reduce) {
+  .hello-word.entering, .hello-word.leaving { transform: none; }
+}
+
 /* ---------- Onboarding : une question par écran, centrée ---------- */
 .onb {
   display: flex;

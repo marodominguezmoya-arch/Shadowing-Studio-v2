@@ -263,3 +263,12 @@ _Toutes les questions ouvertes sont tranchées._
   Nouvel utilisateur : le lien est gardé pendant l'onboarding (`pendingShare`), puis l'écran s'affiche.
 - Liens préparés à l'avance à l'affichage de la bibliothèque : Safari iOS n'ouvre la feuille de partage que
   juste après un toucher.
+
+## 15. Écran « Hello » (première visite)
+
+- Comme l'iPhone neuf : à la toute première visite (avant le formulaire), des salutations défilent vers le haut
+  (Bonjour, Hello, مرحبا, Hola, Olá, Hallo, Ciao, 你好, こんにちは, Привет, Merhaba, 안녕하세요…), toutes les 1,8 s.
+  Un toucher (ou Entrée) pour commencer ; ne réapparaît plus ensuite (`helloSeen`).
+- Première salutation : langue du pays de connexion, fourni par Cloudflare (`GET /shadowingstudio/api/hello` →
+  `{ country }`, rien n'est enregistré) ; sinon langue du téléphone (hors connexion, local).
+- Animations réduites si le téléphone le demande (fondu sans glissement).

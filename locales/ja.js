@@ -7,6 +7,10 @@ export default {
     remove: '削除',
   },
 
+  hello: {
+    tap: '画面をタップしてはじめる',
+  },
+
   onboarding: {
     eyebrow: 'ようこそ',
     title: 'はじめる前に',
