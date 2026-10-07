@@ -620,15 +620,22 @@ input[type="range"] { width: 100%; accent-color: var(--accent); min-height: 32px
   place-items: center;
 }
 .phonetic {
-  margin: 0 0 6px;
+  max-width: 100%;
+  padding: 10px 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: transparent;
   text-align: center;
   font-size: 16px;
   line-height: 1.5;
   color: var(--accent);
+  cursor: pointer;
   overflow-wrap: anywhere;
 }
 .phonetic strong { font-weight: 800; text-decoration: underline; text-underline-offset: 3px; }
-.reveal-box { display: flex; justify-content: center; margin: 4px 0 2px; min-height: 44px; }
+.reveal-box { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 6px 0 2px; }
+.reveal-box .hint { margin: 0; align-self: center; }
+.revealed { flex-basis: 100%; animation: reveal-in 0.2s ease both; }
 .reveal {
   min-height: 44px;
   padding: 0 18px;
@@ -651,16 +658,39 @@ input[type="range"] { width: 100%; accent-color: var(--accent); min-height: 32px
   text-align: center;
   cursor: pointer;
   overflow-wrap: anywhere;
-  animation: reveal-in 0.2s ease both;
 }
 @keyframes reveal-in { from { opacity: 0; transform: scale(0.98); } }
 
-/* Outils sous les phrases + panneau des traductions */
-.phrase-tools { display: flex; flex-wrap: wrap; gap: 4px 18px; }
-.trans-panel { display: grid; gap: 12px; margin: 8px 0 0; }
-.trans-row { display: grid; gap: 6px; font-size: 14px; color: var(--text-muted); }
-.trans-row .input { min-height: 42px; padding: 8px 12px; font-size: 15px; }
-.trans-panel .btn { justify-self: start; }
+/* Interrupteur (prononciation, traduction) */
+.switch {
+  appearance: none;
+  -webkit-appearance: none;
+  flex: none;
+  position: relative;
+  width: 50px;
+  height: 30px;
+  margin: 0;
+  border-radius: 999px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-strong);
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+.switch::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  inset-inline-start: 3px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--text-faint);
+  transition: transform 0.2s, background 0.2s;
+}
+.switch:checked { background: var(--accent); border-color: var(--accent); }
+.switch:checked::after { background: var(--on-primary); transform: translateX(20px); }
+[dir="rtl"] .switch:checked::after { transform: translateX(-20px); }
+.setting .hint, .card > .hint:empty { margin: 0; }
 
 .seek { margin: 14px 0 0; }
 .times { display: flex; justify-content: space-between; margin: 0; font-family: var(--font-mono); font-size: 12px; color: var(--text-faint); }

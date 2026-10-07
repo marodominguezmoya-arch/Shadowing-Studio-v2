@@ -233,19 +233,20 @@ _Toutes les questions ouvertes sont tranchées._
   les langues de pratique sauf le japonais et le yoruba (pas de données espeak-ng). Ne nécessite pas de voix
   téléchargée (phonémiseur seul, ~19 Mo, en cache).
 
-## 13. Traduction des phrases (rappel actif)
+## 13. Prononciation écrite et traduction (rappel actif)
 
-- Réglage global « Traduction » (par défaut : langue maternelle). Dans le lecteur, la traduction est **cachée**
-  derrière « Voir la traduction » et se recache à chaque nouvelle phrase (rappel actif).
+- **Deux interrupteurs** dans les réglages (éteints par défaut) : « Prononciation écrite » et « Traduction ».
+  Pas de choix de langue : langue maternelle du profil, sinon langue de l'interface (jamais la langue pratiquée).
+- En séance, deux boutons « Voir la prononciation » / « Voir la traduction » sous la phrase : chacun se
+  révèle au toucher, se recache au toucher et à chaque nouvelle phrase. Aucun panneau d'édition des
+  traductions (retiré à la demande de Maro, 2026-10-07).
 - Traduction automatique via le Worker : `POST /shadowingstudio/api/translate` → Workers AI
   **`@cf/meta/llama-4-scout-17b-16e-instruct`** (une requête pour toutes les phrases, réponse JSON vérifiée),
   avec la variante de la liste (ex. `ar-JO` → « Jordanian Arabic (Levantine dialect) »). Secours :
   `@cf/meta/m2m100-1.2b`. m2m100 seul a été abandonné le 2026-10-07 : inutilisable sur l'arabe dialectal
   (« وين رايح هلأ؟ » → « Winston Churchill est-il parti ? »). Coût mesuré : ~8 neurones pour 7 phrases.
-  Bouton « Tout retraduire » pour remplacer d'anciennes traductions. Limite : 20 requêtes/min
-  par IP, 40 phrases × 400 caractères par requête. Coût : quota gratuit quotidien de Workers AI.
-- Les traductions sont stockées dans la liste (`translations[langue][phrase]`), donc disponibles hors connexion,
-  modifiables dans le panneau « Traductions » (les corrections manuelles ne sont jamais écrasées) et incluses
-  dans l'export JSON.
-- Confidentialité : les phrases ne quittent l'appareil que si la traduction est activée (mention ajoutée
-  dans les 6 langues).
+- Les traductions sont stockées dans la liste (`translations[langue][phrase]` + `translationsVersion`) :
+  disponibles hors connexion et exportées. Changer `TRANSLATION_VERSION` (studio.js) fait tout retraduire
+  automatiquement (utilisé pour remplacer les traductions m2m100).
+- Confidentialité : les phrases ne quittent l'appareil que si la traduction est activée (mention dans les
+  6 langues).
