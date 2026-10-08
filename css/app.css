@@ -780,3 +780,23 @@ input[type="range"] { width: 100%; accent-color: var(--accent); min-height: 32px
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
 }
+
+/* ---------- Calendrier de pratique ---------- */
+.calendar-title { margin: 0 0 14px; }
+.days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
+.day {
+  aspect-ratio: 1;
+  width: 100%;
+  max-width: 44px;
+  justify-self: center;
+  border: 1px solid var(--border-strong);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-muted);
+  font: 500 13px/1 var(--font-mono);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.day.is-today { border-color: var(--accent); color: var(--text); }
+.day.is-done { background: var(--accent); border-color: var(--accent); color: var(--on-primary); font-size: 16px; }
+.day:disabled { opacity: 0.35; cursor: default; }

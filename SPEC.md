@@ -273,3 +273,10 @@ _Toutes les questions ouvertes sont tranchées._
 - Première salutation : langue du pays de connexion, fourni par Cloudflare (`GET /shadowingstudio/api/hello` →
   `{ country }`, rien n'est enregistré) ; sinon langue du téléphone (hors connexion, local).
 - Un premier essai en écran plein (façon iPhone neuf) a été remplacé à la demande de Maro (2026-10-07).
+
+## 16. Calendrier de pratique
+
+- Carte en bas du studio : le nom du mois en cours pour seul titre, puis les jours en ronds (7 par ligne, sans en-têtes).
+- Toucher un jour le coche (✓ sur fond or) ; toucher à nouveau le décoche. Le jour même est entouré d'or ; les jours à venir sont grisés et inactifs.
+- Pointage manuel uniquement. Dates stockées sur l'appareil (`ss2.practice`, liste de dates AAAA-MM-JJ) : l'historique des mois passés est conservé.
+- Le nom du mois vient de `Intl.DateTimeFormat` dans la langue de l'interface (aucun texte à traduire).

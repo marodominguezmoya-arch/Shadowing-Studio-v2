@@ -3,6 +3,7 @@
 
 import { t, getLocale } from '../i18n.js';
 import { load, save } from '../storage.js';
+import { renderCalendar } from './calendar.js';
 import { initLibrary, currentList, updateList, allLists, listName } from '../library.js';
 import { splitSentences } from '../split.js';
 import { translationCode, translateTexts } from '../translate.js';
@@ -122,6 +123,7 @@ export function renderStudio(el) {
 
     <div id="s-action"></div>
     <div id="s-player"></div>
+    <div id="s-calendar"></div>
     <div id="s-install"></div>
 
   </div>`;
@@ -134,6 +136,7 @@ export function renderStudio(el) {
   refreshVoice();
   renderAction();
   renderPlayer();
+  renderCalendar(root.querySelector('#s-calendar'));
   renderInstall();
   // La langue de l'interface a pu changer : traductions manquantes dans la nouvelle langue.
   if (translateOn && (rt.live || rt.session)) ensureTranslations(rt.live?.phrases || rt.session.phrases);
