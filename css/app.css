@@ -800,3 +800,30 @@ input[type="range"] { width: 100%; accent-color: var(--accent); min-height: 32px
 .day.is-today { border-color: var(--accent); color: var(--text); }
 .day.is-done { background: var(--accent); border-color: var(--accent); color: var(--on-primary); font-size: 16px; }
 .day:disabled { opacity: 0.35; cursor: default; }
+
+/* ---------- Mode d'emploi (fin de l'onboarding) ---------- */
+.howto { list-style: none; counter-reset: step; margin: 24px 0 30px; padding: 0; }
+.howto li {
+  counter-increment: step;
+  position: relative;
+  margin: 0 0 18px;
+  padding-inline-start: 44px;
+  text-align: start;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+.howto li::before {
+  content: counter(step);
+  position: absolute;
+  inset-inline-start: 0;
+  top: -2px;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font: 500 14px/1 var(--font-mono);
+}
+.howto strong { color: var(--text); font-weight: 600; }

@@ -15,6 +15,17 @@ export default {
     duration: '約1分',
     progress: '進み具合',
 
+    howto: {
+      eyebrow: '使い方',
+      title: 'ようこそ！',
+      titleName: 'ようこそ、{name}さん！',
+      step1: '考えずに口から出るようにしたいフレーズを<strong>選びます</strong>。',
+      step2: 'スタジオに 1 行に 1 つずつ<strong>書きます</strong>。',
+      step3: 'シャドーイングで<strong>繰り返します</strong>：音声を聞きながら、同時にまねして話します。',
+      step4: '練習した日は、ページ下のカレンダーで<strong>チェック</strong>します。',
+      go: 'はじめる',
+    },
+
     q: {
       firstName: 'お名前（名）を教えてください',
       lastName: '{name}さん、姓を教えてください',

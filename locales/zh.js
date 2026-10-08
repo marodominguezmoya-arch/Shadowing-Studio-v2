@@ -15,6 +15,17 @@ export default {
     duration: '大约 1 分钟',
     progress: '进度',
 
+    howto: {
+      eyebrow: '使用方法',
+      title: '欢迎！',
+      titleName: '欢迎，{name}！',
+      step1: '<strong>挑选</strong>你需要练到脱口而出的句子：那些你想不假思索就能说出来的话。',
+      step2: '<strong>写下来</strong>，填进工作室，每行一句。',
+      step3: '<strong>跟读重复</strong>（影子跟读）：听声音，同时模仿着说。',
+      step4: '<strong>打勾</strong>：在页面底部的日历里标记每个练习过的日子。',
+      go: '开始吧',
+    },
+
     q: {
       firstName: '你的名字是？',
       lastName: '{name}，你的姓氏是？',

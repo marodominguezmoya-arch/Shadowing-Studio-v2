@@ -15,6 +15,17 @@ export default {
     duration: 'Etwa 1 Minute',
     progress: 'Fortschritt',
 
+    howto: {
+      eyebrow: 'So funktioniert’s',
+      title: 'Willkommen!',
+      titleName: 'Willkommen, {name}!',
+      step1: '<strong>Wählen Sie</strong> die Sätze, die Sie automatisieren müssen: die, die Sie sagen wollen, ohne nachzudenken.',
+      step2: '<strong>Schreiben Sie sie</strong> ins Studio, einen pro Zeile.',
+      step3: '<strong>Wiederholen Sie sie</strong> mit Shadowing: Hören Sie die Stimme und sprechen Sie gleichzeitig nach.',
+      step4: '<strong>Haken Sie</strong> jeden Übungstag im Kalender unten auf der Seite ab.',
+      go: 'Los geht’s',
+    },
+
     q: {
       firstName: 'Wie lautet Ihr Vorname?',
       lastName: 'Und Ihr Nachname, {name}?',

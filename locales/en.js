@@ -15,6 +15,17 @@ export default {
     duration: 'About 1 minute',
     progress: 'Progress',
 
+    howto: {
+      eyebrow: 'How it works',
+      title: 'Welcome!',
+      titleName: 'Welcome, {name}!',
+      step1: '<strong>Choose</strong> the phrases you need to make automatic: the ones you want to say without thinking.',
+      step2: '<strong>Write them</strong> in the studio, one per line.',
+      step3: '<strong>Repeat them</strong> by shadowing: listen to the voice and imitate it, at the same time.',
+      step4: '<strong>Tick</strong> each day you practise in the calendar at the bottom of the page.',
+      go: 'Let’s go',
+    },
+
     q: {
       firstName: 'What is your first name?',
       lastName: 'And your last name, {name}?',

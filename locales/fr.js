@@ -15,6 +15,17 @@ export default {
     duration: 'Environ 1 minute',
     progress: 'Progression',
 
+    howto: {
+      eyebrow: 'Mode d’emploi',
+      title: 'Bienvenue !',
+      titleName: 'Bienvenue, {name} !',
+      step1: '<strong>Choisissez</strong> les phrases que vous avez besoin d’automatiser : celles que vous voulez dire sans réfléchir.',
+      step2: '<strong>Écrivez-les</strong> dans le studio, une par ligne.',
+      step3: '<strong>Répétez-les</strong> en shadowing : écoutez la voix et imitez-la, en même temps qu’elle.',
+      step4: '<strong>Cochez</strong> chaque jour de pratique dans le calendrier, en bas de la page.',
+      go: 'C’est parti',
+    },
+
     q: {
       firstName: 'Quel est votre prénom ?',
       lastName: 'Et votre nom, {name} ?',

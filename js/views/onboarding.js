@@ -66,7 +66,7 @@ function template() {
 
   return `
     <section class="onb">
-      ${state.screen !== 'welcome' ? `
+      ${!['welcome', 'howto'].includes(state.screen) ? `
         <div class="onb-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${progress}" aria-label="${t('onboarding.progress')}">
           <span style="width:${progress}%"></span>
         </div>` : ''}
@@ -79,6 +79,7 @@ function template() {
           : kind === 'level' ? screenLevel(+i)
           : kind === 'more' ? screenMore()
           : kind === 'newsletter' ? screenNewsletter()
+          : kind === 'howto' ? screenHowto()
           : screenPrivacy()}
 
         <div class="hp" aria-hidden="true">
@@ -88,7 +89,7 @@ function template() {
         ${error ? `<p class="error onb-error" id="onb-error" role="alert">${error}</p>` : ''}
       </form>
 
-      ${state.screen !== 'welcome' ? `
+      ${!['welcome', 'howto'].includes(state.screen) ? `
         <button type="button" class="onb-back" data-action="prev"><span class="arrow" aria-hidden="true">←</span> ${t('common.back')}</button>` : ''}
     </section>
   `;
@@ -211,6 +212,19 @@ function screenNewsletter() {
       <button type="button" class="choice choice-center ${state.newsletter === false ? 'selected' : ''}" role="radio"
         aria-checked="${state.newsletter === false}" data-newsletter="no">${t('onboarding.newsletterNo')}</button>
     </div>
+  `;
+}
+
+// Après l'envoi : mode d'emploi en quatre étapes, puis le studio.
+function screenHowto() {
+  const name = esc(state.firstName.trim());
+  return `
+    <p class="eyebrow">${t('onboarding.howto.eyebrow')}</p>
+    <h1 class="onb-q" id="onb-q" tabindex="-1">${name ? t('onboarding.howto.titleName', { name }) : t('onboarding.howto.title')}</h1>
+    <ol class="howto">
+      ${[1, 2, 3, 4].map((n) => `<li>${t(`onboarding.howto.step${n}`)}</li>`).join('')}
+    </ol>
+    ${nextButton(t('onboarding.howto.go'))}
   `;
 }
 
@@ -340,6 +354,7 @@ function bind(root, onDone) {
 
   async function advance() {
     if (sending) return;
+    if (state.screen === 'howto') return onDone();
     error = validateScreen();
     if (error) return rerender();
 
@@ -359,7 +374,8 @@ function bind(root, onDone) {
         targets: state.targets,
       });
       sending = false;
-      onDone();
+      go('howto');
+      rerender();
     } catch (err) {
       sending = false;
       error = navigator.onLine === false ? t('onboarding.errors.offline') : t('onboarding.errors.server');

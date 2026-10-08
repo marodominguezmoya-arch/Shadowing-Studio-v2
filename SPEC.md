@@ -287,3 +287,9 @@ _Toutes les questions ouvertes sont tranchées._
 - Le choix reste explicite (Oui / Non, rien de présélectionné) et n'est jamais obligatoire.
 - Newsletter publiée sur Substack (https://substack.com/@maromoya). Pas de lien automatique : Maro exporte de temps en temps les « Oui » de Notion en CSV et les importe dans Substack.
 - La politique de confidentialité indique que l'email est transmis à Substack si la personne accepte. L'indication sous le champ email dit « jamais vendue » (et non plus « jamais partagée »).
+
+## 18. Mode d'emploi (fin de l'onboarding)
+
+- Après l'envoi du formulaire, un dernier écran « Bienvenue, {prénom} ! » (sur-titre « Mode d'emploi ») donne la méthode en 4 étapes numérotées : choisir les phrases à automatiser, les écrire dans le studio, les répéter en shadowing, cocher chaque jour de pratique dans le calendrier en bas de la page.
+- Bouton « C'est parti » vers le studio (ou vers une liste partagée en attente). Pas de barre de progression ni de retour sur cet écran : l'inscription est déjà enregistrée.
+- Affiché une seule fois ; un rechargement à ce moment mène directement au studio.

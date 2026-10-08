@@ -15,6 +15,17 @@ export default {
     duration: 'Aproximadamente 1 minuto',
     progress: 'Progreso',
 
+    howto: {
+      eyebrow: 'Cómo funciona',
+      title: '¡Bienvenido!',
+      titleName: '¡Bienvenido, {name}!',
+      step1: '<strong>Elige</strong> las frases que necesitas automatizar: las que quieres decir sin pensar.',
+      step2: '<strong>Escríbelas</strong> en el estudio, una por línea.',
+      step3: '<strong>Repítelas</strong> haciendo shadowing: escucha la voz e imítala, al mismo tiempo.',
+      step4: '<strong>Marca</strong> cada día de práctica en el calendario, al final de la página.',
+      go: '¡Vamos!',
+    },
+
     q: {
       firstName: '¿Cuál es tu nombre?',
       lastName: '¿Y tu apellido, {name}?',
