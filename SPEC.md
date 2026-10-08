@@ -280,3 +280,10 @@ _Toutes les questions ouvertes sont tranchées._
 - Toucher un jour le coche (✓ sur fond or) ; toucher à nouveau le décoche. Le jour même est entouré d'or ; les jours à venir sont grisés et inactifs.
 - Pointage manuel uniquement. Dates stockées sur l'appareil (`ss2.practice`, liste de dates AAAA-MM-JJ) : l'historique des mois passés est conservé.
 - Le nom du mois vient de `Intl.DateTimeFormat` dans la langue de l'interface (aucun texte à traduire).
+
+## 17. Newsletter (Substack)
+
+- La question de l'onboarding présente la newsletter comme une source de valeur et non comme des « nouveautés » : une lettre par semaine, gratuite, avec analyses, études de cas et plans concrets pour apprendre une langue, introuvables ailleurs. Désinscription en un clic.
+- Le choix reste explicite (Oui / Non, rien de présélectionné) et n'est jamais obligatoire.
+- Newsletter publiée sur Substack (https://substack.com/@maromoya). Pas de lien automatique : Maro exporte de temps en temps les « Oui » de Notion en CSV et les importe dans Substack.
+- La politique de confidentialité indique que l'email est transmis à Substack si la personne accepte. L'indication sous le champ email dit « jamais vendue » (et non plus « jamais partagée »).

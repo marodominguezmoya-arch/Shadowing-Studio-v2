@@ -26,16 +26,16 @@ export default {
       level: 'Your level in {lang}?',
       more: 'Are you learning another language?',
       moreMax: 'Your languages',
-      newsletter: 'Get news by email?',
+      newsletter: 'One letter a week to progress faster?',
       privacy: 'Last step',
     },
     h: {
       firstName: '',
       lastName: '',
-      email: 'It will never be shared.',
+      email: 'It will never be sold.',
       occupation: '',
       level: 'Your own estimate, on the European scale (CEFR).',
-      newsletter: 'App news and learning tips. Optional, unsubscribe at any time.',
+      newsletter: 'Every week, for free: analyses, case studies and concrete plans for learning a language — you won’t find them anywhere else. Unsubscribe in one click.',
     },
     p: {
       firstName: 'First name',
@@ -45,7 +45,7 @@ export default {
     },
     moreYes: 'Yes, add one',
     moreNo: 'No, continue',
-    newsletterYes: 'Yes, please',
+    newsletterYes: 'Yes, I want it',
     newsletterNo: 'No thanks',
 
     firstName: 'First name',
@@ -225,7 +225,7 @@ export default {
         h: 'Why',
         list: [
           'Usage statistics (who uses the app, for which languages and levels) — legitimate interest in improving the tool.',
-          'Sending news and tips by email — only with your consent, which you can withdraw at any time.',
+          'Sending my weekly newsletter (published on Substack, which then receives your email) — only with your consent, which you can withdraw at any time in one click.',
         ],
       },
       {

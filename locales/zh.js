@@ -26,16 +26,16 @@ export default {
       level: '你的{lang}水平？',
       more: '你还在学习其他语言吗？',
       moreMax: '你的语言',
-      newsletter: '通过邮件接收最新消息？',
+      newsletter: '每周一封信，让你进步更快？',
       privacy: '最后一步',
     },
     h: {
       firstName: '',
       lastName: '',
-      email: '我们绝不会分享你的邮箱。',
+      email: '绝不会出售你的邮箱。',
       occupation: '',
       level: '你的自我评估，参照欧洲语言共同参考框架（CEFR）。',
-      newsletter: '应用更新和学习建议。可选，随时可以退订。',
+      newsletter: '每周一次，完全免费：语言学习的深度分析、真实案例和可以照着做的具体计划，别处找不到。一键退订。',
     },
     p: {
       firstName: '名字',
@@ -45,7 +45,7 @@ export default {
     },
     moreYes: '是，再添加一种',
     moreNo: '不，继续',
-    newsletterYes: '好的',
+    newsletterYes: '好的，我要',
     newsletterNo: '不用了，谢谢',
 
     firstName: '名字',
@@ -225,7 +225,7 @@ export default {
         h: '用途',
         list: [
           '使用情况统计（谁在使用应用、学习哪些语言和水平）— 出于改进工具的正当利益。',
-          '通过邮件发送最新消息和建议 — 仅在你同意的情况下，你可以随时撤回同意。',
+          '发送我的每周通讯（发布在 Substack 上，Substack 会因此收到你的邮箱）— 仅在你同意的情况下，你可以随时一键撤回同意。',
         ],
       },
       {

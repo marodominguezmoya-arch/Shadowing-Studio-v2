@@ -26,16 +26,16 @@ export default {
       level: 'Seu nível de {lang}?',
       more: 'Você aprende outro idioma?',
       moreMax: 'Seus idiomas',
-      newsletter: 'Quer receber novidades por e-mail?',
+      newsletter: 'Uma carta por semana para avançar mais rápido?',
       privacy: 'Última etapa',
     },
     h: {
       firstName: '',
       lastName: '',
-      email: 'Ele nunca será compartilhado.',
+      email: 'Ele nunca será vendido.',
       occupation: '',
       level: 'Sua própria estimativa, na escala europeia (QECR).',
-      newsletter: 'Novidades do app e dicas de aprendizado. Opcional, cancele quando quiser.',
+      newsletter: 'Toda semana, de graça: análises, estudos de caso e planos concretos para aprender um idioma, que você não vai encontrar em nenhum outro lugar. Cancele com um clique.',
     },
     p: {
       firstName: 'Nome',
@@ -45,7 +45,7 @@ export default {
     },
     moreYes: 'Sim, adicionar outro',
     moreNo: 'Não, continuar',
-    newsletterYes: 'Sim, quero',
+    newsletterYes: 'Sim, eu quero',
     newsletterNo: 'Não, obrigado',
 
     firstName: 'Nome',
@@ -225,7 +225,7 @@ export default {
         h: 'Para quê',
         list: [
           'Estatísticas de uso (quem usa o app, para quais idiomas e níveis) — interesse legítimo em melhorar a ferramenta.',
-          'Envio de novidades e dicas por e-mail — somente com o seu consentimento, que pode ser retirado a qualquer momento.',
+          'Envio da minha newsletter semanal (publicada no Substack, que então recebe o seu e-mail) — somente com o seu consentimento, que pode ser retirado a qualquer momento com um clique.',
         ],
       },
       {

@@ -26,16 +26,16 @@ export default {
       level: 'Ihr Niveau in {lang}?',
       more: 'Lernen Sie noch eine andere Sprache?',
       moreMax: 'Ihre Sprachen',
-      newsletter: 'Neuigkeiten per E-Mail erhalten?',
+      newsletter: 'Ein Brief pro Woche, um schneller voranzukommen?',
       privacy: 'Letzter Schritt',
     },
     h: {
       firstName: '',
       lastName: '',
-      email: 'Sie wird niemals weitergegeben.',
+      email: 'Sie wird niemals verkauft.',
       occupation: '',
       level: 'Ihre eigene Einschätzung nach dem Europäischen Referenzrahmen (GER).',
-      newsletter: 'Neuigkeiten zur App und Lerntipps. Freiwillig, jederzeit abbestellbar.',
+      newsletter: 'Jede Woche, kostenlos: Analysen, Fallstudien und konkrete Pläne zum Sprachenlernen, die Sie nirgendwo sonst finden. Abmeldung mit einem Klick.',
     },
     p: {
       firstName: 'Vorname',
@@ -225,7 +225,7 @@ export default {
         h: 'Wozu',
         list: [
           'Nutzungsstatistik (wer die App nutzt, für welche Sprachen und Niveaus) — berechtigtes Interesse an der Verbesserung des Werkzeugs.',
-          'Versand von Neuigkeiten und Tipps per E-Mail — nur mit Ihrer Einwilligung, die Sie jederzeit widerrufen können.',
+          'Versand meines wöchentlichen Newsletters (veröffentlicht auf Substack, das dann Ihre E-Mail-Adresse erhält) — nur mit Ihrer Einwilligung, die Sie jederzeit mit einem Klick widerrufen können.',
         ],
       },
       {
