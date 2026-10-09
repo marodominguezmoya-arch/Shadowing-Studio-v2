@@ -827,3 +827,6 @@ input[type="range"] { width: 100%; accent-color: var(--accent); min-height: 32px
   font: 500 14px/1 var(--font-mono);
 }
 .howto strong { color: var(--text); font-weight: 600; }
+.onb-textarea { min-height: 96px; resize: vertical; margin-top: 18px; text-align: start; }
+.offer { margin: 0 0 24px; text-align: start; border-color: var(--accent); }
+.offer .hint { margin: 0 0 14px; }

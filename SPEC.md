@@ -293,3 +293,19 @@ _Toutes les questions ouvertes sont tranchées._
 - Après l'envoi du formulaire, un dernier écran « Bienvenue, {prénom} ! » (sur-titre « Mode d'emploi ») donne la méthode en 4 étapes numérotées : choisir les phrases à automatiser, les écrire dans le studio, les répéter en shadowing, cocher chaque jour de pratique dans le calendrier en bas de la page.
 - Bouton « C'est parti » vers le studio (ou vers une liste partagée en attente). Pas de barre de progression ni de retour sur cet écran : l'inscription est déjà enregistrée.
 - Affiché une seule fois ; un rechargement à ce moment mène directement au studio.
+
+## 19. Formulaire orienté ICP (v2.10)
+
+Ordre : Prénom → Email → Profil → Langue maternelle → Langue apprise → Niveau → Pourquoi → Blocage → Échéance → Source → Newsletter → Confidentialité → Mode d'emploi.
+
+- Supprimés : nom de famille, profession en texte libre, boucle « autre langue » (le studio permet déjà de pratiquer n'importe quelle langue, liste par liste).
+- Questions à choix (codes envoyés au Worker, libellés dans `onboarding.c.*`) :
+  - Profil : Entrepreneur·e / Dirigeant·e ou cadre / Profession libérale / Salarié·e / Étudiant·e / Autre.
+  - Pourquoi : travail ou carrière / s'installer à l'étranger / études ou examen / famille ou couple / voyager / plaisir.
+  - Blocage : comprend mais ne parle pas / vocabulaire / grammaire / régularité / Autre (précisez) — « Autre » ouvre un champ texte (mots exacts, 300 caractères).
+  - Échéance : moins de 3 mois / dans l'année / pas d'échéance.
+  - Source : Instagram / YouTube / Newsletter / Reddit / bouche-à-oreille / Autre.
+- Notion : une colonne par réponse (Profil, Pourquoi, Blocage, Blocage (précisé), Échéance, Source), plus **Score ICP** (0–4 : niveau B1/B2, blocage « parle pas », objectif travail ou étranger, échéance dans l'année) et **Profil chaud** (blocage « parle pas » et score ≥ 3). Les anciennes colonnes Nom et Profession restent pour l'historique. Calcul identique dans `js/icp.js` et le Worker.
+- Écran final : profil chaud → carte « Un diagnostic offert » (message Instagram, https://ig.me/m/maro.moya, mot-clé DIAGNOSTIC). Sinon, si la newsletter a été refusée → carte newsletter (https://substack.com/@maromoya). Sinon rien.
+- Le Worker accepte encore l'ancien formulaire (nom, profession, sans les nouvelles réponses) pour les copies de l'app en cache.
+- Politique de confidentialité mise à jour (données collectées, finalité « comprendre vos besoins / proposer un diagnostic »).

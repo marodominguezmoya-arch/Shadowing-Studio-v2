@@ -7,24 +7,38 @@ import { sortedLanguages, languageName, CEFR_LEVELS } from '../languages.js';
 import { save } from '../storage.js';
 import { esc } from '../dom.js';
 import { mountGreetings } from './hello.js';
+import { isHot } from '../icp.js';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const TEXT_FIELDS = {
   firstName: { autocomplete: 'given-name' },
-  lastName: { autocomplete: 'family-name' },
   email: { type: 'email', autocomplete: 'email', inputmode: 'email' },
-  occupation: { autocomplete: 'organization-title' },
 };
+
+// Questions à choix : codes envoyés au Worker (libellés dans locales/*.js, onboarding.c.*).
+const CHOICES = {
+  profile: ['entrepreneur', 'executive', 'liberal', 'employee', 'student', 'other'],
+  why: ['work', 'abroad', 'study', 'family', 'travel', 'fun'],
+  blocker: ['speak', 'vocab', 'grammar', 'consistency', 'other'],
+  deadline: ['3m', 'year', 'none'],
+  source: ['instagram', 'youtube', 'newsletter', 'reddit', 'word', 'other'],
+};
+const INSTAGRAM_DM = 'https://ig.me/m/maro.moya';
+const NEWSLETTER_URL = 'https://substack.com/@maromoya';
 
 // L'état survit aux changements de langue et à la visite de la page confidentialité.
 const state = {
   screen: 'welcome',
   firstName: '',
-  lastName: '',
   email: '',
-  occupation: '',
+  profile: '',
   native: '',
-  targets: [{ lang: '', level: '' }],
+  targets: [{ lang: '', level: '' }], // une seule langue (les autres se choisissent dans le studio)
+  why: '',
+  blocker: '',
+  blockerOther: '',
+  deadline: '',
+  source: '',
   newsletter: null, // null = pas encore répondu ; true/false = choix explicite
   privacy: false,
   hp: '', // champ piège anti-spam
@@ -36,9 +50,8 @@ let direction = 'forward';
 // Suite des écrans, recalculée à partir de l'état (le nombre de langues visées varie).
 function sequence() {
   return [
-    'welcome', 'firstName', 'lastName', 'email', 'occupation', 'native',
-    ...state.targets.flatMap((_, i) => [`target-${i}`, `level-${i}`]),
-    'more', 'newsletter', 'privacy',
+    'welcome', 'firstName', 'email', 'profile', 'native', 'target-0', 'level-0',
+    'why', 'blocker', 'deadline', 'source', 'newsletter', 'privacy',
   ];
 }
 
@@ -77,7 +90,7 @@ function template() {
           : kind === 'native' ? screenNative()
           : kind === 'target' ? screenTarget(+i)
           : kind === 'level' ? screenLevel(+i)
-          : kind === 'more' ? screenMore()
+          : kind in CHOICES ? screenChoice(kind)
           : kind === 'newsletter' ? screenNewsletter()
           : kind === 'howto' ? screenHowto()
           : screenPrivacy()}
@@ -152,11 +165,10 @@ function screenNative() {
 }
 
 function screenTarget(i) {
-  const others = state.targets.filter((_, j) => j !== i).map((x) => x.lang);
   return `
-    ${question(t(i === 0 ? 'onboarding.q.target' : 'onboarding.q.targetMore'))}
+    ${question(t('onboarding.q.target'))}
     <label class="visually-hidden" for="f-target">${t('onboarding.targetLanguage', { n: i + 1 })}</label>
-    ${languageSelect('f-target', `target-${i}`, state.targets[i].lang, [state.native, ...others])}
+    ${languageSelect('f-target', `target-${i}`, state.targets[i].lang, [state.native])}
     ${nextButton()}
   `;
 }
@@ -183,23 +195,22 @@ function cefrLabel(lvl) {
   return `<strong>${label}</strong>${desc ? `<small>${desc}</small>` : ''}`;
 }
 
-function screenMore() {
-  const atMax = state.targets.length >= CONFIG.maxTargets;
-  const chips = state.targets.map((x, i) => `
-    <li class="chip">
-      ${esc(languageName(x.lang, getLocale()))} · ${x.level}
-      ${state.targets.length > 1 ? `
-        <button type="button" data-action="remove-target" data-index="${i}"
-          aria-label="${t('common.remove')} ${esc(languageName(x.lang, getLocale()))}">×</button>` : ''}
-    </li>`).join('');
-
+// Une question, des choix à toucher. « Autre » du blocage ouvre un champ pour les mots exacts.
+function screenChoice(key) {
+  const withOther = key === 'blocker' && state.blocker === 'other';
   return `
-    ${question(t(atMax ? 'onboarding.q.moreMax' : 'onboarding.q.more'))}
-    <ul class="chips">${chips}</ul>
-    <div class="onb-choices">
-      ${atMax ? '' : `<button type="button" class="choice choice-center" data-action="add-target">${t('onboarding.moreYes')}</button>`}
-      <button type="button" class="choice choice-center" data-action="next">${t('onboarding.moreNo')}</button>
+    ${question(t(`onboarding.q.${key}`))}
+    <div class="onb-choices" role="radiogroup" aria-labelledby="onb-q">
+      ${CHOICES[key].map((code) => `
+        <button type="button" class="choice choice-center ${state[key] === code ? 'selected' : ''}" role="radio"
+          aria-checked="${state[key] === code}" data-pick="${key}" data-value="${code}">${t(`onboarding.c.${key}.${code}`)}</button>`).join('')}
     </div>
+    ${withOther ? `
+      <label class="visually-hidden" for="f-blockerOther">${t('onboarding.c.blocker.other')}</label>
+      <textarea class="input onb-input onb-textarea" id="f-blockerOther" name="blockerOther" rows="3" maxlength="300"
+        placeholder="${esc(t('onboarding.p.blockerOther'))}"
+        ${error ? 'aria-invalid="true" aria-describedby="onb-error"' : ''}>${esc(state.blockerOther)}</textarea>
+      ${nextButton()}` : ''}
   `;
 }
 
@@ -224,7 +235,22 @@ function screenHowto() {
     <ol class="howto">
       ${[1, 2, 3, 4].map((n) => `<li>${t(`onboarding.howto.step${n}`)}</li>`).join('')}
     </ol>
+    ${offerCard()}
     ${nextButton(t('onboarding.howto.go'))}
+  `;
+}
+
+// Profil chaud : diagnostic offert (message Instagram). Sinon : la newsletter, si pas déjà acceptée.
+function offerCard() {
+  const answers = { level: state.targets[0].level, blocker: state.blocker, why: state.why, deadline: state.deadline };
+  const kind = isHot(answers) ? 'diag' : state.newsletter ? '' : 'news';
+  if (!kind) return '';
+  return `
+    <div class="card offer">
+      <p class="label">${t(`onboarding.howto.${kind}Title`)}</p>
+      <p class="hint">${t(`onboarding.howto.${kind}Text`)}</p>
+      <a class="btn btn-ghost btn-sm" href="${kind === 'diag' ? INSTAGRAM_DM : NEWSLETTER_URL}" target="_blank" rel="noopener">${t(`onboarding.howto.${kind}Button`)}</a>
+    </div>
   `;
 }
 
@@ -260,13 +286,6 @@ function next() {
 
 function prev() {
   const seq = sequence();
-  const [kind, i] = state.screen.split('-');
-  // Revenir d'une langue supplémentaire encore vide = annuler son ajout.
-  if (kind === 'target' && +i > 0 && !state.targets[+i].lang) {
-    state.targets.splice(+i, 1);
-    go('more', 'back');
-    return;
-  }
   go(seq[Math.max(0, seq.indexOf(state.screen) - 1)], 'back');
 }
 
@@ -286,6 +305,8 @@ function validateScreen() {
     if (state.targets.some((x, j) => j !== +i && x.lang === lang)) return t('onboarding.errors.duplicate');
   }
   if (kind === 'level' && !state.targets[+i].level) return t('onboarding.errors.level');
+  if (kind in CHOICES && !state[kind]) return t('onboarding.errors.choose');
+  if (kind === 'blocker' && state.blocker === 'other' && !state.blockerOther.trim()) return req;
   if (kind === 'newsletter' && state.newsletter === null) return t('onboarding.errors.choose');
   if (kind === 'privacy' && !state.privacy) return t('onboarding.errors.privacy');
   return '';
@@ -326,6 +347,17 @@ function bind(root, onDone) {
       state.targets[+btn.dataset.index].level = btn.dataset.level;
       return advance();
     }
+    if (btn.dataset.pick) {
+      state[btn.dataset.pick] = btn.dataset.value;
+      // « Autre » du blocage : on reste sur l'écran pour laisser préciser.
+      if (btn.dataset.pick === 'blocker' && btn.dataset.value === 'other') {
+        error = '';
+        rerender();
+        root.querySelector('#f-blockerOther')?.focus();
+        return;
+      }
+      return advance();
+    }
     if (btn.dataset.newsletter) {
       state.newsletter = btn.dataset.newsletter === 'yes';
       return advance();
@@ -337,13 +369,6 @@ function bind(root, onDone) {
         return rerender();
       case 'next':
         return advance();
-      case 'add-target':
-        state.targets.push({ lang: '', level: '' });
-        go(`target-${state.targets.length - 1}`);
-        return rerender();
-      case 'remove-target':
-        state.targets.splice(+btn.dataset.index, 1);
-        return rerender();
     }
   });
 
@@ -404,11 +429,15 @@ function focusFirst(root) {
 function payload() {
   return {
     firstName: state.firstName.trim(),
-    lastName: state.lastName.trim(),
     email: state.email.trim().toLowerCase(),
-    occupation: state.occupation.trim(),
+    profile: state.profile,
     nativeLanguage: state.native,
     targets: state.targets.map(({ lang, level }) => ({ lang, level })),
+    why: state.why,
+    blocker: state.blocker,
+    blockerOther: state.blocker === 'other' ? state.blockerOther.trim() : '',
+    deadline: state.deadline,
+    source: state.source,
     newsletter: state.newsletter === true,
     privacyAccepted: state.privacy,
     uiLocale: getLocale(),

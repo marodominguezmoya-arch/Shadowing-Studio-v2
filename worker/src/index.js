@@ -22,6 +22,14 @@ export const P = {
   targets: 'Langues visées',
   levels: 'Niveaux',
   occupation: 'Profession',
+  profile: 'Profil',
+  why: 'Pourquoi',
+  blocker: 'Blocage',
+  blockerOther: 'Blocage (précisé)',
+  deadline: 'Échéance',
+  source: 'Source',
+  icpScore: 'Score ICP',
+  hot: 'Profil chaud',
   newsletter: 'Newsletter',
   uiLocale: "Langue d'interface",
   createdAt: 'Première inscription',
@@ -34,6 +42,38 @@ const LANGUAGE_CODES = new Set([
   'gl', 'he', 'hi', 'hr', 'hu', 'id', 'it', 'ja', 'ko', 'ms', 'nb', 'nl', 'pl', 'pt',
   'ro', 'ru', 'sk', 'sv', 'sw', 'th', 'tr', 'uk', 'ur', 'vi', 'yo', 'zh',
 ]);
+// Réponses à choix (codes envoyés par l'app → libellés des colonnes Notion).
+export const CHOICES = {
+  profile: {
+    entrepreneur: 'Entrepreneur·e', executive: 'Dirigeant·e ou cadre', liberal: 'Profession libérale',
+    employee: 'Salarié·e', student: 'Étudiant·e', other: 'Autre',
+  },
+  why: {
+    work: 'Travail / carrière', abroad: "S'installer à l'étranger", study: 'Études / examen',
+    family: 'Famille / couple', travel: 'Voyager', fun: 'Par plaisir',
+  },
+  blocker: {
+    speak: 'Comprend mais ne parle pas', vocab: 'Manque de vocabulaire',
+    grammar: "Trop d'erreurs de grammaire", consistency: 'Manque de régularité', other: 'Autre',
+  },
+  deadline: { '3m': 'Moins de 3 mois', year: "Dans l'année", none: "Pas d'échéance" },
+  source: {
+    instagram: 'Instagram', youtube: 'YouTube', newsletter: 'Newsletter', reddit: 'Reddit',
+    word: 'Bouche-à-oreille', other: 'Autre',
+  },
+};
+
+// Profil idéal (ICP) : un point par critère. Même calcul que js/icp.js côté app.
+export function icpScore({ level, blocker, why, deadline }) {
+  return [
+    ['B1', 'B2'].includes(level),
+    blocker === 'speak',
+    ['work', 'abroad'].includes(why),
+    ['3m', 'year'].includes(deadline),
+  ].filter(Boolean).length;
+}
+export const isHot = (a) => a.blocker === 'speak' && icpScore(a) >= 3;
+
 const CEFR = new Set(['A1', 'A2', 'B1', 'B2', 'C1', 'C2']);
 const UI_LOCALES = new Set(['fr', 'en', 'es', 'pt', 'de', 'ru', 'ar', 'zh', 'ja']);
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -131,11 +171,26 @@ export function validate(body) {
     return v;
   };
 
+  // Facultatif : envoyés par les anciennes versions de l'app.
+  const optional = (k, max = 120) => (typeof body[k] === 'string' ? body[k].trim().slice(0, max) : '');
+  // Réponses à choix : absentes dans les anciennes versions (null), sinon un code connu.
+  const choice = (k) => {
+    if (body[k] == null) return null;
+    if (!Object.hasOwn(CHOICES[k], body[k])) errors.push(k);
+    return body[k];
+  };
+
   const data = {
     firstName: str('firstName'),
-    lastName: str('lastName'),
+    lastName: optional('lastName'),
     email: str('email', 254).toLowerCase(),
-    occupation: str('occupation'),
+    occupation: optional('occupation'),
+    profile: choice('profile'),
+    why: choice('why'),
+    blocker: choice('blocker'),
+    blockerOther: '',
+    deadline: choice('deadline'),
+    source: choice('source'),
     nativeLanguage: body.nativeLanguage,
     targets: [],
     newsletter: body.newsletter === true,
@@ -160,6 +215,8 @@ export function validate(body) {
     data.targets.push({ lang, level });
   }
 
+  if (data.blocker === 'other') data.blockerOther = optional('blockerOther', 300);
+
   return { errors: [...new Set(errors)], data };
 }
 
@@ -179,18 +236,29 @@ export function toProperties(d, { isNew }) {
   const today = new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Paris' });
 
   const props = {
-    [P.fullName]: { title: [{ text: { content: `${d.firstName} ${d.lastName}` } }] },
+    [P.fullName]: { title: [{ text: { content: `${d.firstName} ${d.lastName}`.trim() } }] },
     [P.firstName]: text(d.firstName),
-    [P.lastName]: text(d.lastName),
     [P.email]: { email: d.email },
     [P.native]: { select: { name: langName(d.nativeLanguage) } },
     [P.targets]: { multi_select: d.targets.map((t) => ({ name: langName(t.lang) })) },
     [P.levels]: text(d.targets.map((t) => `${langName(t.lang)} : ${t.level}`).join(', ')),
-    [P.occupation]: text(d.occupation),
     [P.newsletter]: { checkbox: d.newsletter },
     [P.uiLocale]: { select: { name: d.uiLocale } },
     [P.updatedAt]: { date: { start: today } },
   };
+  // Anciennes versions de l'app : nom de famille et profession en texte libre.
+  if (d.lastName) props[P.lastName] = text(d.lastName);
+  if (d.occupation) props[P.occupation] = text(d.occupation);
+  // Nouvelles versions : une colonne par réponse.
+  for (const k of ['profile', 'why', 'blocker', 'deadline', 'source']) {
+    if (d[k]) props[P[k]] = { select: { name: CHOICES[k][d[k]] } };
+  }
+  if (d.blocker) {
+    props[P.blockerOther] = text(d.blockerOther);
+    const answers = { level: d.targets[0]?.level, blocker: d.blocker, why: d.why, deadline: d.deadline };
+    props[P.icpScore] = { number: icpScore(answers) };
+    props[P.hot] = { checkbox: isHot(answers) };
+  }
   if (isNew) props[P.createdAt] = { date: { start: today } };
   return props;
 }

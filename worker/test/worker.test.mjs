@@ -1,7 +1,7 @@
 // Tests du Worker sans réseau : l'API Notion et GitHub Pages sont simulées.
 import { test, beforeEach } from 'node:test';
 import assert from 'node:assert/strict';
-import worker, { validate, validateTranslate, parseTranslations, P } from '../src/index.js';
+import worker, { validate, validateTranslate, parseTranslations, P, icpScore, isHot } from '../src/index.js';
 
 const env = {
   ORIGIN_BASE: 'https://example.github.io/shadowing-studio-v2',
@@ -197,4 +197,47 @@ test('api/hello renvoie le pays fourni par Cloudflare, sans cache', async () => 
   assert.equal(res.headers.get('Cache-Control'), 'no-store');
   const none = await worker.fetch(new Request('https://maromoya.com/shadowingstudio/api/hello'), env);
   assert.deepEqual(await none.json(), { country: null });
+});
+
+const v2 = () => ({
+  firstName: 'Sam', email: 'sam@example.com', profile: 'executive', nativeLanguage: 'fr',
+  targets: [{ lang: 'en', level: 'B2' }], why: 'work', blocker: 'speak', deadline: 'year',
+  source: 'instagram', newsletter: false, privacyAccepted: true, uiLocale: 'fr', hp: '',
+});
+
+test('nouveau formulaire : une colonne par réponse, score et profil chaud', async () => {
+  const res = await post(v2());
+  assert.equal(res.status, 200);
+  const props = JSON.parse(calls[1].init.body).properties;
+  assert.equal(props[P.fullName].title[0].text.content, 'Sam');
+  assert.equal(props[P.lastName], undefined);
+  assert.equal(props[P.occupation], undefined);
+  assert.equal(props[P.profile].select.name, 'Dirigeant·e ou cadre');
+  assert.equal(props[P.why].select.name, 'Travail / carrière');
+  assert.equal(props[P.blocker].select.name, 'Comprend mais ne parle pas');
+  assert.equal(props[P.deadline].select.name, "Dans l'année");
+  assert.equal(props[P.source].select.name, 'Instagram');
+  assert.equal(props[P.icpScore].number, 4);
+  assert.equal(props[P.hot].checkbox, true);
+});
+
+test('blocage « Autre » : les mots exacts sont gardés', async () => {
+  await post({ ...v2(), blocker: 'other', blockerOther: '  Je panique au téléphone ' });
+  const props = JSON.parse(calls[1].init.body).properties;
+  assert.equal(props[P.blocker].select.name, 'Autre');
+  assert.equal(props[P.blockerOther].rich_text[0].text.content, 'Je panique au téléphone');
+  assert.equal(props[P.hot].checkbox, false);
+});
+
+test('refuse un code de choix inconnu', () => {
+  for (const k of ['profile', 'why', 'blocker', 'deadline', 'source']) {
+    assert.ok(validate({ ...v2(), [k]: 'nimporte' }).errors.includes(k), k);
+  }
+  assert.deepEqual(validate(v2()).errors, []);
+});
+
+test('score ICP', () => {
+  assert.equal(icpScore({ level: 'A1', blocker: 'vocab', why: 'fun', deadline: 'none' }), 0);
+  assert.equal(isHot({ level: 'C2', blocker: 'speak', why: 'abroad', deadline: '3m' }), true);
+  assert.equal(isHot({ level: 'B1', blocker: 'grammar', why: 'work', deadline: '3m' }), false);
 });

@@ -14,7 +14,4 @@ export const CONFIG = {
   mockOnboard: IS_LOCAL,
 
   privacyContact: 'maromoya.pro@gmail.com',
-
-  // Nombre maximum de langues visées dans l'onboarding.
-  maxTargets: 5,
 };
