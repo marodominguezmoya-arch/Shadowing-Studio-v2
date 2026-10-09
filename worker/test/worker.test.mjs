@@ -1,7 +1,7 @@
 // Tests du Worker sans réseau : l'API Notion et GitHub Pages sont simulées.
 import { test, beforeEach } from 'node:test';
 import assert from 'node:assert/strict';
-import worker, { validate, validateTranslate, parseTranslations, P, icpScore, isHot } from '../src/index.js';
+import worker, { validate, validateTranslate, parseTranslations, P, icpScore, isHot, emailDomainStatus } from '../src/index.js';
 
 const env = {
   ORIGIN_BASE: 'https://example.github.io/shadowing-studio-v2',
@@ -23,6 +23,13 @@ beforeEach(() => {
   existing = null;
   globalThis.fetch = async (url, init = {}) => {
     calls.push({ url: String(url), init });
+    if (String(url).startsWith('https://cloudflare-dns.com')) {
+      calls.pop(); // la vérification DNS n'est pas un appel Notion
+      const name = new URL(url).searchParams.get('name');
+      if (name === 'nope-domain.com') return Response.json({ Status: 3 });
+      if (name === 'nomx.com') return Response.json({ Status: 0, Answer: [] });
+      return Response.json({ Status: 0, Answer: [{ type: 15, data: `10 mx.${name}.` }] });
+    }
     if (String(url).includes('/query')) return Response.json({ results: existing ? [existing] : [] });
     if (String(url).startsWith('https://api.notion.com')) return Response.json({ id: 'p1' });
     if (String(url).endsWith('/sub')) return new Response(null, { status: 301, headers: { Location: 'https://example.github.io/shadowing-studio-v2/sub/' } });
@@ -240,4 +247,28 @@ test('score ICP', () => {
   assert.equal(icpScore({ level: 'A1', blocker: 'vocab', why: 'fun', deadline: 'none' }), 0);
   assert.equal(isHot({ level: 'C2', blocker: 'speak', why: 'abroad', deadline: '3m' }), true);
   assert.equal(isHot({ level: 'B1', blocker: 'grammar', why: 'work', deadline: '3m' }), false);
+});
+
+test('email : domaine inexistant, sans MX ou jetable refusé', async () => {
+  assert.equal(await emailDomainStatus('gmail.com'), 'ok');
+  assert.equal(await emailDomainStatus('nope-domain.com'), 'invalid');
+  assert.equal(await emailDomainStatus('nomx.com'), 'invalid');
+  assert.equal(await emailDomainStatus('yopmail.com'), 'disposable');
+  assert.equal(await emailDomainStatus('pas un domaine'), 'invalid');
+  const res = await post({ ...v2(), email: 'sam@nope-domain.com' });
+  assert.equal(res.status, 400);
+  assert.deepEqual((await res.json()).fields, ['email']);
+  assert.equal(calls.length, 0);
+});
+
+test('email-check : renvoie le résultat pour un domaine', async () => {
+  const res = await worker.fetch(new Request('https://maromoya.com/shadowingstudio/api/email-check?domain=yopmail.com'), env);
+  assert.deepEqual(await res.json(), { result: 'disposable' });
+});
+
+test('email : DNS injoignable → on laisse passer', async () => {
+  const saved = globalThis.fetch;
+  globalThis.fetch = async () => { throw new Error('offline'); };
+  assert.equal(await emailDomainStatus('example.org'), 'ok');
+  globalThis.fetch = saved;
 });

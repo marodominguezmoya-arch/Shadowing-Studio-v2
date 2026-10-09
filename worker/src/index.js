@@ -1,6 +1,7 @@
 // Cloudflare Worker — maromoya.com/shadowingstudio*
 //
 //  /shadowingstudio/api/onboard  (POST) → valide le formulaire → crée/met à jour la fiche Notion
+//  /shadowingstudio/api/email-check (GET) → le domaine d'un email reçoit-il des emails ? (DNS MX)
 //  /shadowingstudio/api/hello (GET)      → pays de connexion (écran d'accueil)
 //  /shadowingstudio/api/translate (POST) → traduit des phrases (Workers AI : Llama 4 Scout, secours m2m100)
 //  /shadowingstudio/…                  → sert l'app statique hébergée sur GitHub Pages
@@ -105,6 +106,10 @@ export default {
       return handleTranslate(request, env);
     }
 
+    if (url.pathname === `${PREFIX}/api/email-check`) {
+      return handleEmailCheck(request, env, url);
+    }
+
     // Pays de connexion (déduit de l'IP par Cloudflare) pour l'écran « Hello ». Rien n'est enregistré.
     if (url.pathname === `${PREFIX}/api/hello`) {
       return json({ country: request.cf?.country || null });
@@ -117,6 +122,49 @@ export default {
 // ---------------------------------------------------------------------------
 // Onboarding → Notion
 // ---------------------------------------------------------------------------
+
+// ---------------------------------------------------------------------------
+// Email : domaine capable de recevoir des emails
+// ---------------------------------------------------------------------------
+
+// Adresses jetables courantes (refusées).
+const DISPOSABLE = new Set([
+  'yopmail.com', 'yopmail.fr', 'yopmail.net', 'mailinator.com', 'guerrillamail.com', 'guerrillamail.net',
+  'sharklasers.com', 'grr.la', '10minutemail.com', 'temp-mail.org', 'tempmail.com', 'trashmail.com',
+  'trashmail.fr', 'getnada.com', 'maildrop.cc', 'dispostable.com', 'throwawaymail.com', 'mailnesia.com',
+  'jetable.org', 'mohmal.com', 'emailondeck.com', 'fakeinbox.com', 'tempail.com', 'mintemail.com',
+]);
+const DOMAIN_RE = /^(?=.{3,253}$)([a-z0-9-]+\.)+[a-z]{2,}$/;
+
+// 'ok' | 'invalid' | 'disposable'. En cas de doute (DNS injoignable), 'ok' : on ne bloque personne à tort.
+export async function emailDomainStatus(domain) {
+  domain = String(domain || '').trim().toLowerCase();
+  if (!DOMAIN_RE.test(domain)) return 'invalid';
+  if (DISPOSABLE.has(domain)) return 'disposable';
+  try {
+    const res = await fetch(`https://cloudflare-dns.com/dns-query?name=${encodeURIComponent(domain)}&type=MX`, {
+      headers: { accept: 'application/dns-json' },
+    });
+    if (!res.ok) return 'ok';
+    const dns = await res.json();
+    if (dns.Status === 3) return 'invalid'; // le domaine n'existe pas
+    if (dns.Status !== 0) return 'ok';
+    const hasMx = (dns.Answer || []).some((r) => r.type === 15 && !/^0 \.?$/.test(r.data));
+    return hasMx ? 'ok' : 'invalid'; // existe, mais ne reçoit pas d'emails
+  } catch {
+    return 'ok';
+  }
+}
+
+async function handleEmailCheck(request, env, url) {
+  if (request.method !== 'GET') return json({ error: 'method_not_allowed' }, 405, { Allow: 'GET' });
+  if (env.TRANSLATE_LIMITER) {
+    const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
+    const { success } = await env.TRANSLATE_LIMITER.limit({ key: `email:${ip}` });
+    if (!success) return json({ error: 'rate_limited' }, 429);
+  }
+  return json({ result: await emailDomainStatus(url.searchParams.get('domain')) });
+}
 
 async function handleOnboard(request, env) {
   if (request.method !== 'POST') return json({ error: 'method_not_allowed' }, 405, { Allow: 'POST' });
@@ -145,6 +193,9 @@ async function handleOnboard(request, env) {
   if (body && typeof body.hp === 'string' && body.hp.trim() !== '') return json({ ok: true });
 
   const result = validate(body);
+  if (!result.errors.length && (await emailDomainStatus(result.data.email.split('@')[1])) !== 'ok') {
+    result.errors.push('email');
+  }
   if (result.errors.length) return json({ error: 'invalid', fields: result.errors }, 400);
 
   if (!env.NOTION_TOKEN || !env.NOTION_DATABASE_ID) {

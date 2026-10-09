@@ -97,6 +97,10 @@ export default {
     },
     newsletterYes: 'Да, хочу',
     newsletterNo: 'Нет, спасибо',
+    emailSuggest: 'Вы имели в виду {email}?',
+    emailFix: 'Да, исправить',
+    emailKeep: 'Нет, оставить {email}',
+    checking: 'Проверка…',
 
     firstName: 'Имя',
     email: 'Эл. почта',
@@ -112,6 +116,8 @@ export default {
     errors: {
       required: 'Ответьте, чтобы продолжить.',
       email: 'Неверный адрес электронной почты.',
+      emailDomain: 'Этот домен не принимает письма. Проверьте адрес.',
+      emailDisposable: 'Временные адреса не принимаются. Укажите ваш обычный адрес.',
       level: 'Выберите уровень.',
       choose: 'Выберите ответ.',
       duplicate: 'Этот язык уже есть в списке.',

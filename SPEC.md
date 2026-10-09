@@ -309,3 +309,11 @@ Ordre : Prénom → Email → Profil → Langue maternelle → Langue apprise �
 - Écran final : profil chaud → carte « Un diagnostic offert » (message Instagram, https://ig.me/m/maro.moya, mot-clé DIAGNOSTIC). Sinon, si la newsletter a été refusée → carte newsletter (https://substack.com/@maromoya). Sinon rien.
 - Le Worker accepte encore l'ancien formulaire (nom, profession, sans les nouvelles réponses) pour les copies de l'app en cache.
 - Politique de confidentialité mise à jour (données collectées, finalité « comprendre vos besoins / proposer un diagnostic »).
+
+## 20. Emails valables
+
+- **Faute de frappe** (dans l'app, `js/email-check.js`) : si le domaine est à une seule faute d'un domaine courant (gmail.com, hotmail.fr, outlook.com, yahoo.fr…), l'écran propose « Vouliez-vous dire …@gmail.com ? » avec « Oui, corriger » ou « Non, garder … ». mail.com est volontairement absent de la liste : c'est un vrai fournisseur, mais plus souvent une faute pour gmail.com.
+- **Domaine qui reçoit des emails** (Worker, `/api/email-check?domain=`) : requête DNS MX via Cloudflare (DNS-over-HTTPS). Domaine inexistant ou sans serveur de réception → « Ce domaine ne reçoit pas d'emails ». Seul le domaine quitte l'appareil, pas l'adresse.
+- **Adresses jetables** (yopmail, mailinator, etc.) refusées.
+- Le Worker refait la vérification à l'envoi final. En cas de doute (DNS injoignable, hors ligne), on laisse passer : personne n'est bloqué à tort.
+- Limite : rien ne prouve qu'une boîte précise existe (ex. ghizlan123@gmail.com) sans envoyer un code de confirmation par email.

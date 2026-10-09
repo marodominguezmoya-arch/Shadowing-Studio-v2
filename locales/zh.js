@@ -97,6 +97,10 @@ export default {
     },
     newsletterYes: '好的，我要',
     newsletterNo: '不用了，谢谢',
+    emailSuggest: '你是想输入 {email} 吗？',
+    emailFix: '是的，帮我改',
+    emailKeep: '不，保留 {email}',
+    checking: '正在验证…',
 
     firstName: '名字',
     email: '邮箱',
@@ -112,6 +116,8 @@ export default {
     errors: {
       required: '请回答后继续。',
       email: '邮箱地址无效。',
+      emailDomain: '该域名无法接收邮件，请检查地址。',
+      emailDisposable: '不接受一次性邮箱，请使用你常用的邮箱。',
       level: '请选择一个水平。',
       choose: '请选择一个答案。',
       duplicate: '这种语言已经在列表中。',

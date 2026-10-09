@@ -97,6 +97,10 @@ export default {
     },
     newsletterYes: 'Sim, eu quero',
     newsletterNo: 'Não, obrigado',
+    emailSuggest: 'Você quis dizer {email}?',
+    emailFix: 'Sim, corrigir',
+    emailKeep: 'Não, manter {email}',
+    checking: 'Verificando…',
 
     firstName: 'Nome',
     email: 'E-mail',
@@ -112,6 +116,8 @@ export default {
     errors: {
       required: 'Responda para continuar.',
       email: 'E-mail inválido.',
+      emailDomain: 'Este domínio não recebe e-mails. Verifique o endereço.',
+      emailDisposable: 'Endereços descartáveis não são aceitos. Use seu endereço habitual.',
       level: 'Escolha um nível.',
       choose: 'Escolha uma resposta.',
       duplicate: 'Este idioma já está na lista.',

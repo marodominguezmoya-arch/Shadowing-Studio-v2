@@ -97,6 +97,10 @@ export default {
     },
     newsletterYes: 'はい、受け取る',
     newsletterNo: 'いいえ、結構です',
+    emailSuggest: '{email} のことですか？',
+    emailFix: 'はい、修正する',
+    emailKeep: 'いいえ、{email} のまま',
+    checking: '確認中…',
 
     firstName: '名',
     email: 'メールアドレス',
@@ -112,6 +116,8 @@ export default {
     errors: {
       required: '続けるには回答してください。',
       email: 'メールアドレスが正しくありません。',
+      emailDomain: 'このドメインはメールを受信できません。アドレスをご確認ください。',
+      emailDisposable: '使い捨てアドレスは使えません。普段お使いのアドレスをご入力ください。',
       level: 'レベルを選んでください。',
       choose: '回答を選んでください。',
       duplicate: 'この言語はすでにリストにあります。',

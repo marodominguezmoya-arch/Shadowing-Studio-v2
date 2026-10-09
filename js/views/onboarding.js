@@ -8,6 +8,7 @@ import { save } from '../storage.js';
 import { esc } from '../dom.js';
 import { mountGreetings } from './hello.js';
 import { isHot } from '../icp.js';
+import { suggestEmail, checkEmailDomain } from '../email-check.js';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const TEXT_FIELDS = {
@@ -41,10 +42,13 @@ const state = {
   source: '',
   newsletter: null, // null = pas encore répondu ; true/false = choix explicite
   privacy: false,
+  emailSuggestion: '', // correction proposée (faute de frappe probable)
+  emailKept: '', // adresse confirmée telle quelle malgré la suggestion
   hp: '', // champ piège anti-spam
 };
 let error = '';
 let sending = false;
+let checking = false; // vérification du domaine de l'email en cours
 let direction = 'forward';
 
 // Suite des écrans, recalculée à partir de l'état (le nombre de langues visées varie).
@@ -116,7 +120,21 @@ function question(text, hint = '') {
 }
 
 function nextButton(label = t('common.next')) {
-  return `<button type="submit" class="btn btn-primary onb-next">${label}</button>`;
+  return `<button type="submit" class="btn btn-primary onb-next" ${checking ? 'disabled' : ''}>${checking ? t('onboarding.checking') : label}</button>`;
+}
+
+// « Vouliez-vous dire …@gmail.com ? » sous le champ email.
+function emailSuggestionBox() {
+  if (!state.emailSuggestion) return '';
+  return `
+    <div class="onb-suggest" role="alert">
+      <p>${t('onboarding.emailSuggest', { email: `<strong>${esc(state.emailSuggestion)}</strong>` })}</p>
+      <div class="onb-choices">
+        <button type="button" class="choice choice-center" data-action="email-fix">${t('onboarding.emailFix')}</button>
+        <button type="button" class="choice choice-center" data-action="email-keep">${t('onboarding.emailKeep', { email: esc(state.email.trim()) })}</button>
+      </div>
+    </div>
+  `;
 }
 
 function screenWelcome() {
@@ -140,7 +158,7 @@ function screenText(name) {
       value="${esc(state[name])}" required maxlength="120" enterkeyhint="next"
       placeholder="${esc(t(`onboarding.p.${name}`))}"
       ${error ? 'aria-invalid="true" aria-describedby="onb-error"' : ''}>
-    ${nextButton()}
+    ${name === 'email' && state.emailSuggestion ? emailSuggestionBox() : nextButton()}
   `;
 }
 
@@ -323,6 +341,11 @@ function bind(root, onDone) {
   form.addEventListener('input', (e) => {
     const { name, value, type, checked } = e.target;
     if (!name) return;
+    if (name === 'email' && state.emailSuggestion) {
+      // L'adresse est retapée : la suggestion ne vaut plus, le bouton Continuer revient.
+      state.emailSuggestion = '';
+      root.querySelector('.onb-suggest')?.replaceWith(document.createRange().createContextualFragment(nextButton()));
+    }
     if (type === 'checkbox') state[name] = checked;
     else if (name.startsWith('target-')) state.targets[+name.split('-')[1]].lang = value;
     else if (name in state) state[name] = value;
@@ -369,6 +392,14 @@ function bind(root, onDone) {
         return rerender();
       case 'next':
         return advance();
+      case 'email-fix':
+        state.email = state.emailSuggestion;
+        state.emailSuggestion = '';
+        return advance();
+      case 'email-keep':
+        state.emailKept = state.email.trim();
+        state.emailSuggestion = '';
+        return advance();
     }
   });
 
@@ -378,10 +409,27 @@ function bind(root, onDone) {
   });
 
   async function advance() {
-    if (sending) return;
+    if (sending || checking) return;
     if (state.screen === 'howto') return onDone();
     error = validateScreen();
     if (error) return rerender();
+
+    if (state.screen === 'email') {
+      const email = state.email.trim();
+      const suggestion = email === state.emailKept ? null : suggestEmail(email);
+      if (suggestion) {
+        state.emailSuggestion = suggestion;
+        return rerender();
+      }
+      checking = true;
+      rerender();
+      const result = await checkEmailDomain(email);
+      checking = false;
+      if (result !== 'ok') {
+        error = t(result === 'disposable' ? 'onboarding.errors.emailDisposable' : 'onboarding.errors.emailDomain');
+        return rerender();
+      }
+    }
 
     if (state.screen !== 'privacy') {
       next();

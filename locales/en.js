@@ -97,6 +97,10 @@ export default {
     },
     newsletterYes: 'Yes, I want it',
     newsletterNo: 'No thanks',
+    emailSuggest: 'Did you mean {email}?',
+    emailFix: 'Yes, fix it',
+    emailKeep: 'No, keep {email}',
+    checking: 'Checking…',
 
     firstName: 'First name',
     email: 'Email',
@@ -112,6 +116,8 @@ export default {
     errors: {
       required: 'Please answer to continue.',
       email: 'Invalid email address.',
+      emailDomain: 'This domain doesn’t receive emails. Please check the address.',
+      emailDisposable: 'Disposable addresses aren’t accepted. Please use your usual address.',
       level: 'Pick a level.',
       choose: 'Pick an answer.',
       duplicate: 'This language is already in the list.',

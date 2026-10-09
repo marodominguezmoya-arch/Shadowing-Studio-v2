@@ -97,6 +97,10 @@ export default {
     },
     newsletterYes: 'نعم، أريدها',
     newsletterNo: 'لا، شكرًا',
+    emailSuggest: 'هل تقصد {email}؟',
+    emailFix: 'نعم، صحّح',
+    emailKeep: 'لا، احتفظ بـ {email}',
+    checking: 'جارٍ التحقق…',
 
     firstName: 'الاسم الأول',
     email: 'البريد الإلكتروني',
@@ -112,6 +116,8 @@ export default {
     errors: {
       required: 'يرجى الإجابة للمتابعة.',
       email: 'البريد الإلكتروني غير صالح.',
+      emailDomain: 'هذا النطاق لا يستقبل الرسائل. تحقّق من العنوان.',
+      emailDisposable: 'العناوين المؤقتة غير مقبولة. استخدم عنوانك المعتاد.',
       level: 'اختر مستوى.',
       choose: 'اختر إجابة.',
       duplicate: 'هذه اللغة موجودة بالفعل في القائمة.',

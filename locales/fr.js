@@ -97,6 +97,10 @@ export default {
     },
     newsletterYes: 'Oui, je la veux',
     newsletterNo: 'Non merci',
+    emailSuggest: 'Vouliez-vous dire {email} ?',
+    emailFix: 'Oui, corriger',
+    emailKeep: 'Non, garder {email}',
+    checking: 'Vérification…',
 
     firstName: 'Prénom',
     email: 'Email',
@@ -112,6 +116,8 @@ export default {
     errors: {
       required: 'Merci de répondre pour continuer.',
       email: 'Adresse email invalide.',
+      emailDomain: 'Ce domaine ne reçoit pas d’emails. Vérifiez l’adresse.',
+      emailDisposable: 'Les adresses jetables ne sont pas acceptées. Utilisez votre adresse habituelle.',
       level: 'Choisissez un niveau.',
       choose: 'Choisissez une réponse.',
       duplicate: 'Cette langue est déjà dans la liste.',

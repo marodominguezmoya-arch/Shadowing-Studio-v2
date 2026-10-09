@@ -830,3 +830,6 @@ input[type="range"] { width: 100%; accent-color: var(--accent); min-height: 32px
 .onb-textarea { min-height: 96px; resize: vertical; margin-top: 18px; text-align: start; }
 .offer { margin: 0 0 24px; text-align: start; border-color: var(--accent); }
 .offer .hint { margin: 0 0 14px; }
+.onb-suggest { margin-top: 4px; }
+.onb-suggest p { margin: 0 0 14px; color: var(--text-muted); overflow-wrap: anywhere; }
+.onb-suggest strong { color: var(--text); }

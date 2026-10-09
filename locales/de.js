@@ -97,6 +97,10 @@ export default {
     },
     newsletterYes: 'Ja, gerne',
     newsletterNo: 'Nein, danke',
+    emailSuggest: 'Meinten Sie {email}?',
+    emailFix: 'Ja, korrigieren',
+    emailKeep: 'Nein, {email} behalten',
+    checking: 'Wird geprüft…',
 
     firstName: 'Vorname',
     email: 'E-Mail',
@@ -112,6 +116,8 @@ export default {
     errors: {
       required: 'Bitte antworten Sie, um fortzufahren.',
       email: 'Ungültige E-Mail-Adresse.',
+      emailDomain: 'Diese Domain empfängt keine E-Mails. Bitte prüfen Sie die Adresse.',
+      emailDisposable: 'Wegwerf-Adressen werden nicht akzeptiert. Bitte nutzen Sie Ihre übliche Adresse.',
       level: 'Wählen Sie ein Niveau.',
       choose: 'Wählen Sie eine Antwort.',
       duplicate: 'Diese Sprache ist bereits in der Liste.',
