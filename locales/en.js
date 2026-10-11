@@ -144,6 +144,7 @@ export default {
     language: 'Language to practise',
     voiceReady: 'High-quality voice ready — works offline.',
     voiceToDownload: 'High-quality voice, downloaded once ({mb} MB).',
+    voiceAccent: 'Accent: {lang}.',
     download: 'Download the voice',
     downloading: 'Downloading… {pct}%',
     deleteVoice: 'Delete',

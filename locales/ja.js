@@ -144,6 +144,7 @@ export default {
     language: '練習する言語',
     voiceReady: '高品質の音声の準備ができました — オフラインでも使えます。',
     voiceToDownload: '高品質の音声（ダウンロードは一度だけ・{mb} MB）。',
+    voiceAccent: 'アクセント：{lang}。',
     download: '音声をダウンロード',
     downloading: 'ダウンロード中… {pct}%',
     deleteVoice: '削除',

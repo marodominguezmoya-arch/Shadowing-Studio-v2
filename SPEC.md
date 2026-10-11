@@ -317,3 +317,8 @@ Ordre : Prénom → Email → Profil → Langue maternelle → Langue apprise �
 - **Adresses jetables** (yopmail, mailinator, etc.) refusées.
 - Le Worker refait la vérification à l'envoi final. En cas de doute (DNS injoignable, hors ligne), on laisse passer : personne n'est bloqué à tort.
 - Limite : rien ne prouve qu'une boîte précise existe (ex. ghizlan123@gmail.com) sans envoyer un code de confirmation par email.
+
+## 21. Arabe saoudien
+
+- Piper n'a aucune voix ar-SA (seulement ar_JO-kareem). À la demande de Maro, les listes « Arabe (Arabie saoudite) » utilisent Kareem : téléchargeable (63 Mo, même fichier que l'arabe jordanien, donc un seul téléchargement pour les deux), export audio possible.
+- La carte de la voix précise « Accent : arabe (Jordanie) » (champ `accent` dans `voices-data.js`).

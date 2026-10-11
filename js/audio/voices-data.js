@@ -1,4 +1,5 @@
-// Généré depuis rhasspy/piper-voices (voices.json) — ne pas éditer à la main.
+// Généré depuis rhasspy/piper-voices (voices.json).
+// Ajout manuel : ar-SA n'a pas de voix Piper, il reprend Kareem (ar-JO), signalé par « accent ».
 // Langues de pratique (BCP 47) et voix Piper locale associée ; sans « piper » = voix du navigateur seulement.
 
 export const PIPER_BASE = 'https://huggingface.co/rhasspy/piper-voices/resolve/c10ece1aade47bb51c153c893d14e5bf8e5b7117/';
@@ -334,7 +335,16 @@ export const PRACTICE_LANGUAGES = [
     }
   },
   {
-    "tag": "ar-SA"
+    "tag": "ar-SA",
+    "piper": {
+      "key": "ar_JO-kareem-medium",
+      "path": "ar/ar_JO/kareem/medium/ar_JO-kareem-medium.onnx",
+      "mb": 63,
+      "quality": "medium",
+      "speakers": 1,
+      "name": "kareem",
+      "accent": "ar-JO"
+    }
   },
   {
     "tag": "ar-EG"

@@ -144,6 +144,7 @@ export default {
     language: 'اللغة التي تتدرّب عليها',
     voiceReady: 'الصوت عالي الجودة جاهز — يعمل دون اتصال.',
     voiceToDownload: 'صوت عالي الجودة يُنزَّل مرة واحدة فقط ({mb} ميغابايت).',
+    voiceAccent: 'اللهجة: {lang}.',
     download: 'تنزيل الصوت',
     downloading: 'جارٍ التنزيل… {pct}٪',
     deleteVoice: 'حذف',

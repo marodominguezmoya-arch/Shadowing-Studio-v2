@@ -144,6 +144,7 @@ export default {
     language: 'Язык для практики',
     voiceReady: 'Качественный голос готов — работает без интернета.',
     voiceToDownload: 'Качественный голос, загружается один раз ({mb} МБ).',
+    voiceAccent: 'Акцент: {lang}.',
     download: 'Загрузить голос',
     downloading: 'Загрузка… {pct} %',
     deleteVoice: 'Удалить',

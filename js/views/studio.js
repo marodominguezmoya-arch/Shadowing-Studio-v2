@@ -528,12 +528,14 @@ function renderVoice() {
   if (!box) return;
   const lang = currentLang();
   const mb = lang.piper?.mb;
+  // Voix empruntée à une autre variante (ex. arabe saoudien → Kareem, accent jordanien).
+  const accent = lang.piper?.accent ? ` ${t('studio.voiceAccent', { lang: languageLabel(lang.piper.accent) })}` : '';
 
   box.innerHTML = {
     unknown: '<p class="voice-line faint">…</p>',
-    cached: `<p class="voice-line ok">✓ ${t('studio.voiceReady')}
+    cached: `<p class="voice-line ok">✓ ${t('studio.voiceReady')}${accent}
                <button type="button" class="btn-link btn-link-sm" data-action="delete-voice">${t('studio.deleteVoice')}</button></p>`,
-    missing: `<p class="voice-line">${t('studio.voiceToDownload', { mb })}</p>
+    missing: `<p class="voice-line">${t('studio.voiceToDownload', { mb })}${accent}</p>
               <button type="button" class="btn btn-ghost btn-sm" data-action="download" ${rt.busy ? 'disabled' : ''}>${t('studio.download')}</button>`,
     downloading: `<p class="voice-line">${t('studio.downloading', { pct: rt.progress })}</p>
                   <div class="bar"><span style="width:${rt.progress}%"></span></div>`,

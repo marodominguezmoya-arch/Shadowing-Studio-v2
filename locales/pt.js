@@ -144,6 +144,7 @@ export default {
     language: 'Idioma para praticar',
     voiceReady: 'Voz de alta qualidade pronta — funciona sem conexão.',
     voiceToDownload: 'Voz de alta qualidade, baixada uma única vez ({mb} MB).',
+    voiceAccent: 'Sotaque: {lang}.',
     download: 'Baixar a voz',
     downloading: 'Baixando… {pct} %',
     deleteVoice: 'Excluir',

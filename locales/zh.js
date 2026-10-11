@@ -144,6 +144,7 @@ export default {
     language: '练习的语言',
     voiceReady: '高品质语音已就绪 — 可离线使用。',
     voiceToDownload: '高品质语音，只需下载一次（{mb} MB）。',
+    voiceAccent: '口音：{lang}。',
     download: '下载语音',
     downloading: '正在下载…… {pct}%',
     deleteVoice: '删除',

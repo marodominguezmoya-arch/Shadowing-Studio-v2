@@ -144,6 +144,7 @@ export default {
     language: 'Zu übende Sprache',
     voiceReady: 'Hochwertige Stimme bereit — funktioniert offline.',
     voiceToDownload: 'Hochwertige Stimme, wird nur einmal heruntergeladen ({mb} MB).',
+    voiceAccent: 'Akzent: {lang}.',
     download: 'Stimme herunterladen',
     downloading: 'Wird heruntergeladen … {pct} %',
     deleteVoice: 'Löschen',

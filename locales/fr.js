@@ -144,6 +144,7 @@ export default {
     language: 'Langue à pratiquer',
     voiceReady: 'Voix haute qualité prête — fonctionne hors connexion.',
     voiceToDownload: 'Voix haute qualité, à télécharger une seule fois ({mb} Mo).',
+    voiceAccent: 'Accent : {lang}.',
     download: 'Télécharger la voix',
     downloading: 'Téléchargement… {pct} %',
     deleteVoice: 'Supprimer',
