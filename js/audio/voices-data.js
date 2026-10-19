@@ -2,6 +2,8 @@
 // Ajouts manuels : ary-MA (darija) = voix entraînée pour l'app (Kareem réentraîné sur DODa, voix M1),
 // hébergée sur huggingface.co/maromoya/piper-darija (« base »), texte normalisé avant espeak (« normalize »).
 // « hidden » : masquée tant que la voix n'est pas en ligne.
+// « inference » : réglages de lecture propres à la voix (lv : plus stables, mesurés à 5 % d'erreurs
+// de reconnaissance vocale contre 30 % avec les réglages d'origine).
 // ar-SA n'a pas de voix Piper, il reprend Kareem (ar-JO), signalé par « accent ».
 // Langues de pratique (BCP 47) et voix Piper locale associée ; sans « piper » = voix du navigateur seulement.
 
@@ -374,7 +376,8 @@ export const PRACTICE_LANGUAGES = [
       "mb": 64,
       "quality": "medium",
       "speakers": 1,
-      "name": "aivars"
+      "name": "aivars",
+      "inference": { "noise_scale": 0.3, "noise_w": 0.3, "length_scale": 1.05 }
     }
   },
   {

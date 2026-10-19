@@ -340,3 +340,4 @@ Ordre : Prénom → Email → Profil → Langue maternelle → Langue apprise �
   - « Missing phoneme » (ex. liaison ͡ des affriquées lettonnes) : le résultat arrive sur la sortie d'erreur et le moteur abandonne le reste du lot → les textes sont traités un par un et ces résultats sont récupérés.
   - Fuite mémoire : plantage (« memory access out of bounds ») vers 200 textes pour un même module → module recréé tous les 120 textes.
 - Darija masqué (`hidden` dans `voices-data.js`) tant que sa voix n'est pas en ligne ; reste proposé dans l'onboarding.
+- Letton : réglages de lecture plus stables pour Aivars (`inference` dans `voices-data.js` : noise_scale 0,3, noise_w 0,3, length_scale 1,05). Mesure avec une reconnaissance vocale lettonne (RaivisDejus/whisper-small-lv) sur 4 phrases : 5 % d'erreurs contre 30 % avec les réglages d'origine (mots coupés, intonation instable). Rudolfs (autre voix lettonne, CC0) testé : pas meilleur (15–20 %).

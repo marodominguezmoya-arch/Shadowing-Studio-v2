@@ -45,7 +45,7 @@ export function isVoiceCached(voice) {
 export async function loadVoice(voice, onProgress) {
   // Demande au navigateur de ne pas effacer les voix en cas de manque d'espace.
   navigator.storage?.persist?.().catch(() => {});
-  return call('load', { voice: { key: voice.key, path: voice.path, base: voice.base } }, onProgress);
+  return call('load', { voice: { key: voice.key, path: voice.path, base: voice.base, inference: voice.inference } }, onProgress);
 }
 
 export function deleteVoice(voice) {

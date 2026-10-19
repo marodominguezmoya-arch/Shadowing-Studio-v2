@@ -216,6 +216,8 @@ async function loadVoice(voice, id) {
   let modelBytes = await cachedFetch(model, { id, label: 'voice', weight: 0.67, offset: 0.33, totalWeight: 1 });
 
   const cfg = JSON.parse(new TextDecoder().decode(configBytes));
+  // Réglages de lecture propres à la voix dans l'app (voices-data.js), prioritaires sur ceux du fichier.
+  if (voice.inference) cfg.inference = { ...cfg.inference, ...voice.inference };
   // Libère l'éventuelle voix précédente avant d'en charger une autre.
   if (current) {
     await current.session.release?.().catch(() => {});
