@@ -26,3 +26,19 @@ export async function translateTexts(texts, source, target) {
   const data = await res.json();
   return data.translations;
 }
+
+// Prononciation écrite par l'IA (langues sans transcription espeak, ex. darija), pour un lecteur
+// de la langue « target » ('fr', 'en', 'es', 'pt', 'ru', 'ar').
+export async function transcribeTexts(texts, source, target) {
+  if (IS_LOCAL) {
+    await new Promise((r) => setTimeout(r, 300));
+    return texts.map((t) => `[${target} phon] ${t}`);
+  }
+  const res = await fetch(CONFIG.translateEndpoint, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ texts, source, target, mode: 'transcribe' }),
+  });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return (await res.json()).transcriptions;
+}

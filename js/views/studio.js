@@ -6,7 +6,7 @@ import { load, save } from '../storage.js';
 import { renderCalendar } from './calendar.js';
 import { initLibrary, currentList, updateList, allLists, listName } from '../library.js';
 import { splitSentences } from '../split.js';
-import { translationCode, translateTexts } from '../translate.js';
+import { translationCode, translateTexts, transcribeTexts } from '../translate.js';
 import { installMode, promptInstall, dismissInstall, onInstallChange } from '../install.js';
 import { esc } from '../dom.js';
 import { practiceLanguages, findLanguage, defaultTag } from '../audio/catalog.js';
@@ -324,19 +324,33 @@ function translateTarget() {
   return [getLocale(), profile.native].map((c) => translationCode(c || '')).find((c) => c && c !== practised) || null;
 }
 
+// Langues sans voix espeak dont la prononciation est écrite par l'IA (Worker, mode « transcribe »).
+const AI_TRANSCRIPTION = new Set(['ary-MA']);
+
+// Source de la prononciation : identifiant espeak, « ai:<langue> », ou null (indisponible).
+function phonSource(tag = prefs.tag) {
+  return espeakVoiceFor(tag) || (AI_TRANSCRIPTION.has(tag) ? `ai:${tag}` : null);
+}
+
 function updatePhoneticHint() {
   const el = root?.querySelector('#s-phon-hint');
   if (!el) return;
   root.querySelector('label[for="s-phon"]').textContent = t('studio.phoneticToggle', { lang: languageLabel(phonTarget()) });
-  el.textContent = !phonOn ? '' : espeakVoiceFor(prefs.tag) ? t('studio.phoneticHint') : t('studio.phoneticUnavailable');
+  const source = phonSource();
+  el.textContent = !phonOn ? '' : !source ? t('studio.phoneticUnavailable')
+    : source.startsWith('ai:') ? t('studio.phoneticHintAi') : t('studio.phoneticHint');
 }
 
 const phonKey = (espeak, target, text) => `${espeak}|${target}|${text}`;
 
 // HTML de la prononciation d'une phrase ('' si désactivée / indisponible, « … » si en calcul).
 function phoneticHtml(text) {
-  const espeak = espeakVoiceFor(prefs.tag);
+  const espeak = phonSource();
   if (!phonOn || !espeak || !text) return '';
+  if (espeak.startsWith('ai:')) {
+    const saved = prefs.transcriptions?.[phonTarget()]?.[text];
+    if (saved) return esc(saved);
+  }
   const cached = phonCache.get(phonKey(espeak, phonTarget(), text));
   if (cached === undefined) {
     requestPhonetics();
@@ -346,13 +360,31 @@ function phoneticHtml(text) {
 }
 
 async function requestPhonetics() {
-  const espeak = espeakVoiceFor(prefs.tag);
+  const espeak = phonSource();
   const target = phonTarget();
   if (phonPending || !phonOn || !espeak) return;
   const list = rt.live?.phrases || rt.session?.phrases || phrases();
   const todo = [...new Set(list.filter((x) => !phonCache.has(phonKey(espeak, target, x))))];
   if (!todo.length) return;
   phonPending = true;
+  if (espeak.startsWith('ai:')) {
+    // Prononciation écrite par l'IA, gardée dans la liste (comme les traductions).
+    const map = ((prefs.transcriptions ||= {})[target] ||= {});
+    const missing = todo.filter((x) => !map[x]).slice(0, 40);
+    try {
+      const out = missing.length ? await transcribeTexts(missing, prefs.tag, target) : [];
+      missing.forEach((x, i) => { if (out[i]) map[x] = out[i]; });
+      if (missing.length) persist();
+      todo.forEach((x) => phonCache.set(phonKey(espeak, target, x), map[x] ? esc(map[x]) : ''));
+    } catch (err) {
+      console.warn('[phonetic]', err);
+      todo.forEach((x) => phonCache.set(phonKey(espeak, target, x), ''));
+    } finally {
+      phonPending = false;
+    }
+    renderReveals();
+    return;
+  }
   try {
     const ipas = await phonemesOf(todo, espeak);
     todo.forEach((x, i) => {
@@ -421,7 +453,7 @@ function revealsHtml(text) {
   if (!text) return '';
   const parts = [];
 
-  if (phonOn && espeakVoiceFor(prefs.tag)) {
+  if (phonOn && phonSource()) {
     const html = phoneticHtml(text);
     const target = phonTarget();
     parts.push(rt.revealPhon && html

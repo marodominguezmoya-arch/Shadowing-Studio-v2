@@ -168,6 +168,7 @@ export default {
     more: 'Mais',
 
     phoneticHint: 'Oculta durante a sessão: toque em “Ver a pronúncia” para mostrá-la. Em negrito: a sílaba tônica.',
+    phoneticHintAi: 'Oculta durante a sessão: toque em “Ver a pronúncia” para mostrá-la. Escrita por uma IA em letras latinas (3 = ع, 7 = ح, 9 = ق): pode conter erros.',
     phoneticToggle: 'Pronúncia escrita ({lang})',
     translateToggle: 'Tradução para o {lang}',
     revealPhonetic: 'Ver a pronúncia',

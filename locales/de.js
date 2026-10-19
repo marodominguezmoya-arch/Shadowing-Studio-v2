@@ -168,6 +168,7 @@ export default {
     more: 'Mehr',
 
     phoneticHint: 'Während der Übung verborgen: Tippen Sie auf „Aussprache zeigen“. Fett: die betonte Silbe.',
+    phoneticHintAi: 'Während der Sitzung verborgen: Tippen Sie auf „Aussprache zeigen“. Von einer KI in lateinischen Buchstaben geschrieben (3 = ع, 7 = ح, 9 = ق): kann Fehler enthalten.',
     phoneticToggle: 'Geschriebene Aussprache ({lang})',
     translateToggle: 'Übersetzung: {lang}',
     revealPhonetic: 'Aussprache zeigen',

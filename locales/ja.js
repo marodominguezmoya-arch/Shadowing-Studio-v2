@@ -168,6 +168,7 @@ export default {
     more: '増やす',
 
     phoneticHint: '練習中は非表示：「発音を見る」をタップすると表示されます。太字：アクセントのある音節。',
+    phoneticHintAi: '練習中は非表示：「発音を見る」をタップすると表示されます。AI がラテン文字で表記（3 = ع、7 = ح、9 = ق）：誤りを含む場合があります。',
     phoneticToggle: '文字で見る発音（{lang}）',
     translateToggle: '翻訳（{lang}）',
     revealPhonetic: '発音を見る',

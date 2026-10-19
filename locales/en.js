@@ -168,6 +168,7 @@ export default {
     more: 'More',
 
     phoneticHint: 'Hidden during the session: tap “Show pronunciation” to reveal it. In bold: the stressed syllable.',
+    phoneticHintAi: 'Hidden during the session: tap “Show pronunciation” to reveal it. Written by AI in Latin letters (3 = ع, 7 = ح, 9 = ق): may contain mistakes.',
     phoneticToggle: 'Written pronunciation ({lang})',
     translateToggle: 'Translation into {lang}',
     revealPhonetic: 'Show pronunciation',

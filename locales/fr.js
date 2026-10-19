@@ -168,6 +168,7 @@ export default {
     more: 'Plus',
 
     phoneticHint: 'Cachée pendant la séance : touchez « Voir la prononciation » pour la révéler. En gras : la syllabe accentuée.',
+    phoneticHintAi: 'Cachée pendant la séance : touchez « Voir la prononciation » pour la révéler. Écrite par une IA, en lettres latines (3 = ع, 7 = ح, 9 = ق) : peut contenir des erreurs.',
     phoneticToggle: 'Prononciation écrite ({lang})',
     translateToggle: 'Traduction en {lang}',
     revealPhonetic: 'Voir la prononciation',

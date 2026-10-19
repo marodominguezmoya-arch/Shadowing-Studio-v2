@@ -303,3 +303,15 @@ test('voix Darija : non configurée, autre origine, texte invalide', async () =>
   assert.equal(validateTts({ text: 'a'.repeat(301) }).error, 'text');
   assert.equal(validateTts({ text: 'a', voice: 'Z9' }).voice, 'M1');
 });
+
+test('prononciation écrite (darija) : mode « transcribe » via le LLM', async () => {
+  const calls = [];
+  const aiEnv = { ...env, AI: { run: async (model, input) => { calls.push({ model, input }); return { response: '["kidayer ?"]' }; } } };
+  const res = await worker.fetch(new Request('https://maromoya.com/shadowingstudio/api/translate', {
+    method: 'POST', headers: { Origin: 'https://maromoya.com', 'Content-Type': 'application/json' },
+    body: JSON.stringify({ mode: 'transcribe', source: 'ary-MA', target: 'fr', texts: ['كيداير؟'] }),
+  }), aiEnv);
+  assert.deepEqual(await res.json(), { transcriptions: ['kidayer ?'] });
+  assert.match(calls[0].input.messages[0].content, /PRONUNCIATION/);
+  assert.match(calls[0].input.messages[0].content, /French spelling/);
+});

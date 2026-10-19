@@ -168,6 +168,7 @@ export default {
     more: '增加',
 
     phoneticHint: '练习时隐藏：点按“查看发音”即可显示。加粗：重读音节。',
+    phoneticHintAi: '练习时隐藏：点按“查看发音”即可查看。由 AI 用拉丁字母书写（3 = ع，7 = ح，9 = ق）：可能有错误。',
     phoneticToggle: '书面发音（{lang}）',
     translateToggle: '翻译成{lang}',
     revealPhonetic: '查看发音',
