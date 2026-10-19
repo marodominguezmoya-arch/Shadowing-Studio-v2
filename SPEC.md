@@ -326,11 +326,9 @@ Ordre : Prénom → Email → Profil → Langue maternelle → Langue apprise �
 ## 22. Darija (arabe marocain)
 
 - Langue de pratique `ary-MA`, nom fixe dans les 9 langues (« Darija (arabe marocain) ») car les navigateurs ne le connaissent pas tous. Aussi proposée dans l'onboarding (code `ary`).
-- Aucune voix Darija ne tourne dans le téléphone : voix **en ligne** HADRA (Jip7e/habibi-tts-doda-darija, F5-TTS, 336 M de paramètres), hébergée sur un Hugging Face Space gratuit (CPU) — dossier `darija-space/`.
-- Chaîne : app → Worker `/api/tts` (origine, limite 30/min/IP, cache Cloudflare partagé 30 jours) → Space `/tts` (clé partagée `X-Api-Key` = secret `API_KEY` du Space = secret `DARIJA_API_KEY` du Worker) → WAV 24 kHz.
-- L'app garde chaque phrase générée (Cache API `ss2-remote-v1`) : relecture immédiate, hors connexion. Le serveur est réveillé dès que le Darija est choisi (`GET /api/tts`).
-- Lenteur assumée (gratuit) : environ 1 min par nouvelle phrase sur le CPU gratuit, réveil de 1 à 2 min après plusieurs jours sans usage. Texte en lettres arabes.
-- Voix de référence : M1 (par défaut) et M2, extraits CC BY 4.0 du jeu Jip7e/doda-darija-cosyvoice2.
-- Licence : HADRA se déclare Apache-2.0 mais dérive de Habibi-TTS (CC BY-NC-SA) — zone grise signalée à Maro.
-- Confidentialité : les phrases Darija partent chez Cloudflare et Hugging Face (mention ajoutée).
+- Aucune voix Darija Piper n'existait ; HADRA (F5-TTS) trop lourde pour le téléphone, et Hugging Face exige désormais l'abonnement PRO pour héberger un serveur Gradio/Docker gratuit → abandonné. Maro ne veut rien payer.
+- Solution : **voix Piper entraînée pour l'app** (`ary_MA-darija_m1-medium`, ~61 Mo) = Kareem (ar_JO) réentraîné sur la voix M1 du corpus DODa (3,35 h, CC BY 4.0). Elle tourne dans le téléphone comme les autres voix (hors connexion, export audio). Fabrication : `scripts/darija-voice/` (préparation sur Mac, entraînement sur Kaggle GPU gratuit). Données : huggingface.co/datasets/maromoya/darija-m1-piper ; voix : huggingface.co/maromoya/piper-darija (`base` dans `voices-data.js`).
+- Les sons d'entraînement sont calculés avec **le moteur de l'app** (piper-wasm, espeak `ar`) pour une correspondance exacte. Texte normalisé avant espeak (`js/darija.js` : ڭ/گ → ق, ڤ → ف), identique à l'entraînement.
+- Texte en lettres arabes.
+- Licence : corpus CC BY 4.0 (attribution dans le dépôt de données) ; Kareem : voir rhasspy/piper-voices.
 - **Prononciation écrite du darija** : espeak ne connaît pas le darija, elle est donc écrite par l'IA (Worker `/api/translate`, `mode: 'transcribe'`, Llama 4 Scout), dans l'alphabet de l'interface : lettres latines avec les habitudes de lecture de la langue (fr : ch, ou… ; en : sh, oo…) et les chiffres marocains 3 = ع, 7 = ح, 9 = ق ; cyrillique pour le russe ; arabe vocalisé (tashkeel) pour l'arabe. Exemples fournis au modèle pour stabiliser l'orthographe (comparé à Llama 3.3 70B et GPT-OSS 120B : Scout le plus régulier). Gardée dans la liste (`transcriptions`), comme les traductions. Mention « écrite par une IA : peut contenir des erreurs ».

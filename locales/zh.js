@@ -149,7 +149,6 @@ export default {
     downloading: '正在下载…… {pct}%',
     deleteVoice: '删除',
     voiceBrowser: '这种语言暂无高品质语音：将使用你设备自带的语音朗读。无法下载音频，锁屏时也无法播放。',
-    voiceRemote: '在线达里贾语语音：无需下载。每句话第一次朗读可能需要最多一分钟，之后会保存在你的设备上。请用阿拉伯字母书写。',
     noBrowserVoice: '此设备上没有这种语言的语音。',
 
     phrases: '你的句子',
@@ -186,7 +185,6 @@ export default {
 
     create: '生成练习',
     creating: '正在准备…… {n}/{total}',
-    creatingRemote: '达里贾语语音… 第 {n}/{total} 句（每个新句子最多 1 分钟）',
     loadingVoice: '正在加载语音…… {pct}%',
     listen: '收听',
     stop: '停止',
@@ -210,7 +208,6 @@ export default {
       engine: '语音无法在此设备上启动。',
       detail: '技术详情',
       synth: '语音无法朗读你的句子。请检查后再试。',
-      remote: '达里贾语语音没有响应。服务器可能正在启动：请一分钟后再试。',
       browserVoice: '使用设备语音朗读失败。',
     },
   },
@@ -289,7 +286,7 @@ export default {
       },
       {
         h: '不会离开你设备的内容',
-        p: '你的句子、列表、设置和已下载的语音只保存在你的浏览器中。语音和发音标注都在你的设备上生成：你的句子不会发送给任何服务。语音文件从 HuggingFace 和 jsDelivr 下载，它们会因此看到你的 IP 地址。例外：如果你开启翻译，需要翻译的句子会发送给 Cloudflare（Workers AI）进行翻译，翻译结果随后保存在你的设备上。 对于达里贾语，句子会通过 Cloudflare 发送到托管在 Hugging Face 的语音合成服务器，生成的音频随后保存在你的设备上。',
+        p: '你的句子、列表、设置和已下载的语音只保存在你的浏览器中。语音和发音标注都在你的设备上生成：你的句子不会发送给任何服务。语音文件从 HuggingFace 和 jsDelivr 下载，它们会因此看到你的 IP 地址。例外：如果你开启翻译，需要翻译的句子会发送给 Cloudflare（Workers AI）进行翻译，翻译结果随后保存在你的设备上。',
       },
       {
         h: '你的数据保存在哪里',

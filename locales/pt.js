@@ -149,7 +149,6 @@ export default {
     downloading: 'Baixando… {pct} %',
     deleteVoice: 'Excluir',
     voiceBrowser: 'Ainda não há voz de alta qualidade para este idioma: a leitura usa a voz do seu aparelho. O download do áudio e a reprodução com a tela bloqueada não estão disponíveis.',
-    voiceRemote: 'Voz darija online: nada para baixar. A primeira leitura de uma frase pode levar até um minuto; depois ela fica guardada no seu aparelho. Escreva em letras árabes.',
     noBrowserVoice: 'Nenhuma voz disponível para este idioma neste aparelho.',
 
     phrases: 'Suas frases',
@@ -186,7 +185,6 @@ export default {
 
     create: 'Criar a sessão',
     creating: 'Preparando… {n}/{total}',
-    creatingRemote: 'Voz darija… frase {n}/{total} (até 1 min por frase nova)',
     loadingVoice: 'Carregando a voz… {pct} %',
     listen: 'Ouvir',
     stop: 'Parar',
@@ -210,7 +208,6 @@ export default {
       engine: 'A voz não conseguiu iniciar neste aparelho.',
       detail: 'Detalhe técnico',
       synth: 'A voz não conseguiu ler suas frases. Verifique-as e tente novamente.',
-      remote: 'A voz darija não respondeu. O servidor pode estar acordando: tente de novo em um minuto.',
       browserVoice: 'A leitura com a voz do aparelho falhou.',
     },
   },
@@ -289,7 +286,7 @@ export default {
       },
       {
         h: 'O que não sai do seu aparelho',
-        p: 'Suas frases, listas, configurações e vozes baixadas ficam apenas no seu navegador. A voz e a transcrição são geradas no seu aparelho: suas frases não são enviadas a nenhum serviço. Os arquivos de voz são baixados do HuggingFace e do jsDelivr, que então veem o seu endereço IP. Exceção: se você ativar a tradução, as frases a traduzir são enviadas à Cloudflare (Workers AI) para serem traduzidas; a tradução fica depois guardada no seu aparelho. Para o darija, as frases são enviadas, via Cloudflare, a um servidor de síntese de voz hospedado na Hugging Face; depois o áudio fica guardado no seu aparelho.',
+        p: 'Suas frases, listas, configurações e vozes baixadas ficam apenas no seu navegador. A voz e a transcrição são geradas no seu aparelho: suas frases não são enviadas a nenhum serviço. Os arquivos de voz são baixados do HuggingFace e do jsDelivr, que então veem o seu endereço IP. Exceção: se você ativar a tradução, as frases a traduzir são enviadas à Cloudflare (Workers AI) para serem traduzidas; a tradução fica depois guardada no seu aparelho.',
       },
       {
         h: 'Onde seus dados ficam guardados',

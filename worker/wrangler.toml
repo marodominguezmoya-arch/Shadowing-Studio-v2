@@ -13,8 +13,6 @@ ORIGIN_BASE = "https://marodominguezmoya-arch.github.io/Shadowing-Studio-v2"
 # Identifiant de la base Notion « Shadowing Studio — CRM » (affiché par scripts/notion-setup.mjs).
 NOTION_DATABASE_ID = "7690ebbdcdf74679bf04166448fe5975"
 ALLOWED_ORIGINS = "https://maromoya.com"
-# Serveur de la voix Darija (Hugging Face Space). Vide = Darija sans voix.
-DARIJA_TTS_URL = ""
 
 # Anti-abus : 5 envois par minute et par adresse IP.
 [[ratelimits]]
@@ -28,16 +26,9 @@ name = "TRANSLATE_LIMITER"
 namespace_id = "1002"
 simple = { limit = 20, period = 60 }
 
-# Voix Darija : 30 phrases générées par minute et par adresse IP (les phrases en cache ne comptent pas).
-[[ratelimits]]
-name = "TTS_LIMITER"
-namespace_id = "1003"
-simple = { limit = 30, period = 60 }
-
 # Workers AI (modèle de traduction m2m100).
 [ai]
 binding = "AI"
 
 # Secret à définir une fois (jamais dans ce fichier) :
 #   npx wrangler secret put NOTION_TOKEN
-#   npx wrangler secret put DARIJA_API_KEY   (même valeur que le secret API_KEY du Space Darija)

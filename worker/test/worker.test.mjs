@@ -1,7 +1,7 @@
 // Tests du Worker sans réseau : l'API Notion et GitHub Pages sont simulées.
 import { test, beforeEach } from 'node:test';
 import assert from 'node:assert/strict';
-import worker, { validate, validateTranslate, parseTranslations, P, icpScore, isHot, emailDomainStatus, validateTts } from '../src/index.js';
+import worker, { validate, validateTranslate, parseTranslations, P, icpScore, isHot, emailDomainStatus } from '../src/index.js';
 
 const env = {
   ORIGIN_BASE: 'https://example.github.io/shadowing-studio-v2',
@@ -271,37 +271,6 @@ test('email : DNS injoignable → on laisse passer', async () => {
   globalThis.fetch = async () => { throw new Error('offline'); };
   assert.equal(await emailDomainStatus('example.org'), 'ok');
   globalThis.fetch = saved;
-});
-
-const ttsEnv = { ...env, DARIJA_TTS_URL: 'https://space.example/', DARIJA_API_KEY: 'k' };
-const tts = (body, e = ttsEnv) => worker.fetch(new Request('https://maromoya.com/shadowingstudio/api/tts', {
-  method: 'POST', headers: { Origin: 'https://maromoya.com', 'Content-Type': 'application/json' }, body: JSON.stringify(body),
-}), e, { waitUntil() {} });
-
-test('voix Darija : relaie au Space avec la clé et renvoie le WAV', async () => {
-  const saved = globalThis.fetch;
-  globalThis.fetch = async (url, init = {}) => {
-    calls.push({ url: String(url), init });
-    return new Response(new Uint8Array([82, 73, 70, 70]), { headers: { 'Content-Type': 'audio/wav' } });
-  };
-  const res = await tts({ text: ' كيداير؟ ', voice: 'M2', speed: 1.03 });
-  globalThis.fetch = saved;
-  assert.equal(res.status, 200);
-  assert.equal(res.headers.get('Content-Type'), 'audio/wav');
-  assert.equal(calls[0].url, 'https://space.example/tts');
-  assert.equal(calls[0].init.headers['X-Api-Key'], 'k');
-  assert.deepEqual(JSON.parse(calls[0].init.body), { text: 'كيداير؟', voice: 'M2', speed: 1.05 });
-});
-
-test('voix Darija : non configurée, autre origine, texte invalide', async () => {
-  assert.equal((await tts({ text: 'x' }, env)).status, 503);
-  const other = await worker.fetch(new Request('https://maromoya.com/shadowingstudio/api/tts', {
-    method: 'POST', headers: { Origin: 'https://evil.example' }, body: '{"text":"x"}',
-  }), ttsEnv, { waitUntil() {} });
-  assert.equal(other.status, 403);
-  assert.equal((await tts({ text: '' })).status, 400);
-  assert.equal(validateTts({ text: 'a'.repeat(301) }).error, 'text');
-  assert.equal(validateTts({ text: 'a', voice: 'Z9' }).voice, 'M1');
 });
 
 test('prononciation écrite (darija) : mode « transcribe » via le LLM', async () => {

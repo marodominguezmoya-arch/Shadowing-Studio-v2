@@ -149,7 +149,6 @@ export default {
     downloading: 'Téléchargement… {pct} %',
     deleteVoice: 'Supprimer',
     voiceBrowser: 'Pas encore de voix haute qualité pour cette langue : lecture avec la voix de votre appareil. Le téléchargement audio et la lecture écran verrouillé ne sont pas disponibles.',
-    voiceRemote: 'Voix darija en ligne : rien à télécharger. La première lecture d’une phrase peut prendre jusqu’à une minute, ensuite elle est gardée sur votre appareil. Écrivez en lettres arabes.',
     noBrowserVoice: 'Aucune voix disponible pour cette langue sur cet appareil.',
 
     phrases: 'Vos phrases',
@@ -186,7 +185,6 @@ export default {
 
     create: 'Créer la séance',
     creating: 'Préparation… {n}/{total}',
-    creatingRemote: 'Voix darija… phrase {n}/{total} (jusqu’à 1 min par nouvelle phrase)',
     loadingVoice: 'Chargement de la voix… {pct} %',
     listen: 'Écouter',
     stop: 'Arrêter',
@@ -210,7 +208,6 @@ export default {
       engine: 'La voix n’a pas pu démarrer sur cet appareil.',
       detail: 'Détail technique',
       synth: 'La voix n’a pas pu lire vos phrases. Vérifiez-les et réessayez.',
-      remote: 'La voix darija n’a pas répondu. Le serveur se réveille peut-être : réessayez dans une minute.',
       browserVoice: 'La lecture avec la voix de l’appareil a échoué.',
     },
   },
@@ -289,7 +286,7 @@ export default {
       },
       {
         h: 'Ce qui ne quitte pas votre appareil',
-        p: 'Vos phrases, listes, réglages et voix téléchargées sont stockés uniquement dans votre navigateur. La voix est générée sur votre appareil : vos phrases ne sont envoyées à aucun service. Les fichiers de voix sont téléchargés depuis HuggingFace et jsDelivr, qui voient alors votre adresse IP. Exception : si vous activez la traduction, les phrases à traduire sont envoyées à Cloudflare (Workers AI) pour être traduites ; la traduction est ensuite gardée sur votre appareil. Pour le darija, les phrases sont envoyées, via Cloudflare, à un serveur de synthèse vocale hébergé chez Hugging Face ; l’audio est ensuite gardé sur votre appareil.',
+        p: 'Vos phrases, listes, réglages et voix téléchargées sont stockés uniquement dans votre navigateur. La voix est générée sur votre appareil : vos phrases ne sont envoyées à aucun service. Les fichiers de voix sont téléchargés depuis HuggingFace et jsDelivr, qui voient alors votre adresse IP. Exception : si vous activez la traduction, les phrases à traduire sont envoyées à Cloudflare (Workers AI) pour être traduites ; la traduction est ensuite gardée sur votre appareil.',
       },
       {
         h: 'Où sont stockées vos données',

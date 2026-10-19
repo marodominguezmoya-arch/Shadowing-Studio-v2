@@ -171,8 +171,9 @@ async function cachedFetch(url, { id, label, weight = 1, offset = 0, totalWeight
   return bytes;
 }
 
+// voice.base : voix hébergée ailleurs que sur rhasspy/piper-voices (ex. darija entraîné pour l'app).
 function voiceUrls(voice) {
-  const model = PIPER_BASE + encodeURI(voice.path);
+  const model = (voice.base || PIPER_BASE) + encodeURI(voice.path);
   return { model, config: model + '.json' };
 }
 

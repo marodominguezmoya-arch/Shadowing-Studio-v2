@@ -2,14 +2,12 @@
 //
 //  /shadowingstudio/api/onboard  (POST) → valide le formulaire → crée/met à jour la fiche Notion
 //  /shadowingstudio/api/email-check (GET) → le domaine d'un email reçoit-il des emails ? (DNS MX)
-//  /shadowingstudio/api/tts (POST)      → voix Darija (serveur Hugging Face HADRA), cache Cloudflare
-//  /shadowingstudio/api/tts (GET)       → réveille le serveur Darija (il s'endort après inactivité)
 //  /shadowingstudio/api/hello (GET)      → pays de connexion (écran d'accueil)
 //  /shadowingstudio/api/translate (POST) → traduit des phrases (Workers AI : Llama 4 Scout, secours m2m100)
 //  /shadowingstudio/…                  → sert l'app statique hébergée sur GitHub Pages
 //
-// Variables (wrangler.toml) : ORIGIN_BASE, NOTION_DATABASE_ID, ALLOWED_ORIGINS, DARIJA_TTS_URL
-// Secrets (wrangler secret put) : NOTION_TOKEN, DARIJA_API_KEY (clé partagée avec le Space Darija)
+// Variables (wrangler.toml) : ORIGIN_BASE, NOTION_DATABASE_ID, ALLOWED_ORIGINS
+// Secret (wrangler secret put) : NOTION_TOKEN
 // Liaisons : AI (Workers AI), RATE_LIMITER, TRANSLATE_LIMITER
 
 const PREFIX = '/shadowingstudio';
@@ -84,7 +82,7 @@ const MAX_TARGETS = 5;
 const MAX_BODY = 4096;
 
 export default {
-  async fetch(request, env, ctx) {
+  async fetch(request, env) {
     const url = new URL(request.url);
 
     // Toujours en HTTPS : en http://, l'origine est refusée par l'API et le navigateur
@@ -106,10 +104,6 @@ export default {
 
     if (url.pathname === `${PREFIX}/api/translate`) {
       return handleTranslate(request, env);
-    }
-
-    if (url.pathname === `${PREFIX}/api/tts`) {
-      return handleTts(request, env, ctx);
     }
 
     if (url.pathname === `${PREFIX}/api/email-check`) {
@@ -526,89 +520,6 @@ export function validateTranslate(body) {
   const clean = texts.map((t) => (typeof t === 'string' ? t.trim() : ''));
   if (clean.some((t) => !t || t.length > MAX_TEXT_CHARS)) return { error: 'texts' };
   return { texts: clean, source, target };
-}
-
-// ---------------------------------------------------------------------------
-// Voix Darija (Hugging Face Space HADRA)
-// ---------------------------------------------------------------------------
-
-const TTS_VOICES = new Set(['M1', 'M2']);
-const TTS_MAX_CHARS = 300;
-
-export function validateTts(body) {
-  if (!body || typeof body !== 'object') return { error: 'body' };
-  const text = typeof body.text === 'string' ? body.text.trim() : '';
-  if (!text || text.length > TTS_MAX_CHARS) return { error: 'text' };
-  const voice = TTS_VOICES.has(body.voice) ? body.voice : 'M1';
-  // Vitesse arrondie au 0,05 : les mêmes réglages retombent sur le même cache.
-  const speed = Math.round(Math.min(1.5, Math.max(0.5, Number(body.speed) || 1)) * 20) / 20;
-  return { text, voice, speed };
-}
-
-async function sha256(text) {
-  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
-  return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
-}
-
-async function handleTts(request, env, ctx) {
-  const base = (env.DARIJA_TTS_URL || '').replace(/\/$/, '');
-  if (!base || !env.DARIJA_API_KEY) return json({ error: 'not_configured' }, 503);
-
-  // GET : réveil du serveur (il s'endort après plusieurs jours sans usage), sans attendre.
-  if (request.method === 'GET') {
-    ctx?.waitUntil(fetch(base + '/').catch(() => {}));
-    return json({ ok: true });
-  }
-  if (request.method !== 'POST') return json({ error: 'method_not_allowed' }, 405, { Allow: 'GET, POST' });
-
-  const allowed = (env.ALLOWED_ORIGINS || '').split(',').map((s) => s.trim()).filter(Boolean);
-  if (allowed.length && !allowed.includes(request.headers.get('Origin'))) return json({ error: 'forbidden_origin' }, 403);
-
-  const raw = await request.text();
-  if (raw.length > 4096) return json({ error: 'too_large' }, 413);
-  let body;
-  try {
-    body = JSON.parse(raw);
-  } catch {
-    return json({ error: 'invalid_json' }, 400);
-  }
-  const req = validateTts(body);
-  if (req.error) return json({ error: 'invalid', field: req.error }, 400);
-
-  // Cache partagé : une phrase déjà générée (par n'importe quel élève) revient instantanément.
-  const cache = globalThis.caches?.default;
-  const cacheKey = new Request(`https://maromoya.com${PREFIX}/api/tts-cache/${await sha256(`${req.voice}|${req.speed}|${req.text}`)}`);
-  const hit = await cache?.match(cacheKey);
-  if (hit) return hit;
-
-  if (env.TTS_LIMITER) {
-    const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
-    const { success } = await env.TTS_LIMITER.limit({ key: ip });
-    if (!success) return json({ error: 'rate_limited' }, 429);
-  }
-
-  let upstream;
-  try {
-    upstream = await fetch(base + '/tts', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'X-Api-Key': env.DARIJA_API_KEY },
-      body: JSON.stringify(req),
-    });
-  } catch (err) {
-    console.error('Darija TTS:', err.message);
-    return json({ error: 'tts_unreachable' }, 502);
-  }
-  if (!upstream.ok) {
-    console.error('Darija TTS status', upstream.status);
-    // 503 : le serveur démarre (réveil après inactivité).
-    return json({ error: upstream.status === 503 ? 'tts_starting' : 'tts_failed' }, upstream.status === 503 ? 503 : 502);
-  }
-
-  const res = new Response(await upstream.arrayBuffer(), {
-    headers: { 'Content-Type': 'audio/wav', 'Cache-Control': 'public, max-age=2592000' },
-  });
-  ctx?.waitUntil(cache?.put(cacheKey, res.clone()));
-  return res;
 }
 
 // ---------------------------------------------------------------------------

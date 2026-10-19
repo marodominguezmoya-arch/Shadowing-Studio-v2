@@ -1,5 +1,6 @@
 // Généré depuis rhasspy/piper-voices (voices.json).
-// Ajouts manuels : ary-MA (darija) utilise une voix en ligne (« remote », serveur HADRA via le Worker).
+// Ajouts manuels : ary-MA (darija) = voix entraînée pour l'app (Kareem réentraîné sur DODa, voix M1),
+// hébergée sur huggingface.co/maromoya/piper-darija (« base »), texte normalisé avant espeak (« normalize »).
 // ar-SA n'a pas de voix Piper, il reprend Kareem (ar-JO), signalé par « accent ».
 // Langues de pratique (BCP 47) et voix Piper locale associée ; sans « piper » = voix du navigateur seulement.
 
@@ -353,11 +354,14 @@ export const PRACTICE_LANGUAGES = [
   {
     "tag": "ary-MA",
     "piper": {
-      "key": "hadra-ary-M1",
-      "remote": "M1",
+      "key": "ary_MA-darija_m1-medium",
+      "base": "https://huggingface.co/maromoya/piper-darija/resolve/main/",
+      "path": "ary_MA-darija_m1-medium.onnx",
+      "mb": 61,
       "quality": "medium",
       "speakers": 1,
-      "name": "hadra"
+      "name": "darija_m1",
+      "normalize": "darija"
     }
   },
   {

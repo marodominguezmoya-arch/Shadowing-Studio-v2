@@ -38,18 +38,18 @@ function call(type, payload = {}, onProgress) {
 }
 
 export function isVoiceCached(voice) {
-  return call('has', { voice: { key: voice.key, path: voice.path } }).then((r) => r.cached);
+  return call('has', { voice: { key: voice.key, path: voice.path, base: voice.base } }).then((r) => r.cached);
 }
 
 // onProgress({ loaded, total }) : fraction globale (phonémiseur + voix).
 export async function loadVoice(voice, onProgress) {
   // Demande au navigateur de ne pas effacer les voix en cas de manque d'espace.
   navigator.storage?.persist?.().catch(() => {});
-  return call('load', { voice: { key: voice.key, path: voice.path } }, onProgress);
+  return call('load', { voice: { key: voice.key, path: voice.path, base: voice.base } }, onProgress);
 }
 
 export function deleteVoice(voice) {
-  return call('delete', { voice: { key: voice.key, path: voice.path } });
+  return call('delete', { voice: { key: voice.key, path: voice.path, base: voice.base } });
 }
 
 // Renvoie { pcms: Float32Array[], sampleRate }.
