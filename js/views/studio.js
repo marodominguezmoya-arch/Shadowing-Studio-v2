@@ -14,6 +14,7 @@ import { isVoiceCached, loadVoice, deleteVoice, synthesize, phonemesOf } from '.
 import { TRANSCRIPTION_TARGETS, espeakVoiceFor, ipaToSpelling, STRESS_ON, STRESS_OFF } from '../phonetic.js';
 import { buildSession, encodeWav, timelineIndexAt } from '../audio/session.js';
 import { playLive, findVoice, webSpeechSupported } from '../audio/webspeech.js';
+import { synthesizeRemote, wakeRemote } from '../audio/remote.js';
 
 const MAX_PHRASES = 40;
 const MAX_CHARS = 400;
@@ -508,6 +509,10 @@ async function refreshVoice() {
   const lang = currentLang();
   if (!lang.piper) {
     rt.voice = webSpeechSupported() && (await findVoice(lang.tag)) ? 'browser' : 'none';
+  } else if (lang.piper.remote) {
+    // Voix en ligne (darija) : rien à télécharger ; on réveille le serveur au passage.
+    rt.voice = 'remote';
+    wakeRemote();
   } else if (rt.voice !== 'downloading') {
     rt.voice = 'unknown';
     renderVoice();
@@ -540,6 +545,7 @@ function renderVoice() {
     downloading: `<p class="voice-line">${t('studio.downloading', { pct: rt.progress })}</p>
                   <div class="bar"><span style="width:${rt.progress}%"></span></div>`,
     browser: `<p class="voice-line faint">${t('studio.voiceBrowser')}</p>`,
+    remote: `<p class="voice-line">${t('studio.voiceRemote')}</p>`,
     none: `<p class="voice-line warn">${t('studio.noBrowserVoice')}</p>`,
   }[rt.voice];
 }
@@ -615,12 +621,21 @@ async function createSession() {
 
   const translations = ensureTranslations(list); // en parallèle, sans bloquer la séance
   try {
-    await ensureVoiceLoaded();
+    const remote = lang.piper.remote;
+    if (!remote) await ensureVoiceLoaded();
 
     const key = (text) => `${lang.piper.key}|${speed}|${text}`;
     const todo = [...new Set(list.filter((p) => !pcmCache.has(key(p))))];
     let sampleRate = pcmCache.get('sr:' + lang.piper.key);
-    for (let i = 0; i < todo.length; i += SYNTH_BATCH) {
+    if (remote && todo.length) {
+      // Voix en ligne : une phrase à la fois (le serveur gratuit est lent la première fois).
+      const res = await synthesizeRemote(todo, speed, remote, (i) =>
+        setStatus(t('studio.creatingRemote', { n: i + 1, total: todo.length })));
+      sampleRate = res.sampleRate;
+      pcmCache.set('sr:' + lang.piper.key, sampleRate);
+      todo.forEach((text, j) => pcmCache.set(key(text), res.pcms[j]));
+    }
+    for (let i = 0; !remote && i < todo.length; i += SYNTH_BATCH) {
       setStatus(t('studio.creating', { n: Math.min(i + SYNTH_BATCH, todo.length), total: todo.length }));
       const batch = todo.slice(i, i + SYNTH_BATCH);
       let res;
@@ -674,7 +689,8 @@ async function createSession() {
 // Message lisible + détail technique (à transmettre en cas de problème).
 function errorMessage(err) {
   const main =
-    err.kind === 'download' ? t('studio.errors.download')
+    err.stage === 'remote' ? t('studio.errors.remote')
+    : err.kind === 'download' ? t('studio.errors.download')
     : err.kind === 'engine' || err.stage === 'crash' || err.stage === 'init' ? t('studio.errors.engine')
     : t('studio.errors.synth');
   const detail = `${err.stage || err.kind || '?'} — ${err.message || err}`.slice(0, 240);

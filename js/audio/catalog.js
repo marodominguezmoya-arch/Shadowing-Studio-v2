@@ -1,6 +1,7 @@
 // Langues de pratique : libellés localisés et choix par défaut.
 
 import { PRACTICE_LANGUAGES } from './voices-data.js';
+import { NAME_OVERRIDES } from '../languages.js';
 
 export function practiceLanguages(locale) {
   const names = new Intl.DisplayNames([locale], { type: 'language' });
@@ -8,7 +9,8 @@ export function practiceLanguages(locale) {
   return PRACTICE_LANGUAGES.map((l) => {
     let label = l.tag;
     try {
-      label = names.of(l.tag) || l.tag;
+      const override = NAME_OVERRIDES[l.tag.split('-')[0]];
+      label = override?.[locale] || override?.en || names.of(l.tag) || l.tag;
     } catch {
       /* garde le code */
     }

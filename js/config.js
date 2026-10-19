@@ -9,6 +9,7 @@ export const CONFIG = {
   // (route servie par le Cloudflare Worker).
   onboardEndpoint: 'api/onboard',
   translateEndpoint: 'api/translate',
+  ttsEndpoint: 'api/tts',
 
   // En local, aucun Worker n'existe encore : l'envoi est simulé et affiché dans la console.
   mockOnboard: IS_LOCAL,

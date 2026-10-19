@@ -1,5 +1,6 @@
 // Généré depuis rhasspy/piper-voices (voices.json).
-// Ajout manuel : ar-SA n'a pas de voix Piper, il reprend Kareem (ar-JO), signalé par « accent ».
+// Ajouts manuels : ary-MA (darija) utilise une voix en ligne (« remote », serveur HADRA via le Worker).
+// ar-SA n'a pas de voix Piper, il reprend Kareem (ar-JO), signalé par « accent ».
 // Langues de pratique (BCP 47) et voix Piper locale associée ; sans « piper » = voix du navigateur seulement.
 
 export const PIPER_BASE = 'https://huggingface.co/rhasspy/piper-voices/resolve/c10ece1aade47bb51c153c893d14e5bf8e5b7117/';
@@ -348,6 +349,16 @@ export const PRACTICE_LANGUAGES = [
   },
   {
     "tag": "ar-EG"
+  },
+  {
+    "tag": "ary-MA",
+    "piper": {
+      "key": "hadra-ary-M1",
+      "remote": "M1",
+      "quality": "medium",
+      "speakers": 1,
+      "name": "hadra"
+    }
   },
   {
     "tag": "he-IL",

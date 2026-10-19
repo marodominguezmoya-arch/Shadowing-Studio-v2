@@ -149,6 +149,7 @@ export default {
     downloading: 'Downloading… {pct}%',
     deleteVoice: 'Delete',
     voiceBrowser: 'No high-quality voice for this language yet: playback uses your device’s voice. Audio download and locked-screen playback are not available.',
+    voiceRemote: 'Online Darija voice: nothing to download. The first reading of a phrase can take up to a minute, then it’s kept on your device. Write in Arabic script.',
     noBrowserVoice: 'No voice available for this language on this device.',
 
     phrases: 'Your phrases',
@@ -184,6 +185,7 @@ export default {
 
     create: 'Create the session',
     creating: 'Preparing… {n}/{total}',
+    creatingRemote: 'Darija voice… phrase {n}/{total} (up to 1 min per new phrase)',
     loadingVoice: 'Loading the voice… {pct}%',
     listen: 'Listen',
     stop: 'Stop',
@@ -207,6 +209,7 @@ export default {
       engine: 'The voice could not start on this device.',
       detail: 'Technical detail',
       synth: 'The voice could not read your phrases. Check them and try again.',
+      remote: 'The Darija voice didn’t respond. The server may be waking up: try again in a minute.',
       browserVoice: 'Playback with the device voice failed.',
     },
   },
@@ -285,7 +288,7 @@ export default {
       },
       {
         h: 'What never leaves your device',
-        p: 'Your phrases, lists, settings and downloaded voices are stored only in your browser. Speech is generated on your device: your phrases are never sent to any service. Voice files are downloaded from HuggingFace and jsDelivr, which then see your IP address. Exception: if you turn on translation, the phrases to translate are sent to Cloudflare (Workers AI) to be translated; the translation is then kept on your device.',
+        p: 'Your phrases, lists, settings and downloaded voices are stored only in your browser. Speech is generated on your device: your phrases are never sent to any service. Voice files are downloaded from HuggingFace and jsDelivr, which then see your IP address. Exception: if you turn on translation, the phrases to translate are sent to Cloudflare (Workers AI) to be translated; the translation is then kept on your device. For Darija, phrases are sent via Cloudflare to a speech server hosted by Hugging Face; the audio is then kept on your device.',
       },
       {
         h: 'Where your data is stored',

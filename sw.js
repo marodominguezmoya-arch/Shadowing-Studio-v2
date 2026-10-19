@@ -5,7 +5,7 @@
 // - Moteur vocal sur jsDelivr (versions figées, donc immuables) : copie locale d'abord.
 // - Voix (HuggingFace) et API : non gérées ici (les voix ont leur propre cache).
 
-const VERSION = '2.11.1';
+const VERSION = '2.12.0';
 const SHELL = `ss2-shell-${VERSION}`;
 const CDN = 'ss2-cdn-v1';
 const NETWORK_TIMEOUT = 4000;
@@ -39,6 +39,7 @@ const APP_FILES = [
   'js/views/calendar.js',
   'js/audio/catalog.js',
   'js/audio/piper.js',
+  'js/audio/remote.js',
   'js/audio/session.js',
   'js/audio/tts-worker.js',
   'js/audio/voices-data.js',

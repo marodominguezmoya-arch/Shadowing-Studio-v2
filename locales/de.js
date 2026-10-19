@@ -149,6 +149,7 @@ export default {
     downloading: 'Wird heruntergeladen … {pct} %',
     deleteVoice: 'Löschen',
     voiceBrowser: 'Für diese Sprache gibt es noch keine hochwertige Stimme: Es wird die Stimme Ihres Geräts verwendet. Audio-Download und Wiedergabe bei gesperrtem Bildschirm sind nicht verfügbar.',
+    voiceRemote: 'Online-Darija-Stimme: nichts herunterzuladen. Das erste Vorlesen eines Satzes kann bis zu einer Minute dauern, danach bleibt er auf Ihrem Gerät gespeichert. Schreiben Sie in arabischer Schrift.',
     noBrowserVoice: 'Auf diesem Gerät ist keine Stimme für diese Sprache verfügbar.',
 
     phrases: 'Ihre Sätze',
@@ -184,6 +185,7 @@ export default {
 
     create: 'Übung erstellen',
     creating: 'Wird vorbereitet … {n}/{total}',
+    creatingRemote: 'Darija-Stimme… Satz {n}/{total} (bis zu 1 Min. pro neuem Satz)',
     loadingVoice: 'Stimme wird geladen … {pct} %',
     listen: 'Anhören',
     stop: 'Stopp',
@@ -207,6 +209,7 @@ export default {
       engine: 'Die Stimme konnte auf diesem Gerät nicht gestartet werden.',
       detail: 'Technisches Detail',
       synth: 'Die Stimme konnte Ihre Sätze nicht lesen. Prüfen Sie sie und versuchen Sie es erneut.',
+      remote: 'Die Darija-Stimme hat nicht geantwortet. Der Server startet vielleicht gerade: Versuchen Sie es in einer Minute erneut.',
       browserVoice: 'Die Wiedergabe mit der Gerätestimme ist fehlgeschlagen.',
     },
   },
@@ -285,7 +288,7 @@ export default {
       },
       {
         h: 'Was Ihr Gerät nicht verlässt',
-        p: 'Ihre Sätze, Listen, Einstellungen und heruntergeladenen Stimmen werden nur in Ihrem Browser gespeichert. Stimme und Umschrift werden auf Ihrem Gerät erzeugt: Ihre Sätze werden an keinen Dienst gesendet. Die Stimmdateien werden von HuggingFace und jsDelivr heruntergeladen, die dabei Ihre IP-Adresse sehen. Ausnahme: Wenn Sie die Übersetzung aktivieren, werden die zu übersetzenden Sätze zur Übersetzung an Cloudflare (Workers AI) gesendet; die Übersetzung wird anschließend auf Ihrem Gerät gespeichert.',
+        p: 'Ihre Sätze, Listen, Einstellungen und heruntergeladenen Stimmen werden nur in Ihrem Browser gespeichert. Stimme und Umschrift werden auf Ihrem Gerät erzeugt: Ihre Sätze werden an keinen Dienst gesendet. Die Stimmdateien werden von HuggingFace und jsDelivr heruntergeladen, die dabei Ihre IP-Adresse sehen. Ausnahme: Wenn Sie die Übersetzung aktivieren, werden die zu übersetzenden Sätze zur Übersetzung an Cloudflare (Workers AI) gesendet; die Übersetzung wird anschließend auf Ihrem Gerät gespeichert. Für Darija werden die Sätze über Cloudflare an einen Sprachserver bei Hugging Face gesendet; das Audio bleibt danach auf Ihrem Gerät gespeichert.',
       },
       {
         h: 'Wo Ihre Daten gespeichert werden',

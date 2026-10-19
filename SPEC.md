@@ -322,3 +322,14 @@ Ordre : Prénom → Email → Profil → Langue maternelle → Langue apprise �
 
 - Piper n'a aucune voix ar-SA (seulement ar_JO-kareem). À la demande de Maro, les listes « Arabe (Arabie saoudite) » utilisent Kareem : téléchargeable (63 Mo, même fichier que l'arabe jordanien, donc un seul téléchargement pour les deux), export audio possible.
 - La carte de la voix précise « Accent : arabe (Jordanie) » (champ `accent` dans `voices-data.js`).
+
+## 22. Darija (arabe marocain)
+
+- Langue de pratique `ary-MA`, nom fixe dans les 9 langues (« Darija (arabe marocain) ») car les navigateurs ne le connaissent pas tous. Aussi proposée dans l'onboarding (code `ary`).
+- Aucune voix Darija ne tourne dans le téléphone : voix **en ligne** HADRA (Jip7e/habibi-tts-doda-darija, F5-TTS, 336 M de paramètres), hébergée sur un Hugging Face Space gratuit (CPU) — dossier `darija-space/`.
+- Chaîne : app → Worker `/api/tts` (origine, limite 30/min/IP, cache Cloudflare partagé 30 jours) → Space `/tts` (clé partagée `X-Api-Key` = secret `API_KEY` du Space = secret `DARIJA_API_KEY` du Worker) → WAV 24 kHz.
+- L'app garde chaque phrase générée (Cache API `ss2-remote-v1`) : relecture immédiate, hors connexion. Le serveur est réveillé dès que le Darija est choisi (`GET /api/tts`).
+- Lenteur assumée (gratuit) : environ 1 min par nouvelle phrase sur le CPU gratuit, réveil de 1 à 2 min après plusieurs jours sans usage. Texte en lettres arabes. Pas de prononciation écrite (espeak ne connaît pas le darija).
+- Voix de référence : M1 (par défaut) et M2, extraits CC BY 4.0 du jeu Jip7e/doda-darija-cosyvoice2.
+- Licence : HADRA se déclare Apache-2.0 mais dérive de Habibi-TTS (CC BY-NC-SA) — zone grise signalée à Maro.
+- Confidentialité : les phrases Darija partent chez Cloudflare et Hugging Face (mention ajoutée).
