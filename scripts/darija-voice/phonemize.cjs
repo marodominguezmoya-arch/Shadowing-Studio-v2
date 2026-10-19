@@ -10,7 +10,11 @@ const texts = require('fs').readFileSync(0, 'utf8').split('\n').filter(Boolean).
 (async () => {
   for (let i = 0; i < texts.length; i += BATCH) {
     const out = [];
-    const m = await create({ print: (line) => out.push(line), printErr: () => {}, locateFile: (f) => path.join(__dirname, f) });
+    const m = await create({
+      print: (line) => out.push(line),
+      printErr: (msg) => { const j = msg.indexOf('for: {'); if (j >= 0) out.push(msg.slice(j + 5)); },
+      locateFile: (f) => path.join(__dirname, f),
+    });
     const batch = texts.slice(i, i + BATCH);
     m.callMain(['-l', voice, '--input', JSON.stringify(batch.map((text) => ({ text }))), '--espeak_data', '/espeak-ng-data']);
     const parsed = out.filter((l) => l.startsWith('{')).map((l) => JSON.parse(l));

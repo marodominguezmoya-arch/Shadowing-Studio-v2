@@ -3,10 +3,13 @@
 import { PRACTICE_LANGUAGES } from './voices-data.js';
 import { NAME_OVERRIDES } from '../languages.js';
 
+// Langues proposées (« hidden » : voix pas encore en ligne).
+const VISIBLE = PRACTICE_LANGUAGES.filter((l) => !l.hidden);
+
 export function practiceLanguages(locale) {
   const names = new Intl.DisplayNames([locale], { type: 'language' });
   const collator = new Intl.Collator(locale);
-  return PRACTICE_LANGUAGES.map((l) => {
+  return VISIBLE.map((l) => {
     let label = l.tag;
     try {
       const override = NAME_OVERRIDES[l.tag.split('-')[0]];
@@ -19,14 +22,14 @@ export function practiceLanguages(locale) {
 }
 
 export function findLanguage(tag) {
-  return PRACTICE_LANGUAGES.find((l) => l.tag === tag) || null;
+  return VISIBLE.find((l) => l.tag === tag) || null;
 }
 
 // Première langue visée du profil → variante avec voix locale en priorité.
 export function defaultTag(profile) {
   const code = profile?.targets?.[0]?.lang;
   if (code) {
-    const matches = PRACTICE_LANGUAGES.filter((l) => l.tag.split('-')[0] === code);
+    const matches = VISIBLE.filter((l) => l.tag.split('-')[0] === code);
     const best = matches.find((l) => l.piper) || matches[0];
     if (best) return best.tag;
   }

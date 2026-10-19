@@ -332,3 +332,11 @@ Ordre : Prénom → Email → Profil → Langue maternelle → Langue apprise �
 - Texte en lettres arabes.
 - Licence : corpus CC BY 4.0 (attribution dans le dépôt de données) ; Kareem : voir rhasspy/piper-voices.
 - **Prononciation écrite du darija** : espeak ne connaît pas le darija, elle est donc écrite par l'IA (Worker `/api/translate`, `mode: 'transcribe'`, Llama 4 Scout), dans l'alphabet de l'interface : lettres latines avec les habitudes de lecture de la langue (fr : ch, ou… ; en : sh, oo…) et les chiffres marocains 3 = ع, 7 = ح, 9 = ق ; cyrillique pour le russe ; arabe vocalisé (tashkeel) pour l'arabe. Exemples fournis au modèle pour stabiliser l'orthographe (comparé à Llama 3.3 70B et GPT-OSS 120B : Scout le plus régulier). Gardée dans la liste (`transcriptions`), comme les traductions. Mention « écrite par une IA : peut contenir des erreurs ».
+
+## 23. Letton et fiabilité du moteur de sons
+
+- Letton (`lv-LV`) : voix Piper **Aivars** (lv_LV-aivars-medium, 64 Mo), prononciation écrite via espeak `lv`, proposé aussi dans l'onboarding (`lv`).
+- Moteur de sons (piper-wasm) — deux défauts corrigés dans `js/audio/tts-worker.js` :
+  - « Missing phoneme » (ex. liaison ͡ des affriquées lettonnes) : le résultat arrive sur la sortie d'erreur et le moteur abandonne le reste du lot → les textes sont traités un par un et ces résultats sont récupérés.
+  - Fuite mémoire : plantage (« memory access out of bounds ») vers 200 textes pour un même module → module recréé tous les 120 textes.
+- Darija masqué (`hidden` dans `voices-data.js`) tant que sa voix n'est pas en ligne ; reste proposé dans l'onboarding.

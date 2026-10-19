@@ -4,7 +4,7 @@
 
 export const LANGUAGE_CODES = [
   'af', 'ar', 'ary', 'bn', 'ca', 'cs', 'da', 'de', 'el', 'en', 'es', 'eu', 'fa', 'fi', 'fr',
-  'gl', 'he', 'hi', 'hr', 'hu', 'id', 'it', 'ja', 'ko', 'ms', 'nb', 'nl', 'pl', 'pt',
+  'gl', 'he', 'hi', 'hr', 'hu', 'id', 'it', 'ja', 'ko', 'lv', 'ms', 'nb', 'nl', 'pl', 'pt',
   'ro', 'ru', 'sk', 'sv', 'sw', 'th', 'tr', 'uk', 'ur', 'vi', 'yo', 'zh',
 ];
 

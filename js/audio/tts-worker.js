@@ -242,31 +242,45 @@ async function loadVoice(voice, id) {
 // Synthèse
 // ---------------------------------------------------------------------------
 
-// Le module espeak-ng est instancié une seule fois puis réutilisé (callMain est ré-appelable) :
-// le recréer à chaque séance rechargerait ~18 Mo en mémoire, ce que l'iPhone supporte mal.
+// Le module espeak-ng est réutilisé d'une séance à l'autre (le recréer à chaque fois rechargerait
+// ~18 Mo en mémoire, ce que l'iPhone supporte mal)… mais pas indéfiniment : il fuit de la mémoire
+// et plante (« memory access out of bounds ») vers 200 textes. On le recrée donc avant.
+const PHONEMIZER_MAX_TEXTS = 120;
 let phonemizer = null;
+let phonemizerTexts = 0;
 let phonemizeOutput = null;
 
-async function getPhonemizer() {
+async function getPhonemizer(count) {
+  if (phonemizer && phonemizerTexts + count > PHONEMIZER_MAX_TEXTS) phonemizer = null;
   if (!phonemizer) {
+    phonemizerTexts = 0;
     phonemizer = createPiperPhonemize({
       print: (line) => phonemizeOutput?.push(line),
-      printErr: (msg) => console.warn('[phonemize]', msg),
+      printErr: (msg) => {
+        // « Missing phoneme: ͡ for: {…} » : le résultat du texte arrive ici (le symbole inconnu est
+        // simplement omis, ex. la liaison des affriquées en letton). On le garde.
+        const json = msg.indexOf('for: {');
+        if (json >= 0 && phonemizeOutput) phonemizeOutput.push(msg.slice(json + 5));
+        else console.warn('[phonemize]', msg);
+      },
       locateFile: (file) => (file.endsWith('.wasm') ? phonemizeUrls.wasm : file.endsWith('.data') ? phonemizeUrls.data : file),
     }).catch((err) => {
       phonemizer = null;
       throw err;
     });
   }
+  phonemizerTexts += count;
   return phonemizer;
 }
 
-// Phonémise plusieurs textes en un seul passage (une ligne de sortie JSON par texte).
+// Phonémise les textes un par un : après un « Missing phoneme », le moteur abandonne la suite du lot.
 async function phonemize(texts, espeakVoice) {
-  const module = await getPhonemizer();
+  const module = await getPhonemizer(texts.length);
   phonemizeOutput = [];
   try {
-    module.callMain(['-l', espeakVoice, '--input', JSON.stringify(texts.map((text) => ({ text }))), '--espeak_data', '/espeak-ng-data']);
+    for (const text of texts) {
+      module.callMain(['-l', espeakVoice, '--input', JSON.stringify([{ text }]), '--espeak_data', '/espeak-ng-data']);
+    }
     const results = [];
     for (const line of phonemizeOutput) {
       try {
@@ -278,12 +292,14 @@ async function phonemize(texts, espeakVoice) {
     }
     if (results.length !== texts.length) throw new Error(`phonémisation incomplète (${results.length}/${texts.length})`);
     return results;
+  } catch (err) {
+    phonemizer = null; // module peut-être corrompu : neuf au prochain appel
+    throw err;
   } finally {
     phonemizeOutput = null;
   }
 }
 
-// Prononciation (API) de chaque texte, pour la transcription phonétique. N'utilise pas de voix.
 async function ipa(texts, espeakVoice, id) {
   await ensurePhonemizer(id);
   let res;

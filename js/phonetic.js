@@ -10,7 +10,7 @@ export const TRANSCRIPTION_TARGETS = ['fr', 'en', 'es', 'pt', 'ru', 'ar'];
 const ESPEAK = {
   af: 'af', ar: 'ar', bn: 'bn', ca: 'ca', cs: 'cs', da: 'da', de: 'de', el: 'el', eu: 'eu',
   fa: 'fa', fi: 'fi', fr: 'fr', he: 'he', hi: 'hi', hr: 'hr', hu: 'hu', id: 'id', it: 'it',
-  ko: 'ko', ms: 'ms', nb: 'nb', nl: 'nl', pl: 'pl', ro: 'ro', ru: 'ru', sk: 'sk', sv: 'sv',
+  ko: 'ko', lv: 'lv', ms: 'ms', nb: 'nb', nl: 'nl', pl: 'pl', ro: 'ro', ru: 'ru', sk: 'sk', sv: 'sv',
   sw: 'sw', th: 'th', tr: 'tr', uk: 'uk', ur: 'ur', vi: 'vi', zh: 'cmn',
   en: 'en', es: 'es', pt: 'pt',
   ja: null, yo: null,
