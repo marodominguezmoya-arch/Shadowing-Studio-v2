@@ -364,7 +364,8 @@ export const PRACTICE_LANGUAGES = [
       "quality": "medium",
       "speakers": 1,
       "name": "darija_m1",
-      "normalize": "darija"
+      "normalize": "darija",
+      "inference": { "noise_scale": 0.5, "length_scale": 1.1 }
     }
   },
   {
