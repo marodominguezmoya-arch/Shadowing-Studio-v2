@@ -1,6 +1,7 @@
 // Généré depuis rhasspy/piper-voices (voices.json).
 // Ajouts manuels : ary-MA (darija) = voix entraînée pour l'app (Kareem réentraîné sur DODa, voix M1),
 // hébergée sur huggingface.co/maromoya/piper-darija (« base »), texte normalisé avant espeak (« normalize »).
+// « replaces » : anciennes versions du fichier, effacées du téléphone.
 // « hidden » (facultatif) : masquer une voix tant qu'elle n'est pas en ligne.
 // « inference » : réglages de lecture propres à la voix. lv : timbre un peu plus stable (noise_scale 0,5),
 // rythme d'origine gardé (baisser noise_w accélère la voix, ce que Maro n'aime pas).
@@ -357,9 +358,10 @@ export const PRACTICE_LANGUAGES = [
   {
     "tag": "ary-MA",
     "piper": {
-      "key": "ary_MA-darija_m1-medium",
+      "key": "ary_MA-darija_m1-medium-v2",
       "base": "https://huggingface.co/maromoya/piper-darija/resolve/main/",
-      "path": "ary_MA-darija_m1-medium.onnx",
+      "path": "ary_MA-darija_m1-medium-v2.onnx",
+      "replaces": ["ary_MA-darija_m1-medium.onnx"],
       "mb": 61,
       "quality": "medium",
       "speakers": 1,

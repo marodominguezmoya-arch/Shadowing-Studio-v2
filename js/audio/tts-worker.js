@@ -177,7 +177,19 @@ function voiceUrls(voice) {
   return { model, config: model + '.json' };
 }
 
+// voice.replaces : anciennes versions du fichier (même hébergement), effacées pour libérer la place.
+async function purgeReplaced(voice) {
+  if (!voice.replaces?.length) return;
+  const cache = await caches.open(CACHE_NAME);
+  for (const path of voice.replaces) {
+    const { model, config } = voiceUrls({ ...voice, path });
+    await cache.delete(model);
+    await cache.delete(config);
+  }
+}
+
 async function hasVoice(voice) {
+  await purgeReplaced(voice).catch(() => {});
   const cache = await caches.open(CACHE_NAME);
   const { model, config } = voiceUrls(voice);
   return Boolean((await cache.match(model)) && (await cache.match(config)));
