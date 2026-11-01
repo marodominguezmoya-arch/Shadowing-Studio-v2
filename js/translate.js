@@ -5,6 +5,9 @@ import { CONFIG, IS_LOCAL } from './config.js';
 
 // Toutes les langues de l'app sont traduisibles (grand modèle de langue côté relais).
 // Renvoie le code de langue de base (« ar » pour « ar-JO ») ou null si l'étiquette est invalide.
+// Change quand le modèle de traduction change : les traductions plus anciennes sont refaites.
+export const TRANSLATION_VERSION = 'llm-1';
+
 export function translationCode(tagOrCode) {
   const base = String(tagOrCode || '').split('-')[0];
   return /^[a-z]{2,3}$/.test(base) ? base : null;

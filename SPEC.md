@@ -345,3 +345,16 @@ Ordre : Prénom → Email → Profil → Langue maternelle → Langue apprise �
   - Fuite mémoire : plantage (« memory access out of bounds ») vers 200 textes pour un même module → module recréé tous les 120 textes.
 - Darija masqué (`hidden` dans `voices-data.js`) tant que sa voix n'est pas en ligne ; reste proposé dans l'onboarding.
 - Letton : réglage de lecture d'Aivars ajusté (`inference` dans `voices-data.js` : noise_scale 0,5, le reste d'origine). Mesuré avec une reconnaissance vocale lettonne (RaivisDejus/whisper-small-lv), 4 phrases × 7 lectures : ~12 % d'erreurs contre ~14,5 % d'origine, même rythme. Des réglages plus stables (noise_w 0,3) faisaient 3–5 % d'erreurs mais accéléraient la voix (−13 % de durée) : refusés à l'écoute par Maro. Ralentir (length_scale 1,08–1,12) n'apporte rien. Rudolfs (autre voix CC0) pas meilleur.
+
+## 24. Version 3 — Plan de 4 semaines selon l'usage
+
+- **Onboarding** : la question « Pourquoi ? » est remplacée par 2 écrans : « Pour quoi allez-vous utiliser cette langue ? » (Le travail / Les études / La vie en général) puis « … dans quel domaine ? » avec l'aide « Choisissez celle qui vous correspond le plus. »
+  - Travail : réunions et bureau · clientèle et vente · santé · hôtellerie et tourisme · technologie · enseignement.
+  - Études : université / Erasmus · examen officiel · collège ou lycée · formation professionnelle.
+  - Général : voyage et tourisme · quotidien (vivre là-bas) · famille ou couple · par plaisir / surprendre quelqu'un.
+  - Envoyé au Worker en `useDetail` (ex. `work.health`) → colonne Notion **Usage** ; « Pourquoi » et le score ICP en sont déduits (travail → Travail ; vie quotidienne → S'installer à l'étranger ; etc.). L'ancien champ `why` reste accepté.
+- **Contenu** (`js/plan-content.js`) : écrit en anglais, parlé, en « matrices » (esprit des documents de turc de Maro). Chaque semaine = 8 phrases du noyau d'autonomie (CORE) + 10 de la situation → 18 phrases, 72 par plan. Semaines : 1 se présenter · 2 agir et demander · 3 imprévus et questions · 4 parler avec naturel.
+- **Traduction** : Worker `/api/translate` `mode: 'content'` → langue pratiquée avec dialecte (`target` accepte une région : `ar-JO`, `ary-MA`, `pt-BR`…), registre oral, une seule version par phrase. Llama 4 Scout, repli Llama 3.3 70B si la réponse est invalide ou contient un autre alphabet (CJK, cyrillique). Cache Cloudflare 30 jours (clé : version des consignes + modèle + langue + phrases).
+- **Darija** : l'IA l'écrit mal (arabe standard, caractères parasites) → noyau + 4 situations « Général » écrits à la main (`js/plan-content-ary.js`) ; travail et études en darija : IA avec consignes de vocabulaire marocain (qualité moindre).
+- **Création** (`js/plan.js`) : juste après l'envoi du formulaire (carte « Votre plan de 4 semaines » sur l'écran de fin, bouton « C'est parti » actif quand c'est prêt), 4 listes « {situation} · Semaine n : thème », semaine 1 ouverte et en haut de la bibliothèque ; la liste vide par défaut est supprimée. Bibliothèque : carte « Votre plan de 4 semaines » (choix de la situation, langue de la liste en cours) pour les anciens utilisateurs, une autre langue ou une autre situation.
+- L'anglais d'origine sert de traduction toute prête pour une interface en anglais.

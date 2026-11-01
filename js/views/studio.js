@@ -6,7 +6,7 @@ import { load, save } from '../storage.js';
 import { renderCalendar } from './calendar.js';
 import { initLibrary, currentList, updateList, allLists, listName } from '../library.js';
 import { splitSentences } from '../split.js';
-import { translationCode, translateTexts, transcribeTexts } from '../translate.js';
+import { translationCode, translateTexts, transcribeTexts, TRANSLATION_VERSION } from '../translate.js';
 import { installMode, promptInstall, dismissInstall, onInstallChange } from '../install.js';
 import { esc } from '../dom.js';
 import { practiceLanguages, findLanguage, defaultTag } from '../audio/catalog.js';
@@ -30,7 +30,6 @@ let prefs = null;
 let phonOn = load('phoneticOn', null) ?? (load('phonetic', 'none') !== 'none');
 let translateOn = load('translateOn', null) ?? (load('translateTo', 'none') !== 'none');
 // Changer cette valeur fait retraduire automatiquement les listes (ex. changement de modèle).
-const TRANSLATION_VERSION = 'llm-1';
 const phonCache = new Map(); // « espeak|cible|texte » → HTML
 let phonPending = false;
 

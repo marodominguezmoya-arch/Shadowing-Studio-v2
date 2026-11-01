@@ -7,7 +7,9 @@ import { sortedLanguages, languageName, CEFR_LEVELS } from '../languages.js';
 import { save } from '../storage.js';
 import { esc } from '../dom.js';
 import { mountGreetings } from './hello.js';
-import { isHot } from '../icp.js';
+import { isHot, whyFromUse } from '../icp.js';
+import { USE_GROUPS, generatePlan } from '../plan.js';
+import { defaultTag } from '../audio/catalog.js';
 import { suggestEmail, checkEmailDomain } from '../email-check.js';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -19,7 +21,7 @@ const TEXT_FIELDS = {
 // Questions à choix : codes envoyés au Worker (libellés dans locales/*.js, onboarding.c.*).
 const CHOICES = {
   profile: ['entrepreneur', 'executive', 'liberal', 'employee', 'student', 'other'],
-  why: ['work', 'abroad', 'study', 'family', 'travel', 'fun'],
+  use: ['work', 'study', 'general'],
   blocker: ['speak', 'vocab', 'grammar', 'consistency', 'other'],
   deadline: ['3m', 'year', 'none'],
   source: ['instagram', 'youtube', 'newsletter', 'reddit', 'word', 'other'],
@@ -35,7 +37,8 @@ const state = {
   profile: '',
   native: '',
   targets: [{ lang: '', level: '' }], // une seule langue (les autres se choisissent dans le studio)
-  why: '',
+  use: '',
+  useDetail: '', // ex. « work.health » (une situation de plan de 4 semaines)
   blocker: '',
   blockerOther: '',
   deadline: '',
@@ -55,7 +58,7 @@ let direction = 'forward';
 function sequence() {
   return [
     'welcome', 'firstName', 'email', 'profile', 'native', 'target-0', 'level-0',
-    'why', 'blocker', 'deadline', 'source', 'newsletter', 'privacy',
+    'use', 'useDetail', 'blocker', 'deadline', 'source', 'newsletter', 'privacy',
   ];
 }
 
@@ -94,6 +97,7 @@ function template() {
           : kind === 'native' ? screenNative()
           : kind === 'target' ? screenTarget(+i)
           : kind === 'level' ? screenLevel(+i)
+          : kind === 'useDetail' ? screenUseDetail()
           : kind in CHOICES ? screenChoice(kind)
           : kind === 'newsletter' ? screenNewsletter()
           : kind === 'howto' ? screenHowto()
@@ -244,6 +248,36 @@ function screenNewsletter() {
   `;
 }
 
+// « Le travail, d'accord. Dans quel domaine ? » : sous-choix selon l'usage choisi juste avant.
+function screenUseDetail() {
+  const group = state.use;
+  return `
+    ${question(t(`onboarding.q.use_${group}`), t('onboarding.h.useDetail'))}
+    <div class="onb-choices" role="radiogroup" aria-labelledby="onb-q">
+      ${USE_GROUPS[group].map((code) => {
+        const value = `${group}.${code}`;
+        return `
+        <button type="button" class="choice choice-center ${state.useDetail === value ? 'selected' : ''}" role="radio"
+          aria-checked="${state.useDetail === value}" data-pick="useDetail" data-value="${value}">${t(`onboarding.c.${group}.${code}`)}</button>`;
+      }).join('')}
+    </div>
+  `;
+}
+
+// Plan de 4 semaines créé juste après l'envoi : état affiché sur l'écran de fin.
+let planState = null; // null | 'running' | 'done' | 'error'
+
+function planCard() {
+  if (!planState) return '';
+  return `
+    <div class="card offer plan-card" role="status">
+      <p class="label">${t('plan.title')}</p>
+      <p class="hint">${planState === 'running' ? `<span class="spinner" aria-hidden="true"></span> ${t('plan.preparing')}`
+        : planState === 'done' ? t('plan.ready') : t('plan.error')}</p>
+    </div>
+  `;
+}
+
 // Après l'envoi : mode d'emploi en quatre étapes, puis le studio.
 function screenHowto() {
   const name = esc(state.firstName.trim());
@@ -253,14 +287,17 @@ function screenHowto() {
     <ol class="howto">
       ${[1, 2, 3, 4].map((n) => `<li>${t(`onboarding.howto.step${n}`)}</li>`).join('')}
     </ol>
+    ${planCard()}
     ${offerCard()}
-    ${nextButton(t('onboarding.howto.go'))}
+    ${planState === 'running'
+      ? `<button type="submit" class="btn btn-primary onb-next" disabled>${t('plan.preparingShort')}</button>`
+      : nextButton(t('onboarding.howto.go'))}
   `;
 }
 
 // Profil chaud : diagnostic offert (message Instagram). Sinon : la newsletter, si pas déjà acceptée.
 function offerCard() {
-  const answers = { level: state.targets[0].level, blocker: state.blocker, why: state.why, deadline: state.deadline };
+  const answers = { level: state.targets[0].level, blocker: state.blocker, why: whyFromUse(state.useDetail), deadline: state.deadline };
   const kind = isHot(answers) ? 'diag' : state.newsletter ? '' : 'news';
   if (!kind) return '';
   return `
@@ -324,6 +361,7 @@ function validateScreen() {
   }
   if (kind === 'level' && !state.targets[+i].level) return t('onboarding.errors.level');
   if (kind in CHOICES && !state[kind]) return t('onboarding.errors.choose');
+  if (kind === 'useDetail' && !state.useDetail) return t('onboarding.errors.choose');
   if (kind === 'blocker' && state.blocker === 'other' && !state.blockerOther.trim()) return req;
   if (kind === 'newsletter' && state.newsletter === null) return t('onboarding.errors.choose');
   if (kind === 'privacy' && !state.privacy) return t('onboarding.errors.privacy');
@@ -372,6 +410,7 @@ function bind(root, onDone) {
     }
     if (btn.dataset.pick) {
       state[btn.dataset.pick] = btn.dataset.value;
+      if (btn.dataset.pick === 'use' && !state.useDetail.startsWith(`${state.use}.`)) state.useDetail = '';
       // « Autre » du blocage : on reste sur l'écran pour laisser préciser.
       if (btn.dataset.pick === 'blocker' && btn.dataset.value === 'other') {
         error = '';
@@ -441,14 +480,21 @@ function bind(root, onDone) {
     try {
       await submit();
       save('onboarded', { at: new Date().toISOString() });
-      save('profile', {
+      const profile = {
         firstName: state.firstName.trim(),
         native: state.native,
         targets: state.targets,
-      });
+        useDetail: state.useDetail,
+      };
+      save('profile', profile);
       sending = false;
       go('howto');
+      planState = 'running';
       rerender();
+      generatePlan({ situation: state.useDetail, tag: defaultTag(profile) })
+        .then(() => { planState = 'done'; })
+        .catch((err) => { console.error('[plan]', err); planState = 'error'; })
+        .finally(() => { if (state.screen === 'howto') rerender(); });
     } catch (err) {
       sending = false;
       error = navigator.onLine === false ? t('onboarding.errors.offline') : t('onboarding.errors.server');
@@ -481,7 +527,7 @@ function payload() {
     profile: state.profile,
     nativeLanguage: state.native,
     targets: state.targets.map(({ lang, level }) => ({ lang, level })),
-    why: state.why,
+    useDetail: state.useDetail,
     blocker: state.blocker,
     blockerOther: state.blocker === 'other' ? state.blockerOther.trim() : '',
     deadline: state.deadline,

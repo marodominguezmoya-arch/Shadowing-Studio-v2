@@ -1,7 +1,7 @@
 // Tests du Worker sans réseau : l'API Notion et GitHub Pages sont simulées.
 import { test, beforeEach } from 'node:test';
 import assert from 'node:assert/strict';
-import worker, { validate, validateTranslate, parseTranslations, P, icpScore, isHot, emailDomainStatus } from '../src/index.js';
+import worker, { validate, validateTranslate, parseTranslations, P, icpScore, isHot, emailDomainStatus, foreignScript } from '../src/index.js';
 
 const env = {
   ORIGIN_BASE: 'https://example.github.io/shadowing-studio-v2',
@@ -283,4 +283,41 @@ test('prononciation écrite (darija) : mode « transcribe » via le LLM', async 
   assert.deepEqual(await res.json(), { transcriptions: ['kidayer ?'] });
   assert.match(calls[0].input.messages[0].content, /PRONUNCIATION/);
   assert.match(calls[0].input.messages[0].content, /French spelling/);
+});
+
+test('onboarding v3 : usage en 2 étapes → colonne Usage, Pourquoi déduit, score ICP', async () => {
+  const body = { ...v2(), why: undefined, useDetail: 'general.daily' };
+  const res = await post(body);
+  assert.equal(res.status, 200);
+  const props = JSON.parse(calls[1].init.body).properties;
+  assert.equal(props[P.use].select.name, 'Général › Vie quotidienne');
+  assert.equal(props[P.why].select.name, "S'installer à l'étranger");
+  assert.equal(props[P.icpScore].number, 4);
+  assert.ok(validate({ ...v2(), useDetail: 'work.pirate' }).errors.includes('useDetail'));
+});
+
+test('plans : mode « content » vers une langue avec dialecte', async () => {
+  const seen = [];
+  const aiEnv = { ...env, AI: { run: async (model, input) => { seen.push(input); return { response: '["Merhaba!", "Anlamadım."]' }; } } };
+  const res = await worker.fetch(new Request('https://maromoya.com/shadowingstudio/api/translate', {
+    method: 'POST', headers: { Origin: 'https://maromoya.com', 'Content-Type': 'application/json' },
+    body: JSON.stringify({ mode: 'content', source: 'en', target: 'ar-JO', texts: ['Hi!', "I don't understand."] }),
+  }), aiEnv);
+  assert.deepEqual(await res.json(), { phrases: ['Merhaba!', 'Anlamadım.'] });
+  assert.match(seen[0].messages[0].content, /SPOKEN Jordanian Arabic/);
+});
+
+test('plans : réponse avec un autre alphabet rejetée, nouvel essai avec le gros modèle', async () => {
+  assert.equal(foreignScript(['كنت住 فهاد الحي'], 'ary-MA'), true);
+  assert.equal(foreignScript(['كلма بطيشة'], 'ary-MA'), true);
+  assert.equal(foreignScript(['もう一度'], 'ja-JP'), false);
+  assert.equal(foreignScript(['Привет'], 'ru-RU'), false);
+  const models = [];
+  const aiEnv = { ...env, AI: { run: async (model) => { models.push(model); return { response: models.length === 1 ? '["住"]' : '["ساكن"]' }; } } };
+  const res = await worker.fetch(new Request('https://maromoya.com/shadowingstudio/api/translate', {
+    method: 'POST', headers: { Origin: 'https://maromoya.com', 'Content-Type': 'application/json' },
+    body: JSON.stringify({ mode: 'content', source: 'en', target: 'ary-MA', texts: ['I live here.'] }),
+  }), aiEnv);
+  assert.deepEqual(await res.json(), { phrases: ['ساكن'] });
+  assert.equal(models.length, 2);
 });

@@ -23,6 +23,11 @@ function persist() {
   save(KEY, lib);
 }
 
+// Enregistre après une modification directe d'une liste (ex. dates du plan de 4 semaines).
+export function saveLibrary() {
+  persist();
+}
+
 // Nom affiché : une liste jamais renommée (nom vide) prend « Ma première liste » dans la langue
 // de l'interface du moment, au lieu d'un nom figé dans la langue active à sa création.
 export function listName(list) {

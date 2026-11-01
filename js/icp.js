@@ -12,3 +12,10 @@ export function icpScore({ level, blocker, why, deadline }) {
 
 // « Je comprends mais je ne parle pas » + au moins deux autres critères : invité au diagnostic.
 export const isHot = (answers) => answers.blocker === 'speak' && icpScore(answers) >= 3;
+
+// Usage choisi dans l'onboarding (ex. « general.daily ») → ancien critère « why » du score.
+const USE_TO_WHY = { travel: 'travel', daily: 'abroad', family: 'family', fun: 'fun' };
+export function whyFromUse(useDetail = '') {
+  const [group, detail] = useDetail.split('.');
+  return group === 'general' ? USE_TO_WHY[detail] || '' : group || '';
+}

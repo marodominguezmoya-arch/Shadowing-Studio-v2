@@ -5,7 +5,7 @@
 // - Moteur vocal sur jsDelivr (versions figées, donc immuables) : copie locale d'abord.
 // - Voix (HuggingFace) et API : non gérées ici (les voix ont leur propre cache).
 
-const VERSION = '2.16.0';
+const VERSION = '3.0.0';
 const SHELL = `ss2-shell-${VERSION}`;
 const CDN = 'ss2-cdn-v1';
 const NETWORK_TIMEOUT = 4000;
@@ -29,6 +29,9 @@ const APP_FILES = [
   'js/storage.js',
   'js/install.js',
   'js/icp.js',
+  'js/plan.js',
+  'js/plan-content.js',
+  'js/plan-content-ary.js',
   'js/email-check.js',
   'js/views/library.js',
   'js/views/onboarding.js',

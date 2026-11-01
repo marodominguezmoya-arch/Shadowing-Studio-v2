@@ -10,8 +10,10 @@ import {
   duplicateList, deleteList, exportBlob, importData,
 } from '../library.js';
 import { shareUrl, shareList } from '../share.js';
+import { USE_GROUPS, generatePlan } from '../plan.js';
 
 let notice = ''; // message après import/export
+let planBusy = false;
 
 export function renderLibrary(root) {
   initLibrary({ defaultTag: defaultTag(load('profile', {})) });
@@ -19,6 +21,7 @@ export function renderLibrary(root) {
   const current = currentList();
   const labels = Object.fromEntries(practiceLanguages(getLocale()).map((l) => [l.tag, l.label]));
   const date = new Intl.DateTimeFormat(getLocale(), { day: 'numeric', month: 'short' });
+  const profileSituation = load('profile', {}).useDetail || 'general.travel';
 
   root.innerHTML = `<div class="library">
     <p class="back"><a href="#/"><span class="arrow" aria-hidden="true">←</span> ${t('library.backToStudio')}</a></p>
@@ -27,6 +30,21 @@ export function renderLibrary(root) {
 
     <button type="button" class="btn btn-primary btn-block" data-action="new">+ ${t('library.new')}</button>
     ${notice ? `<p class="notice-box" role="status">${notice}</p>` : ''}
+
+    <section class="card plan-maker">
+      <p class="label">${t('plan.title')}</p>
+      <p class="hint" style="margin:0 0 14px">${t('plan.libHint', { lang: esc(labels[current.tag] || current.tag) })}</p>
+      <label class="visually-hidden" for="l-situation">${t('plan.situation')}</label>
+      <select class="select" id="l-situation">
+        ${Object.entries(USE_GROUPS).map(([group, codes]) => `
+          <optgroup label="${esc(t(`onboarding.c.use.${group}`))}">
+            ${codes.map((code) => `<option value="${group}.${code}" ${profileSituation === `${group}.${code}` ? 'selected' : ''}>${esc(t(`onboarding.c.${group}.${code}`))}</option>`).join('')}
+          </optgroup>`).join('')}
+      </select>
+      <button type="button" class="btn btn-ghost btn-sm" style="margin-top:12px" data-action="plan" ${planBusy ? 'disabled' : ''}>
+        ${planBusy ? `<span class="spinner" aria-hidden="true"></span> ${t('plan.preparingShort')}` : t('plan.create')}</button>
+    </section>
+
 
     <ul class="lists">
       ${lists.map((l) => {
@@ -111,6 +129,17 @@ export function renderLibrary(root) {
         if (!confirm(t('library.deleteConfirm', { name: listName(list) }))) return;
         deleteList(id);
         rerender();
+        break;
+      }
+      case 'plan': {
+        if (planBusy) return;
+        const situation = root.querySelector('#l-situation').value;
+        planBusy = true;
+        rerender();
+        generatePlan({ situation, tag: current.tag })
+          .then(() => { notice = t('plan.created'); })
+          .catch((err) => { console.error('[plan]', err); notice = t('plan.error'); })
+          .finally(() => { planBusy = false; if (location.hash === '#/listes') rerender(); });
         break;
       }
       case 'export': {
