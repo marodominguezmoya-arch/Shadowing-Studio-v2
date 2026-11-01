@@ -2,6 +2,7 @@
 //
 //  /shadowingstudio/api/onboard  (POST) → valide le formulaire → crée/met à jour la fiche Notion
 //  /shadowingstudio/api/email-check (GET) → le domaine d'un email reçoit-il des emails ? (DNS MX)
+//  /shadowingstudio/api/transcribe (POST) → dictée : audio → texte (Workers AI, Whisper) [Premium, en test]
 //  /shadowingstudio/api/hello (GET)      → pays de connexion (écran d'accueil)
 //  /shadowingstudio/api/translate (POST) → traduit des phrases (Workers AI : Llama 4 Scout, secours m2m100)
 //  /shadowingstudio/…                  → sert l'app statique hébergée sur GitHub Pages
@@ -123,6 +124,10 @@ export default {
 
     if (url.pathname === `${PREFIX}/api/translate`) {
       return handleTranslate(request, env);
+    }
+
+    if (url.pathname === `${PREFIX}/api/transcribe`) {
+      return handleTranscribe(request, env);
     }
 
     if (url.pathname === `${PREFIX}/api/email-check`) {
@@ -627,6 +632,41 @@ export function validateTranslate(body) {
   const clean = texts.map((t) => (typeof t === 'string' ? t.trim() : ''));
   if (clean.some((t) => !t || t.length > MAX_TEXT_CHARS)) return { error: 'texts' };
   return { texts: clean, source, target };
+}
+
+// ---------------------------------------------------------------------------
+// Dictée (plan sur mesure) : l'audio n'est pas conservé
+// ---------------------------------------------------------------------------
+
+const STT_MODEL = '@cf/openai/whisper-large-v3-turbo';
+const MAX_AUDIO = 3 * 1024 * 1024; // ~3 Mo : environ 2 minutes d'audio compressé
+
+function toBase64(bytes) {
+  let bin = '';
+  for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+  return btoa(bin);
+}
+
+async function handleTranscribe(request, env) {
+  if (request.method !== 'POST') return json({ error: 'method_not_allowed' }, 405, { Allow: 'POST' });
+  const allowed = (env.ALLOWED_ORIGINS || '').split(',').map((s) => s.trim()).filter(Boolean);
+  if (allowed.length && !allowed.includes(request.headers.get('Origin'))) return json({ error: 'forbidden_origin' }, 403);
+  if (env.TRANSLATE_LIMITER) {
+    const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
+    const { success } = await env.TRANSLATE_LIMITER.limit({ key: `stt:${ip}` });
+    if (!success) return json({ error: 'rate_limited' }, 429);
+  }
+  const audio = new Uint8Array(await request.arrayBuffer());
+  if (!audio.length) return json({ error: 'empty' }, 400);
+  if (audio.length > MAX_AUDIO) return json({ error: 'too_large' }, 413);
+  if (!env.AI) return json({ error: 'not_configured' }, 500);
+  try {
+    const out = await env.AI.run(STT_MODEL, { audio: toBase64(audio) });
+    return json({ text: String(out?.text || '').trim() });
+  } catch (err) {
+    console.error('STT error:', err.message);
+    return json({ error: 'transcribe_failed' }, 502);
+  }
 }
 
 // ---------------------------------------------------------------------------

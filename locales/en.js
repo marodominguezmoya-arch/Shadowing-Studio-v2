@@ -165,6 +165,24 @@ export default {
     created: 'Plan created: 4 new lists, at the top of the page.',
   },
 
+  custom: {
+    eyebrow: 'Premium · testing',
+    title: 'Your custom plan',
+    lead: 'Describe in your own words the situations where you’ll speak: your job, your plans, the people you want to talk to. The plan will be written for you.',
+    record: 'Tap to dictate',
+    stop: 'Stop',
+    recording: 'Recording… {time}',
+    transcribing: 'Transcribing…',
+    label: 'Your description',
+    placeholder: 'E.g. I’m a nurse, I’m moving to Istanbul in March, I want to talk with my patients and my boyfriend’s family…',
+    hint: 'Edit or add to it with the keyboard, or dictate again: the text is added at the end.',
+    micDenied: 'The microphone is blocked: allow it in your browser settings, or type your description.',
+    micUnsupported: 'Dictation isn’t available in this browser: type your description.',
+    error: 'Transcription failed. Please try again.',
+    create: 'Create my custom plan',
+    soon: 'Plan creation comes in the next step.',
+  },
+
   cefr: {
     A1: 'Beginner — I understand and use very simple expressions.',
     A2: 'Elementary — I get by in everyday situations.',

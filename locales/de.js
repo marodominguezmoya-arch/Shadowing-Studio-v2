@@ -165,6 +165,24 @@ export default {
     created: 'Plan erstellt: 4 neue Listen oben auf der Seite.',
   },
 
+  custom: {
+    eyebrow: 'Premium · im Test',
+    title: 'Ihr Plan nach Maß',
+    lead: 'Beschreiben Sie mit eigenen Worten, in welchen Situationen Sie sprechen werden: Ihr Beruf, Ihre Pläne, die Menschen, mit denen Sie reden möchten. Der Plan wird für Sie geschrieben.',
+    record: 'Zum Diktieren tippen',
+    stop: 'Stopp',
+    recording: 'Aufnahme… {time}',
+    transcribing: 'Wird transkribiert…',
+    label: 'Ihre Beschreibung',
+    placeholder: 'Z. B. Ich bin Krankenpflegerin, ziehe im März nach Istanbul und möchte mit meinen Patienten und der Familie meines Freundes sprechen…',
+    hint: 'Korrigieren oder ergänzen Sie per Tastatur, oder diktieren Sie erneut: Der Text wird angehängt.',
+    micDenied: 'Das Mikrofon ist blockiert: Erlauben Sie es in den Browser-Einstellungen, oder tippen Sie Ihre Beschreibung.',
+    micUnsupported: 'Diktieren ist in diesem Browser nicht verfügbar: Tippen Sie Ihre Beschreibung.',
+    error: 'Die Transkription ist fehlgeschlagen. Bitte erneut versuchen.',
+    create: 'Meinen Plan nach Maß erstellen',
+    soon: 'Die Erstellung des Plans kommt im nächsten Schritt.',
+  },
+
   cefr: {
     A1: 'Anfänger — ich verstehe und verwende sehr einfache Ausdrücke.',
     A2: 'Grundlagen — ich komme in Alltagssituationen zurecht.',

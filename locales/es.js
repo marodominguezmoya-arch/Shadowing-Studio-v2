@@ -165,6 +165,24 @@ export default {
     created: 'Plan creado: 4 listas nuevas, arriba de la página.',
   },
 
+  custom: {
+    eyebrow: 'Premium · en pruebas',
+    title: 'Tu plan a medida',
+    lead: 'Cuenta con tus palabras en qué situaciones vas a hablar: tu trabajo, tus proyectos, las personas con las que quieres hablar. El plan se escribirá para ti.',
+    record: 'Pulsa para dictar',
+    stop: 'Parar',
+    recording: 'Grabando… {time}',
+    transcribing: 'Transcribiendo…',
+    label: 'Tu descripción',
+    placeholder: 'Ej. Soy enfermera, me mudo a Estambul en marzo, quiero hablar con mis pacientes y con la familia de mi novio…',
+    hint: 'Corrige o completa con el teclado, o dicta otra vez: el texto se añade al final.',
+    micDenied: 'El micrófono está bloqueado: permítelo en los ajustes del navegador, o escribe tu descripción.',
+    micUnsupported: 'El dictado no está disponible en este navegador: escribe tu descripción.',
+    error: 'La transcripción ha fallado. Inténtalo de nuevo.',
+    create: 'Crear mi plan a medida',
+    soon: 'La creación del plan llega en el siguiente paso.',
+  },
+
   cefr: {
     A1: 'Principiante — entiendo y uso expresiones muy sencillas.',
     A2: 'Elemental — me defiendo en situaciones cotidianas.',

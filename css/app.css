@@ -833,3 +833,17 @@ input[type="range"] { width: 100%; accent-color: var(--accent); min-height: 32px
 .onb-suggest { margin-top: 4px; }
 .onb-suggest p { margin: 0 0 14px; color: var(--text-muted); overflow-wrap: anywhere; }
 .onb-suggest strong { color: var(--text); }
+
+/* ---------- Plan sur mesure (Premium) ---------- */
+.custom-mic { text-align: center; }
+.mic {
+  display: inline-flex; align-items: center; gap: 12px;
+  min-height: 64px; padding: 0 28px; border-radius: var(--radius-pill);
+  border: 1px solid var(--accent); background: var(--accent-soft); color: var(--text);
+  font: 600 16px/1 var(--font-sans); cursor: pointer;
+}
+.mic-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--accent); }
+.mic.is-recording { background: var(--accent); color: var(--on-primary); }
+.mic.is-recording .mic-dot { background: var(--danger); animation: mic-pulse 1s ease-in-out infinite; }
+@keyframes mic-pulse { 50% { transform: scale(1.35); opacity: 0.6; } }
+.mic:disabled { opacity: 0.5; cursor: default; }

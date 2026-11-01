@@ -165,6 +165,24 @@ export default {
     created: 'Plano criado: 4 listas novas, no topo da página.',
   },
 
+  custom: {
+    eyebrow: 'Premium · em teste',
+    title: 'Seu plano sob medida',
+    lead: 'Conte com suas palavras em que situações você vai falar: seu trabalho, seus projetos, as pessoas com quem quer conversar. O plano será escrito para você.',
+    record: 'Toque para ditar',
+    stop: 'Parar',
+    recording: 'Gravando… {time}',
+    transcribing: 'Transcrevendo…',
+    label: 'Sua descrição',
+    placeholder: 'Ex.: Sou enfermeira, vou morar em Istambul em março, quero falar com meus pacientes e com a família do meu namorado…',
+    hint: 'Corrija ou complete pelo teclado, ou dite de novo: o texto é adicionado no final.',
+    micDenied: 'O microfone está bloqueado: permita nas configurações do navegador, ou escreva sua descrição.',
+    micUnsupported: 'O ditado não está disponível neste navegador: escreva sua descrição.',
+    error: 'A transcrição falhou. Tente novamente.',
+    create: 'Criar meu plano sob medida',
+    soon: 'A criação do plano chega na próxima etapa.',
+  },
+
   cefr: {
     A1: 'Iniciante — entendo e uso expressões muito simples.',
     A2: 'Básico — me viro em situações do dia a dia.',

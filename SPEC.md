@@ -358,3 +358,11 @@ Ordre : Prénom → Email → Profil → Langue maternelle → Langue apprise �
 - **Darija** : l'IA l'écrit mal (arabe standard, caractères parasites) → noyau + 4 situations « Général » écrits à la main (`js/plan-content-ary.js`) ; travail et études en darija : IA avec consignes de vocabulaire marocain (qualité moindre).
 - **Création** (`js/plan.js`) : juste après l'envoi du formulaire (carte « Votre plan de 4 semaines » sur l'écran de fin, bouton « C'est parti » actif quand c'est prêt), 4 listes « {situation} · Semaine n : thème », semaine 1 ouverte et en haut de la bibliothèque ; la liste vide par défaut est supprimée. Bibliothèque : carte « Votre plan de 4 semaines » (choix de la situation, langue de la liste en cours) pour les anciens utilisateurs, une autre langue ou une autre situation.
 - L'anglais d'origine sert de traduction toute prête pour une interface en anglais.
+
+## 25. Premium (en construction)
+
+- Décisions de Maro (2026-11-01) : **9,99 €/mois, 79 €/an**, paiement **Lemon Squeezy** (vendeur officiel : TVA et factures gérées, ~5 % + 0,50 $ par vente, clé de licence envoyée par email). Concurrent de référence : HyperLingua (App Store FR : Pro 9,99 €/mois ou 99,99 €/an, Pro+ 19,99 €/mois ou 199,99 €/an).
+- Fonction : « Plan sur mesure » — l'élève décrit à voix haute ses situations, le plan de 4 semaines est écrit pour lui (noyau d'autonomie + phrases personnalisées).
+- IA de génération : choix en attente (Claude, payant à l'usage, ou Workers AI gratuit).
+- Étape 1 faite : écran caché `#/sur-mesure` (aucun lien dans l'app), micro (MediaRecorder : MP4/AAC sur iPhone, WebM ailleurs, 2 min max), transcription par le Worker `/api/transcribe` (Workers AI `@cf/openai/whisper-large-v3-turbo`, audio non conservé, 3 Mo max, limite par IP), texte modifiable gardé en brouillon sur l'appareil.
+- À venir : génération du plan sur mesure, clé de licence + quota, boutique, page Premium, politique de confidentialité (voix → Cloudflare ; description → fournisseur d'IA).

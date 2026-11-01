@@ -8,6 +8,7 @@ import { renderPrivacy } from './views/privacy.js';
 import { renderStudio } from './views/studio.js';
 import { renderLibrary } from './views/library.js';
 import { renderShare } from './views/share.js';
+import { renderCustom } from './views/custom.js';
 import { registerServiceWorker } from './install.js';
 
 const view = document.getElementById('view');
@@ -42,6 +43,8 @@ function route() {
     });
   } else if (hash.startsWith('partage/')) {
     renderShare(view, hash.slice('partage/'.length));
+  } else if (hash === 'sur-mesure') {
+    renderCustom(view); // Premium en test : pas encore de lien dans l'app
   } else if (hash === 'listes') {
     renderLibrary(view);
   } else {

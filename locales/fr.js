@@ -165,6 +165,24 @@ export default {
     created: 'Plan créé : 4 nouvelles listes, en haut de la page.',
   },
 
+  custom: {
+    eyebrow: 'Premium · en test',
+    title: 'Votre plan sur mesure',
+    lead: 'Racontez avec vos mots dans quelles situations vous allez parler : votre métier, vos projets, les personnes avec qui vous voulez échanger. Le plan sera écrit pour vous.',
+    record: 'Appuyer pour dicter',
+    stop: 'Arrêter',
+    recording: 'Enregistrement… {time}',
+    transcribing: 'Transcription…',
+    label: 'Votre description',
+    placeholder: 'Ex. Je suis infirmière, je pars vivre à Istanbul en mars, je veux parler avec mes patients et la famille de mon copain…',
+    hint: 'Corrigez ou complétez au clavier, ou dictez encore : le texte s’ajoute à la suite.',
+    micDenied: 'Le micro est bloqué : autorisez-le dans les réglages du navigateur, ou écrivez votre description.',
+    micUnsupported: 'La dictée n’est pas disponible sur ce navigateur : écrivez votre description.',
+    error: 'La transcription a échoué. Réessayez.',
+    create: 'Créer mon plan sur mesure',
+    soon: 'La création du plan arrive à la prochaine étape.',
+  },
+
   cefr: {
     A1: 'Débutant — je comprends et utilise des expressions très simples.',
     A2: 'Élémentaire — je me débrouille dans des situations courantes.',
