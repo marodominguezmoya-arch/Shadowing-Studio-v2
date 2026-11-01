@@ -1,15 +1,20 @@
 // Plan sur mesure (Premium, en test) : l'élève décrit ses situations à voix haute, le texte est
 // transcrit par le Worker (Whisper) et reste modifiable. Écran caché : #/sur-mesure (aucun lien).
 
-import { t } from '../i18n.js';
+import { t, getLocale } from '../i18n.js';
 import { esc } from '../dom.js';
 import { load, save } from '../storage.js';
+import { practiceLanguages, defaultTag } from '../audio/catalog.js';
+import { initLibrary, currentList } from '../library.js';
+import { draftCustomPlan, savePlan } from '../plan.js';
 
 const MAX_SECONDS = 120;
 let draft = load('customDraft', '');
 let rec = null; // { recorder, stream, chunks, started, timer }
 let status = ''; // '' | 'recording' | 'transcribing'
 let message = '';
+let planStatus = ''; // '' | 'generating' | 'preview' | 'saved'
+let preview = null; // { gender, weeks: [{ source, phrases }], tag }
 
 // Format accepté par le navigateur : MP4/AAC sur iPhone, WebM/Opus ailleurs.
 function pickMime() {
@@ -20,6 +25,9 @@ function pickMime() {
 export function renderCustom(root) {
   const supported = !!navigator.mediaDevices?.getUserMedia && pickMime() !== null;
   const elapsed = rec ? Math.floor((Date.now() - rec.started) / 1000) : 0;
+  initLibrary({ defaultTag: defaultTag(load('profile', {})) });
+  const tag = currentList().tag; // langue du plan : celle de la liste en cours
+  const langLabel = practiceLanguages(getLocale()).find((l) => l.tag === tag)?.label || tag;
   const clock = `${Math.floor(elapsed / 60)}:${String(elapsed % 60).padStart(2, '0')}`;
 
   root.innerHTML = `<div class="custom">
@@ -45,9 +53,28 @@ export function renderCustom(root) {
       <label class="label" for="c-text">${t('custom.label')}</label>
       <textarea class="input textarea" id="c-text" rows="7" placeholder="${esc(t('custom.placeholder'))}">${esc(draft)}</textarea>
       <p class="hint">${t('custom.hint')}</p>
-      <button type="button" class="btn btn-primary btn-block" disabled>${t('custom.create')}</button>
-      <p class="hint center">${t('custom.soon')}</p>
+      <p class="hint">${t('custom.langNote', { lang: esc(langLabel) })}</p>
+      <button type="button" class="btn btn-primary btn-block" data-action="generate" ${planStatus === 'generating' || status ? 'disabled' : ''}>
+        ${planStatus === 'generating' ? `<span class="spinner" aria-hidden="true"></span> ${t('custom.generating')}` : t('custom.create')}</button>
     </section>
+
+    ${planStatus === 'preview' && preview ? `
+      <section class="card custom-preview">
+        <p class="label">${t('custom.preview')}</p>
+        ${preview.weeks.map((week, w) => `
+          <details ${w === 0 ? 'open' : ''}>
+            <summary>${t('plan.weekName', { situation: t('custom.planLabel'), n: w + 1, theme: t(`plan.theme${w + 1}`) })}</summary>
+            <ol class="preview-list">
+              ${week.phrases.slice(8).map((p, i) => `<li><span lang="${preview.tag}">${esc(p)}</span><small>${esc(week.source[8 + i])}</small></li>`).join('')}
+            </ol>
+            <p class="hint">${t('custom.coreNote')}</p>
+          </details>`).join('')}
+        <div class="paste-actions">
+          <button type="button" class="btn btn-primary btn-sm" data-action="save-plan">${t('custom.save')}</button>
+          <button type="button" class="btn-link btn-link-sm" data-action="discard">${t('custom.redo')}</button>
+        </div>
+      </section>` : ''}
+    ${planStatus === 'saved' ? `<p class="notice-box" role="status">${t('custom.saved')} <a href="#/listes">${t('library.myLists')}</a></p>` : ''}
   </div>`;
 
   const rerender = () => renderCustom(root);
@@ -57,7 +84,20 @@ export function renderCustom(root) {
   });
 
   root.querySelector('.custom').addEventListener('click', async (e) => {
-    if (!e.target.closest('[data-action="mic"]')) return;
+    const action = e.target.closest('[data-action]')?.dataset.action;
+    if (action === 'generate') return generate(tag, rerender);
+    if (action === 'save-plan' && preview) {
+      savePlan({ weeks: preview.weeks, tag: preview.tag, label: t('custom.planLabel'), plan: { custom: true } });
+      preview = null;
+      planStatus = 'saved';
+      return rerender();
+    }
+    if (action === 'discard') {
+      preview = null;
+      planStatus = '';
+      return rerender();
+    }
+    if (action !== 'mic') return;
     message = '';
     if (status === 'recording') return stopRecording(rerender);
     try {
@@ -80,6 +120,27 @@ export function renderCustom(root) {
     }
     rerender();
   });
+}
+
+async function generate(tag, rerender) {
+  message = '';
+  if (draft.trim().length < 20) {
+    message = t('custom.tooShort');
+    return rerender();
+  }
+  planStatus = 'generating';
+  preview = null;
+  rerender();
+  try {
+    const plan = await draftCustomPlan({ description: draft.trim(), tag });
+    preview = { ...plan, tag };
+    planStatus = 'preview';
+  } catch (err) {
+    console.warn('[plan sur mesure]', err);
+    message = t('custom.genError');
+    planStatus = '';
+  }
+  if (location.hash === '#/sur-mesure') rerender();
 }
 
 function stopRecording(rerender) {

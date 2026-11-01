@@ -180,7 +180,16 @@ export default {
     micUnsupported: '此浏览器不支持口述：请直接输入描述。',
     error: '转写失败，请重试。',
     create: '创建我的专属计划',
-    soon: '计划生成功能将在下一步推出。',
+    langNote: '计划语言：{lang}（当前列表的语言）。',
+    generating: '正在创建你的计划…',
+    preview: '计划预览',
+    coreNote: '+ 本周 8 句自主表达（听懂、请求、回应）。',
+    save: '添加到我的列表',
+    redo: '重新开始',
+    saved: '计划已添加：新增 4 个列表，第 1 周已打开。',
+    genError: '计划创建失败，请稍后再试。',
+    tooShort: '请用几句话描述你的情况（至少一行）。',
+    planLabel: '专属',
   },
 
   cefr: {

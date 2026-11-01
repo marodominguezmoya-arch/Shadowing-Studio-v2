@@ -180,7 +180,16 @@ export default {
     micUnsupported: 'Diktieren ist in diesem Browser nicht verfügbar: Tippen Sie Ihre Beschreibung.',
     error: 'Die Transkription ist fehlgeschlagen. Bitte erneut versuchen.',
     create: 'Meinen Plan nach Maß erstellen',
-    soon: 'Die Erstellung des Plans kommt im nächsten Schritt.',
+    langNote: 'Sprache des Plans: {lang} (die der aktuellen Liste).',
+    generating: 'Ihr Plan wird erstellt…',
+    preview: 'Vorschau Ihres Plans',
+    coreNote: '+ die 8 Selbstständigkeits-Sätze der Woche (verstehen, fragen, reagieren).',
+    save: 'Zu meinen Listen hinzufügen',
+    redo: 'Neu beginnen',
+    saved: 'Plan hinzugefügt: 4 neue Listen, Woche 1 ist geöffnet.',
+    genError: 'Der Plan konnte nicht erstellt werden. Bitte gleich noch einmal versuchen.',
+    tooShort: 'Beschreiben Sie Ihre Situation in ein paar Sätzen (mindestens eine Zeile).',
+    planLabel: 'Nach Maß',
   },
 
   cefr: {

@@ -180,7 +180,16 @@ export default {
     micUnsupported: 'La dictée n’est pas disponible sur ce navigateur : écrivez votre description.',
     error: 'La transcription a échoué. Réessayez.',
     create: 'Créer mon plan sur mesure',
-    soon: 'La création du plan arrive à la prochaine étape.',
+    langNote: 'Langue du plan : {lang} (celle de la liste en cours).',
+    generating: 'Création de votre plan…',
+    preview: 'Aperçu de votre plan',
+    coreNote: '+ les 8 phrases d’autonomie de la semaine (comprendre, demander, réagir).',
+    save: 'Ajouter à mes listes',
+    redo: 'Recommencer',
+    saved: 'Plan ajouté : 4 nouvelles listes, la semaine 1 est ouverte.',
+    genError: 'La création du plan a échoué. Réessayez dans un instant.',
+    tooShort: 'Décrivez votre situation en quelques phrases (au moins une ligne).',
+    planLabel: 'Sur mesure',
   },
 
   cefr: {

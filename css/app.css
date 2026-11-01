@@ -847,3 +847,8 @@ input[type="range"] { width: 100%; accent-color: var(--accent); min-height: 32px
 .mic.is-recording .mic-dot { background: var(--danger); animation: mic-pulse 1s ease-in-out infinite; }
 @keyframes mic-pulse { 50% { transform: scale(1.35); opacity: 0.6; } }
 .mic:disabled { opacity: 0.5; cursor: default; }
+.custom-preview details { border-top: 1px solid var(--border); padding: 12px 0; }
+.custom-preview summary { cursor: pointer; font-weight: 600; }
+.preview-list { margin: 12px 0 6px; padding-inline-start: 22px; }
+.preview-list li { margin: 0 0 10px; line-height: 1.4; }
+.preview-list small { display: block; color: var(--text-faint); font-size: 13px; }

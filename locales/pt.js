@@ -180,7 +180,16 @@ export default {
     micUnsupported: 'O ditado não está disponível neste navegador: escreva sua descrição.',
     error: 'A transcrição falhou. Tente novamente.',
     create: 'Criar meu plano sob medida',
-    soon: 'A criação do plano chega na próxima etapa.',
+    langNote: 'Idioma do plano: {lang} (o da lista atual).',
+    generating: 'Criando seu plano…',
+    preview: 'Prévia do seu plano',
+    coreNote: '+ as 8 frases de autonomia da semana (entender, pedir, reagir).',
+    save: 'Adicionar às minhas listas',
+    redo: 'Recomeçar',
+    saved: 'Plano adicionado: 4 listas novas, a semana 1 está aberta.',
+    genError: 'Não foi possível criar o plano. Tente de novo em instantes.',
+    tooShort: 'Descreva sua situação em algumas frases (pelo menos uma linha).',
+    planLabel: 'Sob medida',
   },
 
   cefr: {

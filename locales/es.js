@@ -180,7 +180,16 @@ export default {
     micUnsupported: 'El dictado no está disponible en este navegador: escribe tu descripción.',
     error: 'La transcripción ha fallado. Inténtalo de nuevo.',
     create: 'Crear mi plan a medida',
-    soon: 'La creación del plan llega en el siguiente paso.',
+    langNote: 'Idioma del plan: {lang} (el de la lista actual).',
+    generating: 'Creando tu plan…',
+    preview: 'Vista previa de tu plan',
+    coreNote: '+ las 8 frases de autonomía de la semana (entender, pedir, reaccionar).',
+    save: 'Añadir a mis listas',
+    redo: 'Empezar de nuevo',
+    saved: 'Plan añadido: 4 listas nuevas, la semana 1 está abierta.',
+    genError: 'No se ha podido crear el plan. Inténtalo de nuevo en un momento.',
+    tooShort: 'Describe tu situación en unas frases (al menos una línea).',
+    planLabel: 'A medida',
   },
 
   cefr: {

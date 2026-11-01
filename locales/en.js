@@ -180,7 +180,16 @@ export default {
     micUnsupported: 'Dictation isn’t available in this browser: type your description.',
     error: 'Transcription failed. Please try again.',
     create: 'Create my custom plan',
-    soon: 'Plan creation comes in the next step.',
+    langNote: 'Plan language: {lang} (the language of the current list).',
+    generating: 'Creating your plan…',
+    preview: 'Preview of your plan',
+    coreNote: '+ the week’s 8 autonomy phrases (understanding, asking, reacting).',
+    save: 'Add to my lists',
+    redo: 'Start over',
+    saved: 'Plan added: 4 new lists, week 1 is open.',
+    genError: 'Plan creation failed. Please try again in a moment.',
+    tooShort: 'Describe your situation in a few sentences (at least one line).',
+    planLabel: 'Custom',
   },
 
   cefr: {

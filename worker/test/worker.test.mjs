@@ -1,7 +1,7 @@
 // Tests du Worker sans réseau : l'API Notion et GitHub Pages sont simulées.
 import { test, beforeEach } from 'node:test';
 import assert from 'node:assert/strict';
-import worker, { validate, validateTranslate, parseTranslations, P, icpScore, isHot, emailDomainStatus, foreignScript } from '../src/index.js';
+import worker, { validate, validateTranslate, parseTranslations, P, icpScore, isHot, emailDomainStatus, foreignScript, parseCustomWeeks } from '../src/index.js';
 
 const env = {
   ORIGIN_BASE: 'https://example.github.io/shadowing-studio-v2',
@@ -320,4 +320,18 @@ test('plans : réponse avec un autre alphabet rejetée, nouvel essai avec le gro
   }), aiEnv);
   assert.deepEqual(await res.json(), { phrases: ['ساكن'] });
   assert.equal(models.length, 2);
+});
+
+test('plan sur mesure : 4 semaines de phrases, description validée', async () => {
+  const week = Array.from({ length: 10 }, (_, i) => `Phrase ${i}`);
+  assert.deepEqual(parseCustomWeeks(JSON.stringify({ gender: 'female', weeks: [week, week, week, week] })), { gender: 'female', weeks: [week, week, week, week] });
+  assert.equal(parseCustomWeeks('{"weeks": [["a"],["b"]]}'), null);
+  assert.equal(parseCustomWeeks(JSON.stringify({ gender: 'x', weeks: [week, week, week, week] })).gender, 'unknown');
+  const aiEnv = { ...env, AI: { run: async () => ({ response: 'Voici : ' + JSON.stringify({ gender: 'female', weeks: [week, week, week, week] }) }) } };
+  const call = (description) => worker.fetch(new Request('https://maromoya.com/shadowingstudio/api/custom-plan', {
+    method: 'POST', headers: { Origin: 'https://maromoya.com', 'Content-Type': 'application/json' }, body: JSON.stringify({ description }),
+  }), aiEnv);
+  assert.equal((await call('trop court')).status, 400);
+  const res = await call('Je suis infirmière et je pars vivre à Istanbul en mars.');
+  assert.equal((await res.json()).weeks.length, 4);
 });
