@@ -1,6 +1,6 @@
 # Contenu des plans de 4 semaines — à relire
 
-Écrit en anglais (la langue que l'IA traduit le mieux), puis traduit automatiquement en registre oral dans la langue de l'élève. Chaque semaine = 8 phrases du **noyau d'autonomie** (communes à tous) + 10 phrases de la **situation**. Le darija est écrit à la main (colonne de droite) pour le noyau et les 4 situations « Général ».
+Écrit en anglais (la langue que l'IA traduit le mieux), puis traduit automatiquement en registre oral dans la langue de l'élève. Chaque semaine = 8 phrases du **noyau d'autonomie** (communes à tous) + 10 phrases de la **situation**. Le **darija est écrit à la main** pour tout le contenu (colonne de droite) : à faire relire par une personne marocaine si possible.
 
 Pour corriger : notez simplement la situation, la semaine et la phrase, et ce que vous voulez à la place.
 
@@ -62,541 +62,621 @@ Pour corriger : notez simplement la situation, la semaine et la phrase, et ce qu
 
 ### Semaine 1 · Se présenter
 
-- Hi, I'm the new colleague.
-- I work in the finance department.
-- What do you do here?
-- Nice to work with you.
-- Where is the meeting room?
-- Do you have a minute?
-- I'll send you an email.
-- Let's talk about it later.
-- I'm working from home today.
-- I start at nine and finish at six.
+| Anglais | Darija |
+|---|---|
+| Hi, I'm the new colleague. | السلام، أنا الزميل الجديد. |
+| I work in the finance department. | خدام فقسم المالية. |
+| What do you do here? | شنو كتدير هنا؟ |
+| Nice to work with you. | متشرف نخدم معاك. |
+| Where is the meeting room? | فين كاينة قاعة الاجتماعات؟ |
+| Do you have a minute? | عندك شي دقيقة؟ |
+| I'll send you an email. | غادي نصيفط ليك إيميل. |
+| Let's talk about it later. | نهضرو عليها من بعد. |
+| I'm working from home today. | اليوم خدام من الدار. |
+| I start at nine and finish at six. | كنبدا مع التسعة وكنسالي مع الستة. |
 
 ### Semaine 2 · Agir et demander
 
-- Can we schedule a meeting?
-- Does Tuesday work for you?
-- I can't make it on Friday.
-- Let's start the meeting.
-- Can you share your screen?
-- What's the deadline?
-- I'll finish it by tomorrow.
-- I agree with you.
-- I see it a bit differently.
-- Let's move on to the next point.
+| Anglais | Darija |
+|---|---|
+| Can we schedule a meeting? | نقدرو نحددو واحد الاجتماع؟ |
+| Does Tuesday work for you? | واش نهار الثلاث مناسب ليك؟ |
+| I can't make it on Friday. | نهار الجمعة ما نقدرش. |
+| Let's start the meeting. | يالاه نبداو الاجتماع. |
+| Can you share your screen? | تقدر تبارطاجي الشاشة ديالك؟ |
+| What's the deadline? | فوقاش آخر أجل؟ |
+| I'll finish it by tomorrow. | غادي نساليها غدا. |
+| I agree with you. | متافق معاك. |
+| I see it a bit differently. | أنا كنشوفها شوية بطريقة أخرى. |
+| Let's move on to the next point. | نداوزو للنقطة الجاية. |
 
 ### Semaine 3 · Imprévus et questions
 
-- Sorry, I'm a bit late.
-- Could you explain that again?
-- I'm not sure I understood the task.
-- Who is in charge of this?
-- I need more time for this.
-- There's a problem with the file.
-- My computer isn't working.
-- Can you send me the document?
-- Let me check and get back to you.
-- I'll ask my manager.
+| Anglais | Darija |
+|---|---|
+| Sorry, I'm a bit late. | سمح ليا، تعطلت شوية. |
+| Could you explain that again? | تقدر تعاود تشرحها؟ |
+| I'm not sure I understood the task. | ما متأكدش واش فهمت الخدمة. |
+| Who is in charge of this? | شكون المسؤول على هادي؟ |
+| I need more time for this. | محتاج شوية ديال الوقت زايد. |
+| There's a problem with the file. | كاين مشكل فالفيشي. |
+| My computer isn't working. | البيسي ديالي ما خدامش. |
+| Can you send me the document? | تقدر تصيفط ليا الوثيقة؟ |
+| Let me check and get back to you. | خليني نشوف ونرجع ليك. |
+| I'll ask my manager. | غادي نسول الشاف ديالي. |
 
 ### Semaine 4 · Parler avec naturel
 
-- How was your weekend?
-- Shall we grab a coffee?
-- Are you going to lunch?
-- It's been a busy week.
-- Good job on the presentation!
-- Thanks for your help.
-- Have a good evening!
-- See you tomorrow.
-- Enjoy your holidays!
-- Let's keep in touch.
+| Anglais | Darija |
+|---|---|
+| How was your weekend? | كيف داز الويكاند؟ |
+| Shall we grab a coffee? | نمشيو نشربو قهوة؟ |
+| Are you going to lunch? | غادي تتغدى؟ |
+| It's been a busy week. | كانت سيمانة عامرة. |
+| Good job on the presentation! | برافو على البريزونتاسيون! |
+| Thanks for your help. | شكرا على المساعدة. |
+| Have a good evening! | عشية مزيانة! |
+| See you tomorrow. | نتلاقاو غدا. |
+| Enjoy your holidays! | عطلة سعيدة! |
+| Let's keep in touch. | نبقاو على اتصال. |
 
 ## Travail › Clientèle et vente
 
 ### Semaine 1 · Se présenter
 
-- Hello, how can I help you?
-- Are you looking for something in particular?
-- Take your time.
-- This one is very popular.
-- What size do you need?
-- We have it in blue and black.
-- Would you like to try it?
-- It's on sale today.
-- Let me check if we have it.
-- I'll be right back.
+| Anglais | Darija |
+|---|---|
+| Hello, how can I help you? | السلام، كيفاش نقدر نعاونك؟ |
+| Are you looking for something in particular? | كتقلب على شي حاجة معينة؟ |
+| Take your time. | خود راحتك. |
+| This one is very popular. | هادي كتبيع بزاف. |
+| What size do you need? | شحال القياس ديالك؟ |
+| We have it in blue and black. | عندنا منها الزرقة والكحلة. |
+| Would you like to try it? | بغيتي تجربها؟ |
+| It's on sale today. | فيها الصولد اليوم. |
+| Let me check if we have it. | خليني نشوف واش عندنا. |
+| I'll be right back. | دابا نرجع. |
 
 ### Semaine 2 · Agir et demander
 
-- How would you like to pay?
-- Do you have a loyalty card?
-- Would you like a bag?
-- That comes to twenty euros.
-- You can pay by card or in cash.
-- Here's your receipt.
-- Can I have your name, please?
-- Can I have your phone number?
-- It will be ready on Monday.
-- We can deliver it to your home.
+| Anglais | Darija |
+|---|---|
+| How would you like to pay? | كيفاش بغيتي تخلص؟ |
+| Do you have a loyalty card? | عندك كارط الوفاء؟ |
+| Would you like a bag? | بغيتي ميكة؟ |
+| That comes to twenty euros. | ولات عشرين أورو. |
+| You can pay by card or in cash. | تقدر تخلص بالكارط ولا كاش. |
+| Here's your receipt. | هاهو التيكي ديالك. |
+| Can I have your name, please? | شنو سميتك عافاك؟ |
+| Can I have your phone number? | عطيني النمرة ديالك عافاك. |
+| It will be ready on Monday. | غادي تكون واجدة نهار الثنين. |
+| We can deliver it to your home. | نقدرو نوصلوها ليك للدار. |
 
 ### Semaine 3 · Imprévus et questions
 
-- I'm sorry for the inconvenience.
-- What seems to be the problem?
-- Do you have the receipt?
-- We can exchange it.
-- We can give you a refund.
-- I'll call my manager.
-- Could you wait a moment, please?
-- I understand your frustration.
-- Let me see what I can do.
-- Unfortunately, it's out of stock.
+| Anglais | Darija |
+|---|---|
+| I'm sorry for the inconvenience. | سمح لينا على الإزعاج. |
+| What seems to be the problem? | شنو هو المشكل؟ |
+| Do you have the receipt? | عندك التيكي؟ |
+| We can exchange it. | نقدرو نبدلوها ليك. |
+| We can give you a refund. | نقدرو نرجعو ليك فلوسك. |
+| I'll call my manager. | غادي نعيط للمسؤول. |
+| Could you wait a moment, please? | تسنى شوية عافاك. |
+| I understand your frustration. | فاهمك، عندك الحق تقلق. |
+| Let me see what I can do. | خليني نشوف شنو نقدر ندير. |
+| Unfortunately, it's out of stock. | للأسف، سالات. |
 
 ### Semaine 4 · Parler avec naturel
 
-- Is there anything else I can do for you?
-- Thank you for your patience.
-- Have a nice day!
-- Thanks for coming.
-- See you next time!
-- Enjoy it!
-- Feel free to come back anytime.
-- It was a pleasure.
-- Do you need anything else?
-- Good choice!
+| Anglais | Darija |
+|---|---|
+| Is there anything else I can do for you? | كاين شي حاجة أخرى نقدر نعاونك فيها؟ |
+| Thank you for your patience. | شكرا على الصبر ديالك. |
+| Have a nice day! | نهارك زوين! |
+| Thanks for coming. | شكرا على الزيارة. |
+| See you next time! | حتى لمرة جاية! |
+| Enjoy it! | بالصحة! |
+| Feel free to come back anytime. | مرحبا بيك فأي وقت. |
+| It was a pleasure. | تشرفنا. |
+| Do you need anything else? | محتاج شي حاجة أخرى؟ |
+| Good choice! | اختيار زوين! |
 
 ## Travail › Santé
 
 ### Semaine 1 · Se présenter
 
-- Hello, I'm your nurse today.
-- How are you feeling?
-- Where does it hurt?
-- Since when?
-- Do you have a fever?
-- Are you taking any medication?
-- Do you have any allergies?
-- Please sit down.
-- Take a deep breath.
-- Can you show me?
+| Anglais | Darija |
+|---|---|
+| Hello, I'm your nurse today. | السلام، أنا الفرملي ديالك اليوم. |
+| How are you feeling? | كيف كتحس براسك؟ |
+| Where does it hurt? | فين كيضرك؟ |
+| Since when? | من إمتى؟ |
+| Do you have a fever? | عندك السخانة؟ |
+| Are you taking any medication? | واش كتشرب شي دوا؟ |
+| Do you have any allergies? | عندك شي حساسية؟ |
+| Please sit down. | تفضل گلس. |
+| Take a deep breath. | تنفس مزيان. |
+| Can you show me? | تقدر توريني؟ |
 
 ### Semaine 2 · Agir et demander
 
-- I'm going to take your blood pressure.
-- This won't hurt.
-- Please lie down here.
-- Roll up your sleeve, please.
-- Take this twice a day.
-- Take it after meals.
-- Drink plenty of water.
-- You need to rest.
-- Come back in a week.
-- Here is your prescription.
+| Anglais | Darija |
+|---|---|
+| I'm going to take your blood pressure. | غادي نقيس ليك الطونسيون. |
+| This won't hurt. | هادي ما غاتضركش. |
+| Please lie down here. | تكا هنا عافاك. |
+| Roll up your sleeve, please. | هز الكم ديالك عافاك. |
+| Take this twice a day. | خود هادا جوج مرات فالنهار. |
+| Take it after meals. | خودو من بعد الماكلة. |
+| Drink plenty of water. | شرب الما بزاف. |
+| You need to rest. | خصك ترتاح. |
+| Come back in a week. | رجع من دابا سيمانة. |
+| Here is your prescription. | هاهي الورقة ديال الدوا. |
 
 ### Semaine 3 · Imprévus et questions
 
-- Is the pain getting worse?
-- From one to ten, how bad is the pain?
-- Did you hit your head?
-- Do you feel dizzy?
-- Call me if you need anything.
-- Don't worry, it's normal.
-- We need to do some tests.
-- The doctor will see you soon.
-- Is someone here with you?
-- Do you have your health card?
+| Anglais | Darija |
+|---|---|
+| Is the pain getting worse? | واش الوجع كيزيد؟ |
+| From one to ten, how bad is the pain? | من واحد حتى لعشرة، شحال كيضرك؟ |
+| Did you hit your head? | واش ضربتي راسك؟ |
+| Do you feel dizzy? | واش كيدور بيك الراس؟ |
+| Call me if you need anything. | عيط ليا إلا احتجتي شي حاجة. |
+| Don't worry, it's normal. | ما تخافش، هادشي عادي. |
+| We need to do some tests. | خصنا نديرو شي تحاليل. |
+| The doctor will see you soon. | الطبيب غادي يشوفك دابا. |
+| Is someone here with you? | واش كاين شي حد معاك؟ |
+| Do you have your health card? | عندك الكارط ديال التغطية الصحية؟ |
 
 ### Semaine 4 · Parler avec naturel
 
-- You're doing great.
-- Get well soon!
-- Try to sleep a bit.
-- Do you need help getting up?
-- Your family can visit at six.
-- How did you sleep?
-- Are you hungry?
-- Tell me if it hurts.
-- I'll be back in ten minutes.
-- Take care!
+| Anglais | Darija |
+|---|---|
+| You're doing great. | راك مزيان بزاف. |
+| Get well soon! | الله يشافيك! |
+| Try to sleep a bit. | حاول تنعس شوية. |
+| Do you need help getting up? | محتاج شي مساعدة باش تنوض؟ |
+| Your family can visit at six. | العائلة ديالك تقدر تجي مع الستة. |
+| How did you sleep? | كيف نعستي؟ |
+| Are you hungry? | واش جيعان؟ |
+| Tell me if it hurts. | گول ليا إلا ضرك. |
+| I'll be back in ten minutes. | نرجع من دابا عشر دقايق. |
+| Take care! | تهلا فراسك! |
 
 ## Travail › Hôtellerie et tourisme
 
 ### Semaine 1 · Se présenter
 
-- Welcome! Do you have a reservation?
-- Under what name?
-- How many nights?
-- Here is your room key.
-- Breakfast is from seven to ten.
-- Your room is on the third floor.
-- The elevator is on the right.
-- The Wi-Fi password is on the card.
-- Can I see your passport, please?
-- Enjoy your stay!
+| Anglais | Darija |
+|---|---|
+| Welcome! Do you have a reservation? | مرحبا! عندك ريزيرفاسيون؟ |
+| Under what name? | باسم شكون؟ |
+| How many nights? | شحال من ليلة؟ |
+| Here is your room key. | هاهو الساروت ديال البيت. |
+| Breakfast is from seven to ten. | الفطور من السبعة حتى للعشرة. |
+| Your room is on the third floor. | البيت ديالك فالطابق التالت. |
+| The elevator is on the right. | الأسانسور على اليمين. |
+| The Wi-Fi password is on the card. | الكود ديال الويفي مكتوب فالكارط. |
+| Can I see your passport, please? | نقدر نشوف الباسبور ديالك عافاك؟ |
+| Enjoy your stay! | مقام سعيد! |
 
 ### Semaine 2 · Agir et demander
 
-- A table for two?
-- Here's the menu.
-- Are you ready to order?
-- What would you like to drink?
-- I recommend the fish.
-- Would you like a dessert?
-- Is everything all right?
-- Shall I bring the bill?
-- Do you want to pay together or separately?
-- The kitchen closes at eleven.
+| Anglais | Darija |
+|---|---|
+| A table for two? | طابلة لجوج؟ |
+| Here's the menu. | هاهو المونيو. |
+| Are you ready to order? | واجدين تكومونديو؟ |
+| What would you like to drink? | شنو بغيتي تشرب؟ |
+| I recommend the fish. | كننصحك بالحوت. |
+| Would you like a dessert? | بغيتي شي ديسير؟ |
+| Is everything all right? | كلشي مزيان؟ |
+| Shall I bring the bill? | نجيب ليك الحساب؟ |
+| Do you want to pay together or separately? | بغيتو تخلصو جميع ولا كل واحد بوحدو؟ |
+| The kitchen closes at eleven. | الكوزينة كتسد مع الحداش. |
 
 ### Semaine 3 · Imprévus et questions
 
-- I'm sorry, we're fully booked.
-- I'll fix it right away.
-- Let me call housekeeping.
-- Would you like another room?
-- Checkout is at noon.
-- You can leave your luggage here.
-- Do you need a taxi?
-- The museum is a ten-minute walk.
-- I can recommend a good restaurant.
-- It's just around the corner.
+| Anglais | Darija |
+|---|---|
+| I'm sorry, we're fully booked. | سمح لينا، كلشي محجوز. |
+| I'll fix it right away. | دابا نصاوبها. |
+| Let me call housekeeping. | خليني نعيط للتنظيف. |
+| Would you like another room? | بغيتي بيت أخرى؟ |
+| Checkout is at noon. | الخروج مع الثناش. |
+| You can leave your luggage here. | تقدر تخلي الباليزات ديالك هنا. |
+| Do you need a taxi? | محتاج طاكسي؟ |
+| The museum is a ten-minute walk. | المتحف على عشر دقايق على الرجلين. |
+| I can recommend a good restaurant. | نقدر ننصحك بشي ريسطو مزيان. |
+| It's just around the corner. | غير هنا فالقنت. |
 
 ### Semaine 4 · Parler avec naturel
 
-- How was your day?
-- Did you enjoy the meal?
-- Where are you from?
-- Is it your first time here?
-- Have a great evening!
-- Safe travels!
-- We hope to see you again.
-- Thank you for staying with us.
-- Enjoy the city!
-- Have fun!
+| Anglais | Darija |
+|---|---|
+| How was your day? | كيف داز نهارك؟ |
+| Did you enjoy the meal? | عجباتك الماكلة؟ |
+| Where are you from? | منين نتا؟ |
+| Is it your first time here? | واش هادي أول مرة جيتي هنا؟ |
+| Have a great evening! | عشية زوينة! |
+| Safe travels! | طريق السلامة! |
+| We hope to see you again. | نتمناو نشوفوك مرة أخرى. |
+| Thank you for staying with us. | شكرا حيت بقيتي عندنا. |
+| Enjoy the city! | دوز وقت زوين فالمدينة! |
+| Have fun! | نشاط! |
 
 ## Travail › Technologie
 
 ### Semaine 1 · Se présenter
 
-- I'm a developer.
-- I work on the mobile app.
-- What are you working on?
-- Which tools do you use?
-- I'm on the backend team.
-- Our daily meeting is at ten.
-- Can you give me access?
-- Where's the documentation?
-- I'll set it up today.
-- I'm still new to the project.
+| Anglais | Darija |
+|---|---|
+| I'm a developer. | أنا ديفلوبور. |
+| I work on the mobile app. | خدام على الأبليكاسيون ديال التيليفون. |
+| What are you working on? | على شنو خدام؟ |
+| Which tools do you use? | شمن أدوات كتخدم بيهم؟ |
+| I'm on the backend team. | أنا فالإيكيب ديال الباك إند. |
+| Our daily meeting is at ten. | الاجتماع اليومي ديالنا مع العشرة. |
+| Can you give me access? | تقدر تعطيني الأكسي؟ |
+| Where's the documentation? | فين كاينة الدوكيمونتاسيون؟ |
+| I'll set it up today. | غادي نستاليها اليوم. |
+| I'm still new to the project. | مازال جديد فالبروجي. |
 
 ### Semaine 2 · Agir et demander
 
-- I pushed the changes.
-- Can you review my code?
-- The tests are passing.
-- It works on my machine.
-- Let's deploy it tomorrow.
-- I'll create a ticket.
-- It's almost done.
-- I need two more days.
-- Let's work on it together.
-- What's the priority?
+| Anglais | Darija |
+|---|---|
+| I pushed the changes. | بوشيت التعديلات. |
+| Can you review my code? | تقدر تشوف الكود ديالي؟ |
+| The tests are passing. | التيستات دازو. |
+| It works on my machine. | خدامة عندي فالبيسي ديالي. |
+| Let's deploy it tomorrow. | نديبلويوها غدا. |
+| I'll create a ticket. | غادي نحل تيكي. |
+| It's almost done. | قربات تسالا. |
+| I need two more days. | محتاج جوج أيام زايدين. |
+| Let's work on it together. | يالاه نخدمو عليها جميع. |
+| What's the priority? | شنو هي الأولوية؟ |
 
 ### Semaine 3 · Imprévus et questions
 
-- There's a bug in production.
-- The server is down.
-- I can't reproduce the problem.
-- Did you check the logs?
-- Let's go back to the previous version.
-- I'll look into it.
-- It's a quick fix.
-- It's more complicated than I thought.
-- Who can help me with this?
-- I'm stuck.
+| Anglais | Darija |
+|---|---|
+| There's a bug in production. | كاين بوگ فالبرود. |
+| The server is down. | السيرفور طاح. |
+| I can't reproduce the problem. | ما قدرتش نعاود نطلع المشكل. |
+| Did you check the logs? | شفتي اللوگز؟ |
+| Let's go back to the previous version. | نرجعو للفيرسيون اللي قبل. |
+| I'll look into it. | غادي نشوف فيها. |
+| It's a quick fix. | تصليحة صغيرة. |
+| It's more complicated than I thought. | معقدة كثر مما كنت كنظن. |
+| Who can help me with this? | شكون يقدر يعاوني فهادي؟ |
+| I'm stuck. | بلوكيت. |
 
 ### Semaine 4 · Parler avec naturel
 
-- Good idea!
-- Nice work!
-- That makes sense.
-- Let's keep it simple.
-- Any questions?
-- I'll keep you posted.
-- Let's talk tomorrow.
-- Thanks for the help!
-- Have a good weekend!
-- See you at the meeting.
+| Anglais | Darija |
+|---|---|
+| Good idea! | فكرة زوينة! |
+| Nice work! | خدمة زوينة! |
+| That makes sense. | معقول. |
+| Let's keep it simple. | نخليوها ساهلة. |
+| Any questions? | كاين شي سؤال؟ |
+| I'll keep you posted. | غادي نعلمك. |
+| Let's talk tomorrow. | نهضرو غدا. |
+| Thanks for the help! | شكرا على المساعدة! |
+| Have a good weekend! | ويكاند زوين! |
+| See you at the meeting. | نتلاقاو فالاجتماع. |
 
 ## Travail › Enseignement
 
 ### Semaine 1 · Se présenter
 
-- Good morning, everyone!
-- Please sit down.
-- Open your books to page ten.
-- Today we're learning something new.
-- Listen carefully.
-- Can everyone see the board?
-- Raise your hand, please.
-- Who wants to start?
-- Work in pairs.
-- You have ten minutes.
+| Anglais | Darija |
+|---|---|
+| Good morning, everyone! | صباح الخير على الجميع! |
+| Please sit down. | گلسو عافاكم. |
+| Open your books to page ten. | حلو الكتوبا فالصفحة عشرة. |
+| Today we're learning something new. | اليوم غادي نتعلمو شي حاجة جديدة. |
+| Listen carefully. | تسمعو مزيان. |
+| Can everyone see the board? | كلشي كيشوف السبورة؟ |
+| Raise your hand, please. | هز يدك عافاك. |
+| Who wants to start? | شكون بغا يبدا؟ |
+| Work in pairs. | خدمو جوج بجوج. |
+| You have ten minutes. | عندكم عشر دقايق. |
 
 ### Semaine 2 · Agir et demander
 
-- Read the text out loud.
-- Repeat after me.
-- Who knows the answer?
-- Very good!
-- Almost, try again.
-- Can you explain why?
-- Write it in your notebook.
-- Do you have any questions?
-- Let's check the answers together.
-- The homework is for Monday.
+| Anglais | Darija |
+|---|---|
+| Read the text out loud. | قرا النص بصوت عالي. |
+| Repeat after me. | عاودو موراية. |
+| Who knows the answer? | شكون عارف الجواب؟ |
+| Very good! | مزيان بزاف! |
+| Almost, try again. | قريب، عاود جرب. |
+| Can you explain why? | تقدر تشرح علاش؟ |
+| Write it in your notebook. | كتبها فالدفتر ديالك. |
+| Do you have any questions? | عندكم شي سؤال؟ |
+| Let's check the answers together. | يالاه نصححو الأجوبة جميع. |
+| The homework is for Monday. | التمارين لنهار الثنين. |
 
 ### Semaine 3 · Imprévus et questions
 
-- Please be quiet.
-- Put your phone away, please.
-- Why are you late?
-- Don't worry, it's okay.
-- Do you need help?
-- Let's take a short break.
-- Where's your homework?
-- You can do it!
-- Come and see me after class.
-- We'll finish next time.
+| Anglais | Darija |
+|---|---|
+| Please be quiet. | سكتو عافاكم. |
+| Put your phone away, please. | خبي التيليفون ديالك عافاك. |
+| Why are you late? | علاش تعطلتي؟ |
+| Don't worry, it's okay. | ما تخافش، ماشي مشكل. |
+| Do you need help? | محتاج شي مساعدة؟ |
+| Let's take a short break. | ناخدو واحد الاستراحة صغيرة. |
+| Where's your homework? | فين التمارين ديالك؟ |
+| You can do it! | تقدر عليها! |
+| Come and see me after class. | جي عندي من بعد الحصة. |
+| We'll finish next time. | نكملو المرة الجاية. |
 
 ### Semaine 4 · Parler avec naturel
 
-- Good job today!
-- I'm proud of you.
-- See you tomorrow!
-- Have a nice weekend!
-- How was your holiday?
-- Don't forget your books.
-- Well done, everyone!
-- Keep practicing.
-- Any questions before we finish?
-- Great effort!
+| Anglais | Darija |
+|---|---|
+| Good job today! | خدمة زوينة اليوم! |
+| I'm proud of you. | فخور بيكم. |
+| See you tomorrow! | نتلاقاو غدا! |
+| Have a nice weekend! | ويكاند زوين! |
+| How was your holiday? | كيف دازت العطلة؟ |
+| Don't forget your books. | ما تنساوش الكتوبا ديالكم. |
+| Well done, everyone! | برافو عليكم كاملين! |
+| Keep practicing. | زيدو تمرنو. |
+| Any questions before we finish? | كاين شي سؤال قبل ما نساليو؟ |
+| Great effort! | مجهود زوين! |
 
 ## Études › Université / Erasmus
 
 ### Semaine 1 · Se présenter
 
-- I'm an exchange student.
-- I'm studying engineering.
-- What are you studying?
-- Which year are you in?
-- Where is the library?
-- Is this seat free?
-- Are you in this class too?
-- When is the lecture?
-- Where can I get my student card?
-- Do you want to study together?
+| Anglais | Darija |
+|---|---|
+| I'm an exchange student. | أنا طالب فالتبادل. |
+| I'm studying engineering. | كنقرا الهندسة. |
+| What are you studying? | شنو كتقرا؟ |
+| Which year are you in? | فشحال من عام نتا؟ |
+| Where is the library? | فين كاينة المكتبة؟ |
+| Is this seat free? | واش هاد البلاصة خاوية؟ |
+| Are you in this class too? | حتى نتا فهاد القسم؟ |
+| When is the lecture? | فوقاش المحاضرة؟ |
+| Where can I get my student card? | فين نقدر ناخد الكارط ديال الطالب؟ |
+| Do you want to study together? | بغيتي نراجعو جميع؟ |
 
 ### Semaine 2 · Agir et demander
 
-- Can I borrow your notes?
-- When is the exam?
-- What's on the exam?
-- I have to hand in an essay.
-- Can I ask the professor?
-- Is attendance required?
-- I didn't understand the lecture.
-- Do we have homework?
-- Let's meet at the library.
-- I'm studying for the exam.
+| Anglais | Darija |
+|---|---|
+| Can I borrow your notes? | تقدر تسلفني الكور ديالك؟ |
+| When is the exam? | فوقاش الامتحان؟ |
+| What's on the exam? | شنو داخل فالامتحان؟ |
+| I have to hand in an essay. | خصني نسلم واحد البحث. |
+| Can I ask the professor? | نقدر نسول الأستاذ؟ |
+| Is attendance required? | واش الحضور إجباري؟ |
+| I didn't understand the lecture. | ما فهمتش المحاضرة. |
+| Do we have homework? | عندنا شي واجبات؟ |
+| Let's meet at the library. | نتلاقاو فالمكتبة. |
+| I'm studying for the exam. | كنراجع للامتحان. |
 
 ### Semaine 3 · Imprévus et questions
 
-- I missed the class.
-- Can I have more time for the essay?
-- Where is the office?
-- I need to sign up for the course.
-- I need a document for my visa.
-- Is there a deadline?
-- The room has changed.
-- I'm a bit lost.
-- Who should I ask?
-- Can you show me how it works?
+| Anglais | Darija |
+|---|---|
+| I missed the class. | فاتني الكور. |
+| Can I have more time for the essay? | نقدر ناخد وقت زايد للبحث؟ |
+| Where is the office? | فين كاين البيرو؟ |
+| I need to sign up for the course. | خصني نتسجل فهاد المادة. |
+| I need a document for my visa. | محتاج شي وثيقة للفيزا ديالي. |
+| Is there a deadline? | واش كاين شي أجل؟ |
+| The room has changed. | القاعة تبدلات. |
+| I'm a bit lost. | تالف شوية. |
+| Who should I ask? | شكون خصني نسول؟ |
+| Can you show me how it works? | تقدر توريني كيفاش خدامة؟ |
 
 ### Semaine 4 · Parler avec naturel
 
-- Are you going to the party?
-- Let's grab a drink after class.
-- How did the exam go?
-- I passed!
-- Good luck tomorrow!
-- Where do you live?
-- Do you want to join us?
-- It's been a long week.
-- Let's celebrate!
-- See you on campus!
+| Anglais | Darija |
+|---|---|
+| Are you going to the party? | غادي للحفلة؟ |
+| Let's grab a drink after class. | نشربو شي حاجة من بعد الكور. |
+| How did the exam go? | كيف داز الامتحان؟ |
+| I passed! | نجحت! |
+| Good luck tomorrow! | بالتوفيق غدا! |
+| Where do you live? | فين ساكن؟ |
+| Do you want to join us? | بغيتي تجي معانا؟ |
+| It's been a long week. | كانت سيمانة طويلة. |
+| Let's celebrate! | يالاه نحتافلو! |
+| See you on campus! | نتشاوفو فالجامعة! |
 
 ## Études › Examen officiel
 
 ### Semaine 1 · Se présenter
 
-- Let me introduce myself.
-- I live in a small town near the coast.
-- I'm learning this language because I want to work abroad.
-- In my free time, I like reading and cooking.
-- I have one brother and one sister.
-- I've been learning for two years.
-- My goal is to pass this exam.
-- I'd like to live abroad one day.
-- I usually get up at seven.
-- On weekends, I see my friends.
+| Anglais | Darija |
+|---|---|
+| Let me introduce myself. | خليني نقدم راسي. |
+| I live in a small town near the coast. | ساكن فواحد المدينة صغيرة قريبة من البحر. |
+| I'm learning this language because I want to work abroad. | كنتعلم هاد اللغة حيت بغيت نخدم برا. |
+| In my free time, I like reading and cooking. | فوقت الفراغ، كيعجبني نقرا ونطيب. |
+| I have one brother and one sister. | عندي خويا واحد وأختي وحدة. |
+| I've been learning for two years. | هادي عامين وأنا كنتعلم. |
+| My goal is to pass this exam. | الهدف ديالي هو ننجح فهاد الامتحان. |
+| I'd like to live abroad one day. | بغيت نعيش برا شي نهار. |
+| I usually get up at seven. | عادة كننوض مع السبعة. |
+| On weekends, I see my friends. | فالويكاند، كنشوف صحابي. |
 
 ### Semaine 2 · Agir et demander
 
-- In my opinion, it's a good idea.
-- I think that's true, but it depends.
-- On the one hand, it's practical.
-- On the other hand, it's expensive.
-- I completely agree.
-- I don't really agree.
-- For example, in my country it's different.
-- The main advantage is the price.
-- The main problem is time.
-- To sum up, I prefer the first option.
+| Anglais | Darija |
+|---|---|
+| In my opinion, it's a good idea. | فرأيي، فكرة مزيانة. |
+| I think that's true, but it depends. | كنظن هادشي صحيح، ولكن على حساب. |
+| On the one hand, it's practical. | من جهة، عملية. |
+| On the other hand, it's expensive. | ومن جهة أخرى، غالية. |
+| I completely agree. | متافق معاك مية فالمية. |
+| I don't really agree. | ما متافقش بزاف. |
+| For example, in my country it's different. | مثلا، فبلادي مختالفة. |
+| The main advantage is the price. | الميزة الكبيرة هي الثمن. |
+| The main problem is time. | المشكل الكبير هو الوقت. |
+| To sum up, I prefer the first option. | باختصار، كنفضل الاختيار الأول. |
 
 ### Semaine 3 · Imprévus et questions
 
-- In this picture, I can see a family.
-- They seem happy.
-- It looks like a park.
-- Last year, I traveled to Spain.
-- It was an amazing experience.
-- When I was a child, I used to play outside.
-- If I had more time, I would travel more.
-- I've never been there.
-- It reminds me of my holidays.
-- I'll never forget it.
+| Anglais | Darija |
+|---|---|
+| In this picture, I can see a family. | فهاد التصويرة، كنشوف واحد العائلة. |
+| They seem happy. | باينين فرحانين. |
+| It looks like a park. | باين بحال شي جنان. |
+| Last year, I traveled to Spain. | العام اللي فات، سافرت لسبانيا. |
+| It was an amazing experience. | كانت تجربة رائعة. |
+| When I was a child, I used to play outside. | ملي كنت صغير، كنت كنلعب برا. |
+| If I had more time, I would travel more. | لو كان عندي وقت كثر، كون سافرت كثر. |
+| I've never been there. | عمري ما مشيت لتما. |
+| It reminds me of my holidays. | كتفكرني فالعطلة ديالي. |
+| I'll never forget it. | عمري ما ننساها. |
 
 ### Semaine 4 · Parler avec naturel
 
-- Could you repeat the question, please?
-- Let me think for a second.
-- That's a good question.
-- I'm not sure, but I think it's important.
-- How can I put it?
-- What I mean is that it's useful.
-- Sorry, I meant something else.
-- Could you explain that word?
-- I'd like to add something.
-- Thank you for listening.
+| Anglais | Darija |
+|---|---|
+| Could you repeat the question, please? | تقدر تعاود السؤال عافاك؟ |
+| Let me think for a second. | خليني نفكر شوية. |
+| That's a good question. | سؤال مزيان. |
+| I'm not sure, but I think it's important. | ما متأكدش، ولكن كنظن مهمة. |
+| How can I put it? | كيفاش نقولها؟ |
+| What I mean is that it's useful. | اللي بغيت نقول هو أنها مفيدة. |
+| Sorry, I meant something else. | سمح ليا، كنت باغي نقول شي حاجة أخرى. |
+| Could you explain that word? | تقدر تشرح هاد الكلمة؟ |
+| I'd like to add something. | بغيت نزيد شي حاجة. |
+| Thank you for listening. | شكرا حيت سمعتيني. |
 
 ## Études › Collège ou lycée
 
 ### Semaine 1 · Se présenter
 
-- Hi, I'm new here.
-- What's your name?
-- How old are you?
-- Which class are you in?
-- Where's the classroom?
-- What's the next lesson?
-- Can I sit here?
-- Do you like this school?
-- What's your favorite subject?
-- I like sports.
+| Anglais | Darija |
+|---|---|
+| Hi, I'm new here. | السلام، أنا جديد هنا. |
+| What's your name? | شنو سميتك؟ |
+| How old are you? | شحال فعمرك؟ |
+| Which class are you in? | فأشمن قسم نتا؟ |
+| Where's the classroom? | فين كاين القسم؟ |
+| What's the next lesson? | شنو الحصة الجاية؟ |
+| Can I sit here? | نقدر نگلس هنا؟ |
+| Do you like this school? | عجباتك هاد المدرسة؟ |
+| What's your favorite subject? | شنو المادة اللي كتعجبك كثر؟ |
+| I like sports. | كتعجبني الرياضة. |
 
 ### Semaine 2 · Agir et demander
 
-- Can I borrow a pen?
-- What's the homework?
-- I forgot my book.
-- Can you help me with this exercise?
-- When is the test?
-- I don't get it.
-- Can I go to the toilet?
-- Can you repeat, please?
-- How do you spell it?
-- I'm finished.
+| Anglais | Darija |
+|---|---|
+| Can I borrow a pen? | تقدر تسلفني ستيلو؟ |
+| What's the homework? | شنو هوما التمارين؟ |
+| I forgot my book. | نسيت الكتاب ديالي. |
+| Can you help me with this exercise? | تقدر تعاوني فهاد التمرين؟ |
+| When is the test? | فوقاش الفرض؟ |
+| I don't get it. | ما فهمتش. |
+| Can I go to the toilet? | نقدر نمشي للطواليت؟ |
+| Can you repeat, please? | عاود عافاك؟ |
+| How do you spell it? | كيفاش كتكتب؟ |
+| I'm finished. | ساليت. |
 
 ### Semaine 3 · Imprévus et questions
 
-- Sorry, I'm late.
-- I don't feel well.
-- Can I call my parents?
-- I lost my bag.
-- Where's the cafeteria?
-- What time do we finish?
-- Is the teacher absent?
-- Wait for me!
-- Stop it, please.
-- That's not fair.
+| Anglais | Darija |
+|---|---|
+| Sorry, I'm late. | سمح ليا، تعطلت. |
+| I don't feel well. | ما كنحسش براسي مزيان. |
+| Can I call my parents? | نقدر نعيط للواليدين ديالي؟ |
+| I lost my bag. | ضيعت الصاك ديالي. |
+| Where's the cafeteria? | فين كاينة الكانتين؟ |
+| What time do we finish? | فوقاش كنساليو؟ |
+| Is the teacher absent? | واش الأستاذ غايب؟ |
+| Wait for me! | تسناني! |
+| Stop it, please. | باراكا عافاك. |
+| That's not fair. | هادشي ماشي عدل. |
 
 ### Semaine 4 · Parler avec naturel
 
-- Do you want to play?
-- Let's go together.
-- That's so funny!
-- Cool!
-- See you tomorrow!
-- Text me later.
-- What are you doing this weekend?
-- Do you want to come over?
-- I'm bored.
-- Good luck on the test!
+| Anglais | Darija |
+|---|---|
+| Do you want to play? | بغيتي نلعبو؟ |
+| Let's go together. | يالاه نمشيو جميع. |
+| That's so funny! | هادي كتضحك بزاف! |
+| Cool! | واعر! |
+| See you tomorrow! | نتشاوفو غدا! |
+| Text me later. | صيفط ليا ميساج من بعد. |
+| What are you doing this weekend? | شنو غادي دير فهاد الويكاند؟ |
+| Do you want to come over? | بغيتي تجي عندي؟ |
+| I'm bored. | مقلق. |
+| Good luck on the test! | بالتوفيق فالفرض! |
 
 ## Études › Formation professionnelle
 
 ### Semaine 1 · Se présenter
 
-- I'm doing a professional training.
-- It lasts six months.
-- I want to change careers.
-- What did you do before?
-- Where is the workshop?
-- What time does the training start?
-- Who's the trainer?
-- I have an internship next month.
-- I'm looking for an internship.
-- Nice to meet everyone.
+| Anglais | Darija |
+|---|---|
+| I'm doing a professional training. | كندير واحد التكوين مهني. |
+| It lasts six months. | كيدوم ستة شهور. |
+| I want to change careers. | بغيت نبدل الخدمة. |
+| What did you do before? | شنو كنتي كدير قبل؟ |
+| Where is the workshop? | فين كاين لاطوليي؟ |
+| What time does the training start? | فوقاش كيبدا التكوين؟ |
+| Who's the trainer? | شكون هو المكون؟ |
+| I have an internship next month. | عندي ستاج الشهر الجاي. |
+| I'm looking for an internship. | كنقلب على ستاج. |
+| Nice to meet everyone. | متشرف بكم كاملين. |
 
 ### Semaine 2 · Agir et demander
 
-- Can you show me how to do it?
-- Like this?
-- Is this correct?
-- Could you check my work?
-- What tools do I need?
-- Safety first.
-- Put on your gloves.
-- Let me try.
-- I'll practice at home.
-- What's the next step?
+| Anglais | Darija |
+|---|---|
+| Can you show me how to do it? | تقدر توريني كيفاش ندير؟ |
+| Like this? | هكا؟ |
+| Is this correct? | واش هادي صحيحة؟ |
+| Could you check my work? | تقدر تشوف الخدمة ديالي؟ |
+| What tools do I need? | شنو هوما الأدوات اللي خصوني؟ |
+| Safety first. | السلامة قبل كلشي. |
+| Put on your gloves. | لبس الليگان ديالك. |
+| Let me try. | خليني نجرب. |
+| I'll practice at home. | غادي نتمرن فالدار. |
+| What's the next step? | شنو المرحلة الجاية؟ |
 
 ### Semaine 3 · Imprévus et questions
 
-- I made a mistake.
-- It's broken.
-- I don't know how to use this machine.
-- Can I ask a question?
-- Where do I sign?
-- I need a certificate.
-- When is the exam?
-- I can't come tomorrow.
-- I'm a bit nervous.
-- Can you help me fill in this form?
+| Anglais | Darija |
+|---|---|
+| I made a mistake. | غلطت. |
+| It's broken. | مهرسة. |
+| I don't know how to use this machine. | ما عرفتش كيفاش نخدم بهاد الماكينة. |
+| Can I ask a question? | نقدر نسول واحد السؤال؟ |
+| Where do I sign? | فين نسيني؟ |
+| I need a certificate. | محتاج شهادة. |
+| When is the exam? | فوقاش الامتحان؟ |
+| I can't come tomorrow. | غدا ما نقدرش نجي. |
+| I'm a bit nervous. | متوتر شوية. |
+| Can you help me fill in this form? | تقدر تعاوني نعمر هاد الورقة؟ |
 
 ### Semaine 4 · Parler avec naturel
 
-- That was useful.
-- I'm learning a lot.
-- Thanks for your patience.
-- Good work today!
-- See you on Monday.
-- How's your internship going?
-- I got the job!
-- Congratulations!
-- Let's stay in touch.
-- Have a good evening!
+| Anglais | Darija |
+|---|---|
+| That was useful. | كانت مفيدة. |
+| I'm learning a lot. | كنتعلم بزاف. |
+| Thanks for your patience. | شكرا على الصبر ديالك. |
+| Good work today! | خدمة زوينة اليوم! |
+| See you on Monday. | نتلاقاو نهار الثنين. |
+| How's your internship going? | كيف داير مع الستاج؟ |
+| I got the job! | خديت الخدمة! |
+| Congratulations! | مبروك! |
+| Let's stay in touch. | نبقاو على اتصال. |
+| Have a good evening! | عشية مزيانة! |
 
 ## Général › Voyage et tourisme
 
