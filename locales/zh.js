@@ -183,7 +183,6 @@ export default {
     langNote: '计划语言：{lang}（当前列表的语言）。',
     generating: '正在创建你的计划…',
     preview: '计划预览',
-    coreNote: '+ 本周 8 句自主表达（听懂、请求、回应）。',
     save: '添加到我的列表',
     redo: '重新开始',
     saved: '计划已添加：新增 4 个列表，第 1 周已打开。',

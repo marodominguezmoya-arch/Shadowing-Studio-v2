@@ -65,9 +65,8 @@ export function renderCustom(root) {
           <details ${w === 0 ? 'open' : ''}>
             <summary>${t('plan.weekName', { situation: t('custom.planLabel'), n: w + 1, theme: t(`plan.theme${w + 1}`) })}</summary>
             <ol class="preview-list">
-              ${week.phrases.slice(8).map((p, i) => `<li><span lang="${preview.tag}">${esc(p)}</span><small>${esc(week.source[8 + i])}</small></li>`).join('')}
+              ${week.phrases.map((p, i) => `<li><span lang="${preview.tag}">${esc(p)}</span><small>${esc(week.source[i])}</small></li>`).join('')}
             </ol>
-            <p class="hint">${t('custom.coreNote')}</p>
           </details>`).join('')}
         <div class="paste-actions">
           <button type="button" class="btn btn-primary btn-sm" data-action="save-plan">${t('custom.save')}</button>

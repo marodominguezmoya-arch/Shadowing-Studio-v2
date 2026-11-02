@@ -94,7 +94,8 @@ export async function generatePlan({ situation, tag, onProgress }) {
   return savePlan({ weeks, tag, label: shortLabel(situationLabel(situation)), plan: { situation } });
 }
 
-// Plan sur mesure : la description de l'élève → 4 × 10 phrases (Worker), puis traduction.
+// Plan sur mesure : la description de l'élève → 4 × 20 répliques de conversation (Worker), puis
+// traduction. Sans le noyau d'autonomie : tout le contenu est propre à l'élève.
 // Renvoie { gender, weeks: [{ source, phrases }] } pour l'aperçu (rien n'est enregistré).
 export async function draftCustomPlan({ description, tag }) {
   let plan;
@@ -111,7 +112,7 @@ export async function draftCustomPlan({ description, tag }) {
     plan = await res.json();
   }
   const gender = ['female', 'male'].includes(plan.gender) ? plan.gender : null;
-  const weeks = await Promise.all(plan.weeks.map((phrases, w) => buildWeek(w, phrases, tag, gender)));
+  const weeks = await Promise.all(plan.weeks.map(async (source) => ({ source, phrases: await adapt(source, tag, gender) })));
   return { gender, weeks };
 }
 

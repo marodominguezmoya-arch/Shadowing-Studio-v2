@@ -183,7 +183,6 @@ export default {
     langNote: 'Sprache des Plans: {lang} (die der aktuellen Liste).',
     generating: 'Ihr Plan wird erstellt…',
     preview: 'Vorschau Ihres Plans',
-    coreNote: '+ die 8 Selbstständigkeits-Sätze der Woche (verstehen, fragen, reagieren).',
     save: 'Zu meinen Listen hinzufügen',
     redo: 'Neu beginnen',
     saved: 'Plan hinzugefügt: 4 neue Listen, Woche 1 ist geöffnet.',

@@ -183,7 +183,6 @@ export default {
     langNote: 'Idioma del plan: {lang} (el de la lista actual).',
     generating: 'Creando tu plan…',
     preview: 'Vista previa de tu plan',
-    coreNote: '+ las 8 frases de autonomía de la semana (entender, pedir, reaccionar).',
     save: 'Añadir a mis listas',
     redo: 'Empezar de nuevo',
     saved: 'Plan añadido: 4 listas nuevas, la semana 1 está abierta.',
