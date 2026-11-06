@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://unlock.maromoya.com/sitemap.xml
