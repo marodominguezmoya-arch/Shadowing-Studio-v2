@@ -1,55 +1,35 @@
 <!doctype html>
-<html lang="fr" dir="ltr">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Shadowing Studio — Maro Moya</title>
-  <meta name="description" content="Pratiquez le shadowing : vos phrases, une voix native, des répétitions et des pauses pour répéter.">
-  <meta name="color-scheme" content="dark light">
-  <meta name="theme-color" content="#0B0B0D" media="(prefers-color-scheme: dark)">
-  <meta name="theme-color" content="#F2F0EA" media="(prefers-color-scheme: light)">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='6' fill='%23C9A961'/><circle cx='16' cy='16' r='12.5' stroke='%23C9A961' stroke-width='2' fill='none' opacity='.45'/></svg>">
-  <link rel="manifest" href="manifest.webmanifest">
-  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Shadowing">
-  <link rel="preload" href="assets/fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="css/app.css">
-  <script type="module" src="js/main.js"></script>
-</head>
-<body>
-  <header class="topbar">
-    <a class="brand" href="#/" aria-label="Shadowing Studio">
-      <span class="brand-name">SHADOWING STUDIO</span>
-      <span class="brand-by">par Maro Moya</span>
-    </a>
-    <label class="locale-switch">
-      <span class="visually-hidden">Langue / Language / Idioma / Язык / اللغة</span>
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
-      <select id="locale-select"></select>
-    </label>
-  </header>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0B0B0D" />
 
-  <main id="view" tabindex="-1"></main>
+    <title>UNLOCK — Coaching de langues pour entrepreneurs internationaux</title>
+    <meta name="description" content="UNLOCK est un coaching de langues pour entrepreneurs et fondateurs francophones qui comprennent déjà une langue étrangère (anglais, espagnol, allemand...) mais bloquent pour vendre, négocier ou pitcher sous pression. Un programme personnalisé pour performer à l'oral dans ton business — pas pour l'étudier pendant des années." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://unlock.maromoya.com/" />
 
-  <footer class="site-footer">
-    <nav class="social" aria-label="Maro Moya">
-      <a href="https://instagram.com/maro.moya" target="_blank" rel="noopener">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
-        <span>@maro.moya</span>
-      </a>
-      <a href="https://www.youtube.com/@maromoya" target="_blank" rel="noopener">
-        <svg width="20" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12 31 31 0 0 0 1 16.8a3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .5-4.8 31 31 0 0 0-.5-4.8ZM9.8 15.1V8.9l5.7 3.1-5.7 3.1Z"/></svg>
-        <span>Maro Moya</span>
-      </a>
-    </nav>
-    <p class="footer-meta"><span id="footer-copyright"></span> · <a href="#/confidentialite" id="footer-privacy"></a></p>
-  </footer>
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="UNLOCK by Maro Moya" />
+    <meta property="og:title" content="UNLOCK — Devenez un fondateur international" />
+    <meta property="og:description" content="Le programme de performance qui débloque une langue business : ventes, négociation, réseau, levée de fonds. Candidatures sur dossier." />
+    <meta property="og:image" content="/og-cover.jpg" />
+    <meta property="og:url" content="https://unlock.maromoya.com/" />
+    <meta property="og:locale" content="fr_FR" />
 
-  <noscript>
-    <p class="noscript">Shadowing Studio nécessite JavaScript. / Shadowing Studio requires JavaScript.</p>
-  </noscript>
-</body>
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="UNLOCK — Devenez un fondateur international" />
+    <meta name="twitter:description" content="Le bottleneck n'est plus ton niveau. C'est ta capacité à performer sous pression, dans n'importe quelle langue." />
+    <meta name="twitter:image" content="/og-cover.jpg" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>
